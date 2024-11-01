@@ -6,17 +6,17 @@ class Game:
     def __init__(self):
         # pygame setup
         pygame.init()
-        WIDTH, HEIGHT = (256, 128)
+        self.WIDTH, self.HEIGHT = (256, 128)
         flags = pygame.SCALED
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.SCALED, vsync=1)
 
 
         # # choose the initial scale factor for the window
-        initial_scale_factor = 3  # <-- adjustable
-        window = sdl2.Window.from_display_module()
-        window.size = (WIDTH * initial_scale_factor, HEIGHT * initial_scale_factor)
-        window.position = sdl2.WINDOWPOS_CENTERED
-        window.show()   
+        initial_scale_factor = 8  # <-- adjustable
+        self.window = sdl2.Window.from_display_module()
+        self.window.size = (self.WIDTH * initial_scale_factor, self.HEIGHT * initial_scale_factor)
+        self.window.position = sdl2.WINDOWPOS_CENTERED
+        self.window.set_windowed()
 
         # # bonus: specify the color of the out-of-bounds area in RESIZABLE mode (it's black by default)
         # OUTER_FILL_COLOR = "plum4"
@@ -59,11 +59,12 @@ class Game:
             self.player_pos.x += self.speed * Globals.DeltaTime
         if keys[pygame.K_F11]:
             if self.FullScreen:
-                pygame.display.toggle_fullscreen()
+                self.window.set_windowed()
                 self.FullScreen = False
             else:
-                pygame.display.toggle_fullscreen()
+                self.window.set_fullscreen()
                 self.FullScreen = True
+            
 
     def Draw(self):
         # fill the screen with a color to wipe away anything from last frame
@@ -82,4 +83,5 @@ class Game:
         while self.running:
             self.Updated()
             self.Draw()
+            pygame.display.update()
         pygame.quit()
