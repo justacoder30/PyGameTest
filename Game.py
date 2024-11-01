@@ -8,7 +8,7 @@ class Game:
         pygame.init()
         self.WIDTH, self.HEIGHT = (256, 128)
         flags = pygame.SCALED
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.SCALED, vsync=1)
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.SCALED | pygame.FULLSCREEN, vsync=1)
 
 
         # # choose the initial scale factor for the window
@@ -24,12 +24,12 @@ class Game:
         # renderer.draw_color = pygame.Color(OUTER_FILL_COLOR)
 
         Globals.Clock = pygame.time.Clock()
-        Globals.Clock.tick(60) # limits FPS to 60
+        Globals.Clock.tick(120) # limits FPS to 60
         self.running = True
         self.FullScreen = False
 
         self.player_pos = pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2)
-        self.speed = 300
+        self.speed = 100
 
         self.img = pygame.image.load('img/hearts.png')
 
@@ -83,5 +83,5 @@ class Game:
         while self.running:
             self.Updated()
             self.Draw()
-            pygame.display.update()
+            # pygame.display.update()
         pygame.quit()
