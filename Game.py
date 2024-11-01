@@ -7,9 +7,9 @@ class Game:
     def __init__(self):
         # pygame setup
         pygame.init()
-        Globals.CameraSize(256, 128)
+        Globals.CameraSize(480, 270)
         Globals.Init()
-        Renderder.SetResolution(100, 300)
+        Renderder.SetResolution(1920, 1080)
 
         self.running = True
 
@@ -29,9 +29,9 @@ class Game:
         Globals.Updated()
         InputManager.Update()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         self.running = False
          
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w]:
@@ -42,6 +42,15 @@ class Game:
             self.player_pos.x -= self.speed * Globals.DeltaTime
         if keys[pygame.K_d]:
             self.player_pos.x += self.speed * Globals.DeltaTime
+        if keys[pygame.K_ESCAPE]:
+            self.running = False
+
+        # self.CurrentKey = pygame.key.get_pressed()
+
+        # if(self.CurrentKey[pygame.K_F11] and self.PreviousKey[pygame.K_F11] == False):
+        #     Renderder.FullScreenToggle()
+
+        # self.PreviousKey = self.CurrentKey
             
 
     def Draw(self):

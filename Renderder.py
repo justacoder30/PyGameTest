@@ -1,4 +1,4 @@
-import Globals, pygame
+import Globals
 import pygame._sdl2 as sdl2
 
 FullScreen = None
@@ -8,7 +8,7 @@ height = 0
 
 
 def FullScreenToggle():
-    global FullScreen, window
+    global FullScreen
     
     if FullScreen:
         window.set_windowed()
@@ -16,7 +16,6 @@ def FullScreenToggle():
     else:
         window.set_fullscreen()
         FullScreen = True
-    print(FullScreen)
 
 def SetResolution(width, height, _fullScreen=False):
     global window, FullScreen
