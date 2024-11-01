@@ -8,16 +8,15 @@ class Game:
         pygame.init()
         WIDTH, HEIGHT = (256, 128)
         flags = pygame.SCALED
-        flags |= pygame.RESIZABLE  # optional
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
 
 
         # # choose the initial scale factor for the window
-        # initial_scale_factor = 3  # <-- adjustable
-        # window = sdl2.Window.from_display_module()
-        # window.size = (WIDTH * initial_scale_factor, HEIGHT * initial_scale_factor)
-        # window.position = sdl2.WINDOWPOS_CENTERED
-        # window.show()   
+        initial_scale_factor = 3  # <-- adjustable
+        window = sdl2.Window.from_display_module()
+        window.size = (WIDTH * initial_scale_factor, HEIGHT * initial_scale_factor)
+        window.position = sdl2.WINDOWPOS_CENTERED
+        window.show()   
 
         # # bonus: specify the color of the out-of-bounds area in RESIZABLE mode (it's black by default)
         # OUTER_FILL_COLOR = "plum4"
