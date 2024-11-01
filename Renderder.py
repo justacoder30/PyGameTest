@@ -9,21 +9,16 @@ height = 0
 
 def FullScreenToggle():
     global FullScreen, window
-
+    
     if FullScreen:
         window.set_windowed()
         FullScreen = False
     else:
         window.set_fullscreen()
         FullScreen = True
+    print(FullScreen)
 
-def Init():
-    pass
-    # screen_infor = pygame.display.Info()
-    # screen_infor.current_w
-    # screen_infor.current_h
-
-def SetResolution(width, height, _fullScreen=True):
+def SetResolution(width, height, _fullScreen=False):
     global window, FullScreen
 
     FullScreen = _fullScreen
@@ -35,6 +30,7 @@ def SetResolution(width, height, _fullScreen=True):
 
     new_width = Globals.CameraSize_X * scale
     new_height = Globals.CameraSize_y * scale
+    
 
     window = sdl2.Window.from_display_module()
     window.size = (int(new_width), int(new_height))
