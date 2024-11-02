@@ -1,5 +1,6 @@
-import pygame, Renderder, Globals
+import pygame, Renderder, Globals, Entity.Map as Map
 import Manager.InputManager as InputManager
+from Camera import *
 from Manager.AnimationManager import *
 from Animation import *
 from Entity.Player import *
@@ -13,8 +14,10 @@ class Game:
         Renderder.SetResolution(1920, 1080)
 
         self.running = True
-
+        self.map = Map()
         self.player = Player()
+        self.camera = Camera()
+        # print(self.map.GetPosition("PlayerPosition"))
 
     def LoadContent():
         pass
@@ -22,9 +25,12 @@ class Game:
     def Updated(self):
         # poll for events
         # pygame.QUIT event means the user clicked X to close your window
+        
+        self.camera.Update(self.player)
         Globals.Updated()
         InputManager.Update()
         self.player.Update()
+
         
 
         # for event in pygame.event.get():
@@ -33,13 +39,16 @@ class Game:
 
 
     def Draw(self):
-        # fill the screen with a color to wipe away anything from last frame
-        Globals.Screen.fill("blue")
+        # fill the Surface with a color to wipe away anything from last frame
+        Globals.Surface.fill("blue")
 
         # RENDER YOUR GAME HERE
+        self.map.Draw()
         self.player.Draw()
-
-        # flip() the display to put your work on screen
+        
+        # flip() the display to put your work on Surface
+        Renderder.render()
+        pygame.display.update()
         pygame.display.flip()
         
 

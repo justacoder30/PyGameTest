@@ -9,4 +9,4 @@ class Animation:
         self.IsAnimationRunning = isAnimationRunning
         self.CurrentFrame = 0
         self.FrameWidth = self.texture.get_width() / self.FrameCount
-        self.FrameHeight = self.texture.get_height
+        self.FrameHeight = self.texture.get_height()

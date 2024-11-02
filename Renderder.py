@@ -1,41 +1,48 @@
 import Globals
-import pygame._sdl2 as sdl2
+import pygame
 
 FullScreen = None
-window = None
+display = None
 width = 0
 height = 0
 
 
 def FullScreenToggle():
-    global FullScreen
+    global FullScreen, display
     
     if FullScreen:
-        window.set_windowed()
+        display = pygame.display.set_mode((width, height), vsync=1)
         FullScreen = False
     else:
-        window.set_fullscreen()
+        display = pygame.display.set_mode((0, 0), pygame.FULLSCREEN, vsync=1)
         FullScreen = True
 
-def SetResolution(width, height, _fullScreen=False):
-    global window, FullScreen
+def SetResolution(_width, _height, _fullScreen=False):
+    global display, FullScreen, width, height
 
     FullScreen = _fullScreen
+    width, height = _width, _height
 
-    scaleX = width / Globals.CameraSize_X
-    scaleY = height / Globals.CameraSize_y
+    # scaleX = width / Globals.CameraSize_X
+    # scaleY = height / Globals.CameraSize_y
 
-    scale = scaleX if scaleX < scaleY else scaleY
+    # scale = scaleX if scaleX < scaleY else scaleY
 
-    new_width = Globals.CameraSize_X * scale
-    new_height = Globals.CameraSize_y * scale
+    # new_width = Globals.CameraSize_X * scale
+    # new_height = Globals.CameraSize_y * scale
     
 
-    window = sdl2.Window.from_display_module()
-    window.size = (int(new_width), int(new_height))
-    window.position = sdl2.WINDOWPOS_CENTERED
+    # window = sdl2.Window.from_display_module()
+    # window.size = (int(new_width), int(new_height))
+    # window.position = (sdl2.WINDOWPOS_CENTERED)
+    # print(window.position)
 
     if(FullScreen):
-        window.set_fullscreen()
+        display = pygame.display.set_mode((0, 0), pygame.FULLSCREEN, vsync=1)
     else:
-        window.set_windowed()
+        display = pygame.display.set_mode((width, height), vsync=1)
+
+    
+
+def render():
+    display.blit(pygame.transform.scale(Globals.Surface, display.get_size()), Globals.Surface.get_rect())

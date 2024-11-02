@@ -28,9 +28,9 @@ class AnimationManager:
             self.Animation.CurrentFrame+=self._step
 
             if(self.Animation.CurrentFrame >= self.Animation.FrameCount and self.Isflip != True):
-                self.Animation.CurrentFrame = 0;
+                self.Animation.CurrentFrame = 0
             elif(self.Animation.CurrentFrame < 0 and self.Isflip == True):
-                self.Animation.CurrentFrame = self.Animation.FrameCount-1;
+                self.Animation.CurrentFrame = self.Animation.FrameCount-1
                 # IsAnimationRunning = False
 
     def Rect(self):

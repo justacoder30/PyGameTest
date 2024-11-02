@@ -1,8 +1,7 @@
-import Entity.Entity
-import Globals, pygame, sys, Entity
+import Globals, pygame, sys
 
 sys.path.append('..')
-
+from Entity.Map import *
 from Animation import *
 from Entity.Entity import *
 from Manager.AnimationManager import *
@@ -10,7 +9,7 @@ from Manager.AnimationManager import *
 class Player(Entity):
     def __init__(self):
         super().__init__()
-        self.speed = 150
+        self.speed = 500
 
         self.animations = {
             'Run' : Animation.Animation('resource/img/Player/Run.png', 10, 0.049),
@@ -22,13 +21,11 @@ class Player(Entity):
         }
 
         self.animationManager = AnimationManager(self.animations['Idle'])
-        self.pos = pygame.Vector2(Globals.Screen.get_width() / 2, Globals.Screen.get_height() / 2)
+        self.pos = Map.GetPosition("PlayerPosition")
         
 
     def UpdateVelocity(self):
         self.velocity = 0 
-
-        keys = pygame.key.get_pressed()
 
         PreviousKey = CurrentKey
         CurrentKey = pygame.key.get_pressed()
@@ -66,3 +63,6 @@ class Player(Entity):
             self.animationManager.Play(self.animations['Idle'])
 
         self.animationManager.Update()
+    
+    def Draw(self):
+        return super().Draw()
