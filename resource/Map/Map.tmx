@@ -53,7 +53,7 @@
   <object id="225" x="176" y="32" width="120" height="40"/>
  </objectgroup>
  <objectgroup id="7" name="PlayerPosition">
-  <object id="232" x="128" y="544" width="120" height="80"/>
+  <object id="232" x="184.333" y="100" width="120" height="80"/>
  </objectgroup>
  <objectgroup id="8" name="EnemyPosition" visible="0">
   <object id="56" x="112" y="304" width="96" height="64"/>

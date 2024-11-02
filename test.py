@@ -44,8 +44,8 @@ from Entity.Entity import *
 map_img = pygame.image.load('resource/Map2/map.png')
 tiled_map = pytmx.TiledMap('resource/Map2/map.tmx')
 
-def GetListBound(cls, obj_name):
-        obj_group = cls.tiled_map.get_layer_by_name(obj_name)
+def GetListBound(obj_name):
+        obj_group = tiled_map.get_layer_by_name(obj_name)
         dist_pos = []
         for obj in obj_group:
             pos = pygame.Vector2(obj.x, obj.y)
@@ -58,5 +58,5 @@ def GetListBound(cls, obj_name):
             dist_pos.append(diction)
         return dist_pos
 
-for obj in GetListBound():
+for obj in GetListBound("MapCollider"):
     print(obj["width"])
