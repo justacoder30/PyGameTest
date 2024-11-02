@@ -10,9 +10,10 @@ def Update():
         if event.type == pygame.QUIT:
             pygame.quit()
 
+    PreviousKey = CurrentKey
     CurrentKey = pygame.key.get_pressed()
 
     if(CurrentKey[pygame.K_F11] and PreviousKey[pygame.K_F11] == False):
         Renderder.FullScreenToggle()
 
-    PreviousKey = CurrentKey
+    

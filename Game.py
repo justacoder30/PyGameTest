@@ -1,7 +1,8 @@
-import pygame, Renderder
+import pygame, Renderder, Globals
 import Manager.InputManager as InputManager
-import pygame._sdl2 as sdl2
-import Globals
+from Manager.AnimationManager import *
+from Animation import *
+from Entity.Player import *
 
 class Game:
     def __init__(self):
@@ -13,12 +14,7 @@ class Game:
 
         self.running = True
 
-        self.player_pos = pygame.Vector2(Globals.Screen.get_width() / 2, Globals.Screen.get_height() / 2)
-        self.speed = 100
-
-        self.img = pygame.image.load('img/hearts.png')
-
-        # pygame.display.toggle_fullscreen()
+        self.player = Player()
 
     def LoadContent():
         pass
@@ -28,37 +24,20 @@ class Game:
         # pygame.QUIT event means the user clicked X to close your window
         Globals.Updated()
         InputManager.Update()
+        self.player.Update()
+        
 
         # for event in pygame.event.get():
         #     if event.type == pygame.QUIT:
         #         self.running = False
-         
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            self.player_pos.y -= self.speed * Globals.DeltaTime
-        if keys[pygame.K_s]:
-            self.player_pos.y += self.speed * Globals.DeltaTime
-        if keys[pygame.K_a]:
-            self.player_pos.x -= self.speed * Globals.DeltaTime
-        if keys[pygame.K_d]:
-            self.player_pos.x += self.speed * Globals.DeltaTime
-        if keys[pygame.K_ESCAPE]:
-            self.running = False
 
-        # self.CurrentKey = pygame.key.get_pressed()
-
-        # if(self.CurrentKey[pygame.K_F11] and self.PreviousKey[pygame.K_F11] == False):
-        #     Renderder.FullScreenToggle()
-
-        # self.PreviousKey = self.CurrentKey
-            
 
     def Draw(self):
         # fill the screen with a color to wipe away anything from last frame
         Globals.Screen.fill("blue")
 
         # RENDER YOUR GAME HERE
-        Globals.Screen.blit(self.img, (self.player_pos.x, self.player_pos.y))
+        self.player.Draw()
 
         # flip() the display to put your work on screen
         pygame.display.flip()
