@@ -1,10 +1,10 @@
-import Globals, pygame, sys
-
+import sys
 sys.path.append('..')
 from Entity.Map import *
 from Animation import *
 from Entity.Entity import *
 from Manager.AnimationManager import *
+import Globals, pygame
 
 class Player(Entity):
     PreviousKey = None
@@ -16,6 +16,8 @@ class Player(Entity):
         self.speed = 150
         self.jump = 400
         self.OFFSET = [52, 42]
+        self.Gravity = 1000
+        self.falling = False
 
         self.animations = {
             'Run' : Animation.Animation('resource/img/Player/Run.png', 10, 0.049),
@@ -30,79 +32,113 @@ class Player(Entity):
         self.pos = Map.GetPosition("PlayerPosition")
         self.texture_width = self.animationManager.Animation.FrameWidth
         self.texture_height = self.animationManager.Animation.FrameHeight
+
+        self.state = State
         
-    def caculate_bound(self, pos):
-        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.OFFSET[1], self.texture_width - self.OFFSET[0] * 2, self.texture_height - self.OFFSET[1])
+    def ApplyGravity(self):
+        self.velocity.y += self.Gravity * Globals.DeltaTime
 
     def UpdateVelocity(self):
-        self.velocity = pygame.Vector2(0, 0)
+        self.velocity.x = 0 
+        self.ApplyGravity()
 
         Player.PreviousKey = Player.CurrentKey
         Player.CurrentKey = pygame.key.get_pressed()
 
-        if Player.CurrentKey[pygame.K_SPACE] and Player.PreviousKey[pygame.K_SPACE] != True:
-            self.velocity.y = -self.speed
-        if Player.CurrentKey[pygame.K_s]:
-            self.velocity.y = self.speed
+        if Player.CurrentKey[pygame.K_SPACE] and self.falling == False:
+            self.velocity.y = -self.jump
+            self.falling = True
         if Player.CurrentKey[pygame.K_a]:
             self.velocity.x = -self.speed
-            self.animationManager.Isflip = True
         if Player.CurrentKey[pygame.K_d]:
             self.velocity.x = self.speed
-            self.animationManager.Isflip = False
 
     def UpdatePosition(self):
         map_colliders = Map.GetListBound("MapCollider")
+        newPos = pygame.Rect(0, 0, 0, 0)
         newPos = self.pos + self.velocity * Globals.DeltaTime
         newRect = pygame.Rect(0, 0, 0, 0)
 
         for collider in map_colliders:
-            # if (newPos.x != self.pos.x):
-            #     newRect = self.caculate_bound(pygame.Vector2(newPos.x, self.pos.x))
-            #     if(newRect.colliderect(collider)):
-            #         if self.velocity.x > 0:
-            #             newPos = collider["left"] - self.texture_width + self.OFFSET[0]
-            #         else:
-            #             newPos = collider["right"] -  self.OFFSET[0]
-            #         pass
-            
-            # if(newPos.y != self.pos.y):
-            #     newRect = self.caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
-            #     if(newRect.colliderect(collider)):
-            #         if self.velocity.y > 0:
-            #             newPos = collider["top"] - self.texture_height 
-            #         else:
-            #             newPos = collider["bottom"] - self.OFFSET[1]
+            collider = pygame.Rect(collider["left"], collider["top"], collider["right"], collider["bottom"])
 
-            print(collider["left"])
+            if (newPos.x != self.pos.x):
+                newRect = super().caculate_bound(pygame.Vector2(newPos.x, self.pos.y))
+                if(newRect.colliderect(collider)):
+                    if self.velocity.x > 0:
+                        newPos.x = collider.left - self.texture_width + self.OFFSET[0]
+                    elif self.velocity.x < 0:
+                        newPos.x = collider.right -  self.OFFSET[0]
+                    continue
+            
+            if (newPos.y != self.pos.y):
+                newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
+                if(newRect.colliderect(collider)):
+                    if self.velocity.y > 0:
+                        newPos.y = collider.top - self.texture_height 
+                        self.velocity.y = 0
+                        self.falling = False
+                    elif self.velocity.y < 0:
+                        newPos.y = collider.bottom - self.OFFSET[1]
+                        self.velocity.y = 0
+                    continue
         
         self.pos = newPos
+
+    def UpdateAnimation(self):
+        if self.velocity.x > 0:
+            self.animationManager.Isflip = False
+        elif self.velocity.x < 0:
+            self.animationManager.Isflip = True
+
+        if self.velocity.y == 0 :
+            if self.velocity.x != 0:
+                self.state["Run"] = True
+            else:
+                self.state["Idle"] = True
+        elif self.velocity.y > 0 :
+            self.state["Jump"] = True
+        else: 
+            self.state["Fall"] = True
+
+    def SetAnimation(self):
+        self.UpdateAnimation()
+
+        match self.state:
+            case self.state.get("Idle"):
+                self.animationManager.Play(self.animations["Idle"])
+            case self.state.get("Run"):
+                self.animationManager.Play(self.animations["Run"])
+            case self.state.get("Fall"):
+                self.animationManager.Play(self.animations["Fall"])
+            case self.state.get("Jump"):
+                self.animationManager.Play(self.animations["Jump"])
+        
+        self.animationManager.Update()
 
 
 
     def Update(self):
         self.UpdateVelocity()
         self.UpdatePosition()
+        self.SetAnimation()
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            # self.pos.y -= self.speed * Globals.DeltaTime
-            pass
-        if keys[pygame.K_s]:
-            # self.pos.y += self.speed * Globals.DeltaTime
-            pass
-        if keys[pygame.K_a]:
-            # self.pos.x -= self.speed * Globals.DeltaTime
-            self.animationManager.Play(self.animations['Run'])
-            # self.animationManager.Isflip = True
-        elif keys[pygame.K_d]:
-            # self.pos.x += self.speed * Globals.DeltaTime
-            self.animationManager.Play(self.animations['Run'])
-            # self.animationManager.Isflip = False
-        else:
-            self.animationManager.Play(self.animations['Idle'])
+        # keys = pygame.key.get_pressed()
+        # if keys[pygame.K_w]:
+        #     # self.pos.y -= self.speed * Globals.DeltaTime
+        #     pass
+        # if keys[pygame.K_s]:
+        #     # self.pos.y += self.speed * Globals.DeltaTime
+        #     pass
+        # if keys[pygame.K_a]:
+        #     # self.pos.x -= self.speed * Globals.DeltaTime
+        #     self.animationManager.Play(self.animations['Run'])
+        #     # self.animationManager.Isflip = True
+        # elif keys[pygame.K_d]:
+        #     # self.pos.x += self.speed * Globals.DeltaTime
+        #     self.animationManager.Play(self.animations['Run'])
+        #     # self.animationManager.Isflip = False
+        # else:
+        #     self.animationManager.Play(self.animations['Idle'])
 
-        self.animationManager.Update()
-    
-    def Draw(self):
-        return super().Draw()
+        # self.animationManager.Update()

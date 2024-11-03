@@ -1,4 +1,5 @@
-import pygame, Renderder, Globals, Entity.Map as Map
+import pygame, Renderder, Globals
+import Entity.Map as Map
 import Manager.InputManager as InputManager
 from Camera import *
 from Manager.AnimationManager import *
