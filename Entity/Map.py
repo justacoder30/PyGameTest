@@ -7,7 +7,7 @@ class Map(Entity):
     map_img = pygame.image.load('resource/Map/Dungeon Map.png')
     tiled_map = pytmx.TiledMap('resource/Map/Map.tmx')
     def __init__(self):
-        self.pos = (0, 0)
+        self.pos = pygame.Vector2(0, 0)
 
     @classmethod
     def get_width(cls):
@@ -39,5 +39,5 @@ class Map(Entity):
         return dist_pos
 
     def Draw(self):
-        Globals.Surface.blit(self.map_img, (0 + Globals.camera_rect.x, 0 + Globals.camera_rect.y))
+        super().DrawSprite(self.map_img, self.pos)
 

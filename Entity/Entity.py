@@ -27,15 +27,20 @@ class Entity:
                            pos.y + self.OFFSET[1],
                            self.texture_width - self.OFFSET[0] * 2,
                            self.texture_height - self.OFFSET[1])
+    def GravityBound(self, pos):
+        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 1)
 
     def SetPosition(self, pos):
         self.pos = pos
+
+    def DrawSprite(self, texture, pos):
+        Globals.Surface.blit(texture, (pos.x + Globals.camera_rect.x, pos.y + Globals.camera_rect.y))
 
     def Draw(self):
         Globals.Surface.blit(pygame.transform.flip(self.animationManager.Animation.texture,
                                                    self.animationManager.Isflip, 0), 
                                                    (self.pos.x + Globals.camera_rect.x, self.pos.y + Globals.camera_rect.y), 
-                                                   self.animationManager.Rect())
+                                                    self.animationManager.Rect())
         
 class State(Enum):
     Idle = "Idle"
