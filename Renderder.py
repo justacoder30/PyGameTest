@@ -14,7 +14,7 @@ def FullScreenToggle():
         display = pygame.display.set_mode((width, height), vsync=1)
         FullScreen = False
     else:
-        display = pygame.display.set_mode((0, 0), pygame.FULLSCREEN, vsync=1)
+        display = pygame.display.set_mode((width, height), pygame.FULLSCREEN, vsync=1)
         FullScreen = True
 
 def SetResolution(_width, _height, _fullScreen=False):

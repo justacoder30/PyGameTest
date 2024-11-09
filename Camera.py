@@ -9,7 +9,7 @@ class Camera:
         self.camera_rect = pygame.Rect(0, 0, self.width, self.width)
         self.current_pos = pygame.Vector2(0, 0)
         self.previous_pos = pygame.Vector2(0, 0)
-        self.speed = 0.08
+        self.speed = 0.07
     
     def Update(self, player):
         self.current_pos.x = Globals.CameraSize_X/2 - player.get_center().x
@@ -21,8 +21,8 @@ class Camera:
         x = pygame.math.lerp(self.previous_pos.x, self.current_pos.x, self.speed)
         y = pygame.math.lerp(self.previous_pos.y, self.current_pos.y, self.speed)
 
-        x = round(x, 3)
-        y = round(y, 3)
+        x = round(x)
+        y = round(y)
 
         Globals.camera_rect = pygame.Vector2(x, y)
         self.previous_pos = pygame.Vector2(x, y)

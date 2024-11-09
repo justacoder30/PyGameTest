@@ -107,8 +107,6 @@ class Skeleton(Entity):
         if self.attackTime >= self.attackCoolDown:
             self.attackTime = 0 
 
-
-
     def UpdateAnimation(self):
         if self.velocity.x > 0:
             self.animationManager.Isflip = False
