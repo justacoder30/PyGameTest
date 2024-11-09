@@ -9,14 +9,22 @@ class AnimationManager:
     _step = int
     def __init__(self, animation):
         self.Animation = animation
-        self.Isloop = bool
+        self.Isloop = False
         self.Isflip = False
+
+    def SetLoop(self, animation):
+        if self.Animation == animation:
+            return
+        self.Animation = animation
+        self.Animation.CurrentFrame = 0 if not self.Isflip else self.Animation.FrameCount-1
+        self._timer = 0
+        self.Isloop = self.Animation.Isloop
 
     def Play(self, animation):
         if self.Animation == animation:
             return
         self.Animation = animation
-        self.Animation.CurrentFrame = 0 if self.Isflip != True else self.Animation.FrameCount-1
+        self.Animation.CurrentFrame = 0 if not self.Isflip else self.Animation.FrameCount-1
         self._timer = 0
         self.Isloop = self.Animation.Isloop
 
@@ -25,13 +33,13 @@ class AnimationManager:
 
         self._timer += Globals.DeltaTime
         if(self._timer > self.Animation.FrameSpeed):
-            self._timer = 0;
+            self._timer = 0
             self.Animation.CurrentFrame+=self._step
 
-            if(self.Animation.CurrentFrame >= self.Animation.FrameCount and self.Isflip != True):
+            if(self.Animation.CurrentFrame >= self.Animation.FrameCount and not self.Isflip):
                 self.Animation.CurrentFrame = 0
                 self.Isloop = False
-            elif(self.Animation.CurrentFrame < 0 and self.Isflip == True):
+            elif(self.Animation.CurrentFrame < 0 and self.Isflip):
                 self.Animation.CurrentFrame = self.Animation.FrameCount-1
                 self.Isloop = False
 

@@ -5,6 +5,7 @@ from Camera import *
 from Manager.AnimationManager import *
 from Animation import *
 from Entity.Player import *
+from Manager.EnemyManager import *
 
 class Game:
     def __init__(self):
@@ -17,34 +18,24 @@ class Game:
         self.running = True
         self.map = Map()
         self.player = Player()
+        self.enemy = EnemyManager()
         self.camera = Camera()
-        # print(self.map.GetPosition("PlayerPosition"))
-
-    def LoadContent():
-        pass
 
     def Updated(self):
-        # poll for events
-        # pygame.QUIT event means the user clicked X to close your window
         
         self.camera.Update(self.player)
         Globals.Updated()
         InputManager.Update()
         self.player.Update()
-
-        
-
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         self.running = False
-
+        self.enemy.Update(self.player)
 
     def Draw(self):
         # fill the Surface with a color to wipe away anything from last frame
-        Globals.Surface.fill("black")
+        Globals.Surface.fill("blue")
 
         # RENDER YOUR GAME HERE
         self.map.Draw()
+        self.enemy.Draw()
         self.player.Draw()
         
         # flip() the display to put your work on Surface
@@ -57,5 +48,4 @@ class Game:
         while self.running:
             self.Updated()
             self.Draw()
-            # pygame.display.update()
         pygame.quit()

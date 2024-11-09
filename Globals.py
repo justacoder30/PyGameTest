@@ -14,17 +14,12 @@ def Init():
     global Surface, Clock
 
     Clock = pygame.time.Clock()
-    Clock.tick(60) # limits FPS to 60
     Surface = pygame.Surface((CameraSize_X, CameraSize_Y))
 
 def Updated():
     global DeltaTime, scroll_x, scroll_y
 
-    DeltaTime = Clock.tick(60) / 1000
-
-    # scroll_x += (player.get_center().x- Globals.Surface.get_width() / 2 - scroll_x) / 30
-    # scroll_y += (player.get_center().y - Globals.Surface.get_height() / 2 - scroll_y) / 30
-    # scroll_x, scroll_y = int(scroll_x), int(scroll_y)
+    DeltaTime = Clock.tick() / 1000
 
 
 def CameraSize(camera_width, camera_height):

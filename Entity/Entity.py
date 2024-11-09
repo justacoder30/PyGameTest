@@ -1,4 +1,5 @@
 import Globals, pygame, sys
+import math
 
 sys.path.append('..')
 
@@ -18,6 +19,13 @@ class Entity:
         self.texture_width = 0
         self.texture_height = 0
         self.OFFSET = []
+        self.IsNearPlayer = False
+        self.IsHurt = False
+        self.timer = 0 
+        self.hp = 0
+        self.attackTime = 0
+        self.Time = 0
+        self.IsRemoved = False
 
     def get_center(self):
         return pygame.Vector2(self.pos.x + self.animationManager.Animation.FrameWidth/2,self.pos.y + self.animationManager.Animation.FrameHeight/2)
@@ -27,11 +35,36 @@ class Entity:
                            pos.y + self.OFFSET[1],
                            self.texture_width - self.OFFSET[0] * 2,
                            self.texture_height - self.OFFSET[1])
+
+    def GetAttackBound(self):
+        if self.animationManager.Isflip:
+            return pygame.Rect(self.pos.x, self.pos.y + self.OFFSET[1], self.OFFSET[0], self.OFFSET[1])
+        return pygame.Rect(self.pos.x + self.texture_width - self.OFFSET[0], self.pos.y + self.OFFSET[1], self.OFFSET[0], self.OFFSET[1])
+    
+    def ObjectDistance(self, player):
+        x = math.pow(self.get_center().x - player.get_center().x, 2)
+        y = math.pow(self.get_center().y - player.get_center().y, 2)
+        return math.sqrt(x + y)
+    
     def GravityBound(self, pos):
         return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 1)
 
     def SetPosition(self, pos):
         self.pos = pos
+
+    def FrameSpeed(self):
+        return self.animationManager.Animation.FrameSpeed * self.animationManager.Animation.FrameCount
+
+    def BeingHit(self, damge):
+        self.IsHurt = True
+        self.hp -= damge
+
+    def FrameEnd(self):
+        self.Time += Globals.DeltaTime
+        if self.Time >= Entity.FrameSpeed(self):
+            self.Time = 0
+            return True
+        return False
 
     def DrawSprite(self, texture, pos):
         Globals.Surface.blit(texture, (pos.x + Globals.camera_rect.x, pos.y + Globals.camera_rect.y))
@@ -45,6 +78,8 @@ class Entity:
 class State(Enum):
     Idle = "Idle"
     Run = "Run"
+    Walk = "Walk"
+    Hurt = "Hurt"
     Fall = "Fall"
     Jump = "Jump"
     Attack = "Attack"

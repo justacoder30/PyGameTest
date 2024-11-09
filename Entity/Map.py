@@ -22,21 +22,23 @@ class Map(Entity):
         obj_group = cls.tiled_map.get_layer_by_name(obj_name)
         for obj in obj_group:
             return pygame.Vector2(obj.x, obj.y)
+    
+    @classmethod   
+    def GetListPosition(cls, obj_name):
+        obj_group = cls.tiled_map.get_layer_by_name(obj_name)
+        pos_list = []
+        for obj in obj_group:
+            pos_list.append(pygame.Vector2(obj.x, obj.y))
+        return pos_list
         
     @classmethod 
     def GetListBound(cls, obj_name):
         obj_group = cls.tiled_map.get_layer_by_name(obj_name)
-        dist_pos = []
+        list_bound = []
         for obj in obj_group:
-            pos = pygame.Vector2(obj.x, obj.y)
-            diction = {}
-            diction.update({"left": obj.x, 
-                            "top": obj.y,
-                            "right": obj.width,
-                            "bottom": obj.height
-                            })
-            dist_pos.append(diction)
-        return dist_pos
+            rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
+            list_bound.append(rect)
+        return list_bound
 
     def Draw(self):
         super().DrawSprite(self.map_img, self.pos)

@@ -3,6 +3,7 @@ sys.path.append('..')
 from Entity.Map import *
 from Animation import *
 from Entity.Entity import *
+from Manager.EnemyManager import *
 from Manager.AnimationManager import *
 import Globals, pygame
 
@@ -18,12 +19,15 @@ class Player(Entity):
         self.OFFSET = [52, 42]
         self.Gravity = 1000
         self.falling = False
+        self.attackTime = 0 
+        self.hp = 50
+        self.damage = 10
 
         self.animations = {
-            'Run' : Animation.Animation('resource/img/Player/Run.png', 10, 0.049),
+            'Run' : Animation.Animation('resource/img/Player/Run.png', 10, 0.04),
             'Idle' : Animation.Animation('resource/img/Player/Idle.png', 10),
-            'Attack' : Animation.Animation('resource/img/Player/Attack.png', 6, 0.05, True),
-            'Death' : Animation.Animation('resource/img/Player/Death.png', 10, 0.05),
+            'Attack' : Animation.Animation('resource/img/Player/Attack.png', 6, 0.04, True),
+            'Death' : Animation.Animation('resource/img/Player/Death.png', 10, 0.05, True),
             'Fall' : Animation.Animation('resource/img/Player/Fall.png', 3),
             'Jump' : Animation.Animation('resource/img/Player/Jump.png', 3)
         }
@@ -38,29 +42,32 @@ class Player(Entity):
         self.map_colliders = Map.GetListBound("MapCollider")
         self.map_hodler_colliders = Map.GetListBound("HolderCollider")
         
-    def ApplyGravity(self):
+    def IsFalling(self):
         newRect = super().GravityBound(self.pos)
 
         for collider in self.map_colliders:
-            collider = pygame.Rect(collider["left"], collider["top"], collider["right"], collider["bottom"])
             if newRect.colliderect(collider):
-                return
+                return False
             
         for collider in self.map_hodler_colliders:
-            collider = pygame.Rect(collider["left"], collider["top"], collider["right"], collider["bottom"])
             if newRect.colliderect(collider):
-                return
-
-        self.velocity.y += self.Gravity * Globals.DeltaTime
+                return False
+        return True
 
     def UpdateVelocity(self):
+        if self.state == State.Die:
+            self.velocity.x = 0 
+            return
+        
         self.velocity.x = 0 
-        self.ApplyGravity()
+
+        if self.IsFalling():
+            self.falling = True
+            self.velocity.y += self.Gravity * Globals.DeltaTime
 
         Player.PreviousKey = Player.CurrentKey
         Player.CurrentKey = pygame.key.get_pressed()
-
-        if Player.CurrentKey[pygame.K_SPACE] and self.falling == False:
+        if Player.CurrentKey[pygame.K_SPACE] and not self.falling:
             self.velocity.y = -self.jump
             self.falling = True
         if Player.CurrentKey[pygame.K_a]:
@@ -71,10 +78,9 @@ class Player(Entity):
     def UpdatePosition(self):
         
         newPos = self.pos + self.velocity * Globals.DeltaTime
-        newRect = pygame.Rect(0, 0, 0, 0)
+        newRect = None
 
         for collider in self.map_hodler_colliders:
-            collider = pygame.Rect(collider["left"], collider["top"], collider["right"], collider["bottom"])
             if self.velocity.y > 0:
                 newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
                 if(newRect.colliderect(collider)):
@@ -84,7 +90,6 @@ class Player(Entity):
                     continue
 
         for collider in self.map_colliders:
-            collider = pygame.Rect(collider["left"], collider["top"], collider["right"], collider["bottom"])
 
             if (newPos.x != self.pos.x):
                 newRect = super().caculate_bound(pygame.Vector2(newPos.x, self.pos.y))
@@ -100,14 +105,23 @@ class Player(Entity):
                 if(newRect.colliderect(collider)):
                     if self.velocity.y > 0:
                         newPos.y = collider.top - self.texture_height 
-                        self.velocity.y = 0
                         self.falling = False
                     elif self.velocity.y < 0:
                         newPos.y = collider.bottom - self.OFFSET[1]
-                        self.velocity.y = 0
+                    self.velocity.y = 0
                     continue
         
         self.pos = newPos
+
+    def Attack(self):
+        self.state = State.Attack
+        atk_rect = super().GetAttackBound()
+
+        if super().FrameEnd():
+            for enemy in EnemyManager.GetEnemyList():
+                if atk_rect.colliderect(enemy.caculate_bound(enemy.pos)):
+                    enemy.BeingHit(self.damage)
+                    return
 
     def UpdateAnimation(self):
         if self.velocity.x > 0:
@@ -119,11 +133,12 @@ class Player(Entity):
             if self.velocity.x != 0:
                 self.state = State.Run
             else:
-                if Player.CurrentKey[pygame.K_j] and Player.PreviousKey[pygame.K_j] == False and self.animationManager.Isloop == False:
-                    self.state = State.Attack
-                    self.animationManager.Isloop = True
-                if self.state == State.Attack and self.animationManager.Isloop:
-                    self.state = State.Attack
+                if self.hp <= 0:
+                    self.state = State.Die
+                    if super().FrameEnd():
+                        pygame.quit()
+                elif Player.CurrentKey[pygame.K_j] and not Player.PreviousKey[pygame.K_j] or self.animationManager.Isloop:
+                    Player.Attack(self)
                 else:
                     self.state = State.Idle
         elif self.velocity.y > 0 :
@@ -132,6 +147,7 @@ class Player(Entity):
             self.state = State.Jump
 
     def SetAnimation(self):
+        self.animationManager.Update()
         self.UpdateAnimation()
 
         match self.state:
@@ -145,10 +161,11 @@ class Player(Entity):
                 self.animationManager.Play(self.animations["Jump"])
             case State.Attack:
                 self.animationManager.Play(self.animations["Attack"])
+                pass
+            case State.Die:
+                self.animationManager.Play(self.animations["Death"])
             case _:
                 print("f{self.state} is not valid!")
-        
-        self.animationManager.Update()
 
     def Update(self):
         self.UpdateVelocity()
