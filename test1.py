@@ -1,10 +1,7 @@
 import pygame
 
-a, b = 108.8, 110
-i = 0 
+a = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+b = [-1, -2, -3, -4, -5, -6, -7, -8, -9]
 
-while(i <= 10):
-    a = pygame.math.lerp(a, b, 0.04)
-    a = round(a, 1)
-    print(a, b)
-    i+=1
+for i in a + b:
+    print(i)

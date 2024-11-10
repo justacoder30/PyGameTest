@@ -41,18 +41,6 @@ class Player(Entity):
 
         self.map_colliders = Map.GetListBound("MapCollider")
         self.map_hodler_colliders = Map.GetListBound("HolderCollider")
-        
-    def IsFalling(self):
-        newRect = super().GravityBound(self.pos)
-
-        for collider in self.map_colliders:
-            if newRect.colliderect(collider):
-                return False
-            
-        for collider in self.map_hodler_colliders:
-            if newRect.colliderect(collider):
-                return False
-        return True
 
     def UpdateVelocity(self):
         if self.state == State.Die:
@@ -120,8 +108,10 @@ class Player(Entity):
         if super().FrameEnd():
             for enemy in EnemyManager.GetEnemyList():
                 if atk_rect.colliderect(enemy.caculate_bound(enemy.pos)):
-                    enemy.BeingHit(self.damage)
-                    return
+                    enemy.BeingHurt(self.damage)
+    def BeingHurt(self, damge):
+        self.IsHurt = True
+        self.hp -= damge
 
     def UpdateAnimation(self):
         if self.velocity.x > 0:

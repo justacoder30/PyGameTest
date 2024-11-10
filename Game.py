@@ -26,8 +26,8 @@ class Game:
         self.camera.Update(self.player)
         Globals.Updated()
         InputManager.Update()
-        self.player.Update()
         self.enemy.Update(self.player)
+        self.player.Update()
 
     def Draw(self):
         # fill the Surface with a color to wipe away anything from last frame

@@ -13,7 +13,7 @@ class Entity:
     def __init__(self):
         self.speed = 0
         self.animations = { }
-        self.animationManager = AnimationManager
+        self.animationManager: AnimationManager
         self.pos = pygame.Vector2(0, 0)
         self.velocity = pygame.Vector2(0, 0)
         self.texture_width = 0
@@ -26,6 +26,8 @@ class Entity:
         self.attackTime = 0
         self.Time = 0
         self.IsRemoved = False
+        self.map_colliders = None
+        self.map_hodler_colliders = None
 
     def get_center(self):
         return pygame.Vector2(self.pos.x + self.animationManager.Animation.FrameWidth/2,self.pos.y + self.animationManager.Animation.FrameHeight/2)
@@ -48,6 +50,26 @@ class Entity:
     
     def GravityBound(self, pos):
         return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 1)
+    
+    def ColliderDetetiveBound(self):
+        rect = self.caculate_bound(self.pos)
+        pos_x = rect.left-1 if self.animationManager.Isflip else rect.right
+        return pygame.Rect(pos_x, rect.top, 1, rect.height)
+
+    def IsFalling(self):
+        newRect = self.GravityBound(self.pos)
+
+        for collider in self.map_colliders:
+            if newRect.colliderect(collider):
+                return False
+            
+        for collider in self.map_hodler_colliders:
+            if newRect.colliderect(collider):
+                return False
+        return True
+
+    def IsObjRight(self, obj):
+        return True if obj.get_center().x > self.get_center().x else False
 
     def SetPosition(self, pos):
         self.pos = pos
@@ -55,7 +77,11 @@ class Entity:
     def FrameSpeed(self):
         return self.animationManager.Animation.FrameSpeed * self.animationManager.Animation.FrameCount
 
-    def BeingHit(self, damge):
+    def BeingHurt(self, damge):
+        if self.hp <= 0:
+            return
+        self.velocity.y = -150
+        self.velocity.x = 50 if self.animationManager.Isflip else -50
         self.IsHurt = True
         self.hp -= damge
 

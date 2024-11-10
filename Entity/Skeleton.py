@@ -22,6 +22,7 @@ class Skeleton(Entity):
         self.enemyZone = [200, 0]
         self.IsAttacking = False
         self.attackCoolDown = 1
+        self.Gravity = 1000
 
         self.animations = {
             'Walk' : Animation.Animation('resource/img/Enemy/Skeleton/Walk.png', 10),
@@ -39,16 +40,17 @@ class Skeleton(Entity):
         self.state = State
 
         self.Skeleton_colliders = Map.GetListBound("EnemyCollider")
-        self.timechange = random.randint(1, 3)
+        self.map_colliders = Map.GetListBound("MapCollider")
+        self.map_hodler_colliders = Map.GetListBound("HolderCollider")
 
     def IsNearPlayer(self):
-        if super().ObjectDistance(self.player) <= self.enemyZone[0] and super().caculate_bound(self.pos).bottom == self.player.caculate_bound(self.player.pos).bottom:
+        if self.ObjectDistance(self.player) <= self.enemyZone[0] and abs(self.get_center().y - self.player.get_center().y) <= self.GetAttackBound().height:
             return True
         else:
             return False
 
     def IsAttackRange(self):
-        atk_rect = super().GetAttackBound()
+        atk_rect = self.GetAttackBound()
         p_rect = self.player.caculate_bound(self.player.pos)
         if atk_rect.colliderect(p_rect):
             self.IsAttacking = True
@@ -57,17 +59,25 @@ class Skeleton(Entity):
 
     def FollowPlayer(self):
         self.timer = 0 
-        if Skeleton.IsAttackRange(self) or self.IsHurt or self.hp <= 0:
+        rect = self.ColliderDetetiveBound()
+        if self.IsHurt:
+            pass
+        elif self.hp <= 0 or Skeleton.IsAttackRange(self):
             self.velocity.x = 0
         else:
-            self.velocity.x = -self.speed if self.player.get_center().x < super().get_center().x else self.speed
+            self.velocity.x = self.speed if self.IsObjRight(self.player) else -self.speed
+
+        for collider in self.Skeleton_colliders:
+            if rect.colliderect(collider):
+                if self.animationManager.Isflip and not self.IsObjRight(self.player) or not self.animationManager.Isflip and self.IsObjRight(self.player):
+                    self.velocity.x = 0  
 
     def UpdateVelocity(self):
         self.timer += Globals.DeltaTime
 
         if not Skeleton.IsNearPlayer(self):
-            self.timechange = random.randint(1, 3)
-            if self.IsAttacking :
+            self.timechange = random.randint(1, 4)
+            if self.IsAttacking:
                 self.velocity.x = 0
             elif self.velocity.x != 0 and self.timer >= self.timechange:
                 self.velocity.x = 0
@@ -77,46 +87,80 @@ class Skeleton(Entity):
                 self.timer = 0
         else:
             self.FollowPlayer()
+            
+            
+        if self.IsFalling():
+            self.velocity.y += self.Gravity * Globals.DeltaTime
 
     def UpdatePosition(self):
         
         newPos = self.pos + self.velocity * Globals.DeltaTime
-        newRect: pygame.Rect
 
+        newRect = self.caculate_bound(pygame.Vector2(newPos.x, self.pos.y))
         for collider in self.Skeleton_colliders:
-            newRect = super().caculate_bound(pygame.Vector2(newPos.x, self.pos.y))
             if(newRect.colliderect(collider)):
                 if self.velocity.x > 0:
                     newPos.x = collider.left - self.texture_width + self.OFFSET[0]
                 elif self.velocity.x < 0:
                     newPos.x = collider.right -  self.OFFSET[0]
-                if Skeleton.IsNearPlayer(self): 
+                if Skeleton.IsNearPlayer(self):
                     self.velocity.x = 0
-                else: 
+                else:
                     self.velocity.x *= -1
                 continue
-        
+
+        newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
+        for collider in self.map_colliders:
+            if (newPos.y != self.pos.y):
+                if(newRect.colliderect(collider)):
+                    if self.velocity.y > 0:
+                        newPos.y = collider.top - self.texture_height 
+                        self.falling = False
+                    elif self.velocity.y < 0:
+                        newPos.y = collider.bottom - self.OFFSET[1]
+                    self.velocity.y = 0
+                    continue
         self.pos = newPos
+
+        # newPos = self.pos + self.velocity * Globals.DeltaTime
+        # rect = self.ColliderDetetiveBound(self.pos)
+
+        # for collider in self.Skeleton_colliders:
+        #     if(rect.colliderect(collider)):
+        #         if self.velocity.x > 0:
+        #             newPos.x = collider.left - self.texture_width + self.OFFSET[0]
+        #         elif self.velocity.x < 0:
+        #             newPos.x = collider.right -  self.OFFSET[0]
+        #         if Skeleton.IsNearPlayer(self):
+        #             if self.animationManager.Isflip and not self.IsPlayerRight(self.player) or not self.animationManager.Isflip and self.IsPlayerRight(self.player):
+        #                 self.velocity.x = 0  
+        #         else:
+        #              self.velocity.x *= -1
+        #         continue
+        
+        # self.pos += self.velocity * Globals.DeltaTime
 
     def Attack(self):
         self.attackTime += Globals.DeltaTime
         self.state = State.Attack
         if self.attackTime >= self.attackCoolDown and self.IsAttackRange():
-            self.player.BeingHit(self.damage)
+            self.player.BeingHurt(self.damage)
             self.player.animationManager.Isflip = False if self.player.get_center().x < self.get_center().x else True
         if self.attackTime >= self.attackCoolDown:
             self.attackTime = 0 
 
     def UpdateAnimation(self):
-        if self.velocity.x > 0:
-            self.animationManager.Isflip = False
-        elif self.velocity.x < 0:
-            self.animationManager.Isflip = True
+        if not self.IsHurt:
+            if self.velocity.x > 0:
+                self.animationManager.Isflip = False
+            elif self.velocity.x < 0:
+                self.animationManager.Isflip = True
 
         if self.hp <= 0:
             self.state = State.Die
             self.animationManager.SetLoop(self.animations["Death"])
             self.IsRemoved = not self.animationManager.Isloop
+            self.IsHurt = False
         elif self.IsHurt:
             self.state = State.Hurt
             self.animationManager.SetLoop(self.animations["Hurt"])

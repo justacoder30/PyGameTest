@@ -9,7 +9,7 @@ class Camera:
         self.camera_rect = pygame.Rect(0, 0, self.width, self.width)
         self.current_pos = pygame.Vector2(0, 0)
         self.previous_pos = pygame.Vector2(0, 0)
-        self.speed = 0.07
+        self.speed = 0.05
     
     def Update(self, player):
         self.current_pos.x = Globals.CameraSize_X/2 - player.get_center().x
