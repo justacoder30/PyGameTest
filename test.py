@@ -11,7 +11,7 @@ def changColor(image, color):
 pygame.init()
 window = pygame.display.set_mode((1280, 720))
 
-image = pygame.image.load('resource/img/Run.png').convert_alpha()
+image = pygame.image.load('resource/img//Player/Run.png').convert_alpha()
 hue = 0
 
 clock = pygame.time.Clock()
