@@ -25,6 +25,7 @@ class Entity:
         self.hp = 0
         self.attackTime = 0
         self.Time = 0
+        self.HurtTime = 0
         self.IsRemoved = False
         self.map_colliders = None
         self.map_hodler_colliders = None
@@ -92,11 +93,24 @@ class Entity:
             return True
         return False
 
+    def changColor(self, image, color):
+        colouredImage = pygame.Surface(image.get_size())
+        colouredImage.fill(color)
+
+        finalImage = image.copy()
+        finalImage.blit(colouredImage, (0, 0), special_flags = pygame.BLEND_MULT)
+        return finalImage
+
     def DrawSprite(self, texture, pos):
         Globals.Surface.blit(texture, (pos.x + Globals.camera_rect.x, pos.y + Globals.camera_rect.y))
 
     def Draw(self):
-        Globals.Surface.blit(pygame.transform.flip(self.animationManager.Animation.texture,
+        color = "white"
+
+        if self.IsHurt:
+            color = "red"
+
+        Globals.Surface.blit(pygame.transform.flip(self.changColor(self.animationManager.Animation.texture, color),
                                                    self.animationManager.Isflip, 0), 
                                                    (self.pos.x + Globals.camera_rect.x, self.pos.y + Globals.camera_rect.y), 
                                                     self.animationManager.Rect())

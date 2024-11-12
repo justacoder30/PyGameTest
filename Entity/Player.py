@@ -29,7 +29,8 @@ class Player(Entity):
             'Attack' : Animation.Animation('resource/img/Player/Attack.png', 6, 0.04, True),
             'Death' : Animation.Animation('resource/img/Player/Death.png', 10, 0.05, True),
             'Fall' : Animation.Animation('resource/img/Player/Fall.png', 3),
-            'Jump' : Animation.Animation('resource/img/Player/Jump.png', 3)
+            'Jump' : Animation.Animation('resource/img/Player/Jump.png', 3),
+            'Hurt' : Animation.Animation('resource/img/Player/Hurt.png', 10, 0.08, True),
         }
 
         self.animationManager = AnimationManager(self.animations['Idle'])
@@ -47,7 +48,7 @@ class Player(Entity):
             self.velocity.x = 0 
             return
         
-        self.velocity.x = 0 
+        self.velocity.x = 0
 
         if self.IsFalling():
             self.falling = True
@@ -109,6 +110,7 @@ class Player(Entity):
             for enemy in EnemyManager.GetEnemyList():
                 if atk_rect.colliderect(enemy.caculate_bound(enemy.pos)):
                     enemy.BeingHurt(self.damage)
+
     def BeingHurt(self, damge):
         self.IsHurt = True
         self.hp -= damge
@@ -119,6 +121,12 @@ class Player(Entity):
         elif self.velocity.x < 0:
             self.animationManager.Isflip = True
 
+        if self.IsHurt:
+            self.HurtTime += Globals.DeltaTime
+            if self.HurtTime >= 0.2:
+                self.HurtTime = 0
+                self.IsHurt = False
+            
         if self.velocity.y == 0 :
             if self.velocity.x != 0:
                 self.state = State.Run
@@ -151,9 +159,10 @@ class Player(Entity):
                 self.animationManager.Play(self.animations["Jump"])
             case State.Attack:
                 self.animationManager.Play(self.animations["Attack"])
-                pass
             case State.Die:
                 self.animationManager.Play(self.animations["Death"])
+            case State.Hurt:
+                self.animationManager.Play(self.animations["Hurt"])
             case _:
                 print("f{self.state} is not valid!")
 

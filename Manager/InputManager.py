@@ -2,6 +2,8 @@ import Renderder, pygame
 
 CurrentKey = None
 PreviousKey = None
+PreviousMouse = None
+CurrentMouse = None
 
 def Update():
     global CurrentKey, PreviousKey

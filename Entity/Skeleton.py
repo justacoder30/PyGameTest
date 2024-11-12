@@ -21,7 +21,7 @@ class Skeleton(Entity):
         self.player = None
         self.enemyZone = [200, 0]
         self.IsAttacking = False
-        self.attackCoolDown = 1
+        self.attackCoolDown = 0.5
         self.Gravity = 1000
 
         self.animations = {
@@ -122,32 +122,17 @@ class Skeleton(Entity):
                     continue
         self.pos = newPos
 
-        # newPos = self.pos + self.velocity * Globals.DeltaTime
-        # rect = self.ColliderDetetiveBound(self.pos)
-
-        # for collider in self.Skeleton_colliders:
-        #     if(rect.colliderect(collider)):
-        #         if self.velocity.x > 0:
-        #             newPos.x = collider.left - self.texture_width + self.OFFSET[0]
-        #         elif self.velocity.x < 0:
-        #             newPos.x = collider.right -  self.OFFSET[0]
-        #         if Skeleton.IsNearPlayer(self):
-        #             if self.animationManager.Isflip and not self.IsPlayerRight(self.player) or not self.animationManager.Isflip and self.IsPlayerRight(self.player):
-        #                 self.velocity.x = 0  
-        #         else:
-        #              self.velocity.x *= -1
-        #         continue
-        
-        # self.pos += self.velocity * Globals.DeltaTime
+    def HitFrame(self, frame):
+        return frame-1 if not self.animationManager.Isflip else self.animationManager.Animation.FrameCount-frame
 
     def Attack(self):
         self.attackTime += Globals.DeltaTime
         self.state = State.Attack
-        if self.attackTime >= self.attackCoolDown and self.IsAttackRange():
+        if self.attackTime >= self.attackCoolDown and self.animationManager.Animation.CurrentFrame == self.HitFrame(6):
             self.player.BeingHurt(self.damage)
             self.player.animationManager.Isflip = False if self.player.get_center().x < self.get_center().x else True
-        if self.attackTime >= self.attackCoolDown:
-            self.attackTime = 0 
+            if self.attackTime >= self.attackCoolDown:
+                self.attackTime = 0 
 
     def UpdateAnimation(self):
         if not self.IsHurt:
@@ -158,19 +143,19 @@ class Skeleton(Entity):
 
         if self.hp <= 0:
             self.state = State.Die
-            self.animationManager.SetLoop(self.animations["Death"])
+            self.animationManager.Play(self.animations["Death"])
             self.IsRemoved = not self.animationManager.Isloop
             self.IsHurt = False
         elif self.IsHurt:
             self.state = State.Hurt
-            self.animationManager.SetLoop(self.animations["Hurt"])
+            self.animationManager.Play(self.animations["Hurt"])
             self.IsHurt = self.animationManager.Isloop
         elif self.velocity.x != 0:
             self.state = State.Walk
         else:
             if self.IsAttacking:
                 self.Attack()
-                self.animationManager.SetLoop(self.animations["Attack"])
+                self.animationManager.Play(self.animations["Attack"])
                 self.IsAttacking = self.animationManager.Isloop
             else:
                 self.state = State.Idle
