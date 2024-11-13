@@ -75,8 +75,9 @@ class Entity:
     def SetPosition(self, pos):
         self.pos = pos
 
-    def FrameSpeed(self):
-        return self.animationManager.Animation.FrameSpeed * self.animationManager.Animation.FrameCount
+    def FrameSpeed(self, frame_end = 0):
+        frame_end = self.animationManager.Animation.FrameCount if frame_end == 0 else frame_end 
+        return self.animationManager.Animation.FrameSpeed * frame_end
 
     def BeingHurt(self, damge):
         if self.hp <= 0:

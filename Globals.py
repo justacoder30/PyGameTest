@@ -9,6 +9,7 @@ P_pos = None
 scroll_x = 0
 scroll_y = 0
 camera_rect = None
+running = True
 
 def Init():
     global Surface, Clock

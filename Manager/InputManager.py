@@ -1,4 +1,4 @@
-import Renderder, pygame
+import Renderder, pygame, Globals
 
 CurrentKey = None
 PreviousKey = None
@@ -17,8 +17,5 @@ def Update():
 
     if(CurrentKey[pygame.K_F11] and PreviousKey[pygame.K_F11] == False):
         Renderder.FullScreenToggle()
-    
-    if(CurrentKey[pygame.K_ESCAPE]):
-        pygame.quit()
 
     

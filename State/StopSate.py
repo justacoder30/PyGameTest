@@ -1,18 +1,22 @@
 import pygame, sys
 sys.path.append('..')
-import Globals, Game
+import Game
+import Globals
 from Control.Button import *
-from State.RunningState import *
+import State.RunningState as RunningState
 import State.GameState as GameState
+import Manager.InputManager as InputManager
 
-class MenuSate(GameState.GameSate):
+class StopSate(GameState.GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
         self.bg = pygame.image.load('resource/Background/Background1.png')
-        self.playBtn = Button('resource/Button/Play Button.png', pygame.Rect(176.00, 96, 120, 40))
+        self.continuteBtn = Button('resource/Button/Continue Button.png', pygame.Rect(176.00, 32.00, 120, 40))
+        self.playBtn = Button('resource/Button/Play Button.png', pygame.Rect(176.00, 96.00, 120, 40))
         self.quitBtn = Button('resource/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
         self.buttons = [
+            self.continuteBtn,
             self.playBtn,
             self.quitBtn
         ]
@@ -21,8 +25,11 @@ class MenuSate(GameState.GameSate):
         for btn in self.buttons:
             btn.Update()
 
+        if self.continuteBtn.isClick or InputManager.CurrentKey[pygame.K_ESCAPE] and not InputManager.PreviousKey[pygame.K_ESCAPE]:
+            self.game.ChangeState(self.game.PreviousState) 
+
         if self.playBtn.isClick:
-            self.game.ChangeState(RunningState(self.game))
+            self.game.ChangeState(RunningState.RunningState(self.game))
 
         if self.quitBtn.isClick:
             Globals.running = False

@@ -25,7 +25,7 @@ class Player(Entity):
 
         self.animations = {
             'Run' : Animation.Animation('resource/img/Player/Run.png', 10, 0.04),
-            'Idle' : Animation.Animation('resource/img/Player/Idle.png', 10),
+            'Idle' : Animation.Animation('resource/img/Player/Idle.png', 10, 0.05),
             'Attack' : Animation.Animation('resource/img/Player/Attack.png', 6, 0.04, True),
             'Death' : Animation.Animation('resource/img/Player/Death.png', 10, 0.05, True),
             'Fall' : Animation.Animation('resource/img/Player/Fall.png', 3),
@@ -134,7 +134,7 @@ class Player(Entity):
                 if self.hp <= 0:
                     self.state = State.Die
                     if super().FrameEnd():
-                        pygame.quit()
+                        Globals.running = False
                 elif Player.CurrentKey[pygame.K_j] and not Player.PreviousKey[pygame.K_j] or self.animationManager.Isloop:
                     Player.Attack(self)
                 else:

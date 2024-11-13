@@ -128,11 +128,10 @@ class Skeleton(Entity):
     def Attack(self):
         self.attackTime += Globals.DeltaTime
         self.state = State.Attack
-        if self.attackTime >= self.attackCoolDown and self.animationManager.Animation.CurrentFrame == self.HitFrame(6):
+        if self.attackTime >= self.FrameSpeed(6) and self.animationManager.Animation.CurrentFrame == self.HitFrame(6) and self.IsAttackRange():
             self.player.BeingHurt(self.damage)
             self.player.animationManager.Isflip = False if self.player.get_center().x < self.get_center().x else True
-            if self.attackTime >= self.attackCoolDown:
-                self.attackTime = 0 
+            self.attackTime = 0 
 
     def UpdateAnimation(self):
         if not self.IsHurt:
