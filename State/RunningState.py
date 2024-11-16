@@ -2,15 +2,15 @@ import pygame, sys
 sys.path.append('..')
 import State.GameState as GameState
 from State.StopSate import *
+from State.ChangeLevelState import *
 from Manager.EntityManager import *
 from Manager.InputManager import *
 import Game
 
 class RunningState(GameState.GameSate):
-    def __init__(self, game: Game):
+    def __init__(self, game: Game, level):
         super().__init__(game)
-        self.enityManager = EntityManager()
-        self.bg = pygame.image.load('resource/Background/Background2.png')
+        self.enityManager = EntityManager(level)
 
     def __del__(self):
         return super().__del__()
@@ -20,8 +20,11 @@ class RunningState(GameState.GameSate):
             self.game.SaveState()
             self.game.ChangeState(StopSate(self.game)) 
 
-        self.enityManager.Updated()
+        if Globals.IsLevelEnd:
+            Globals.IsLevelEnd = False
+            self.game.ChangeState(ChangeLevelState(self.game))
+        else:
+            self.enityManager.Updated()
 
     def Draw(self):
-        Globals.Surface.blit(pygame.transform.scale(self.bg, Globals.Surface.get_size()), (0, 0))
         self.enityManager.Draw()

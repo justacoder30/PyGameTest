@@ -4,10 +4,12 @@ sys.path.append('..')
 from Entity.Entity import *
 
 class Map(Entity):
-    map_img = pygame.image.load('resource/Map/Dungeon Map.png')
-    tiled_map = pytmx.TiledMap('resource/Map/Map.tmx')
-    def __init__(self):
+    map_img = pygame.image.load('resource/Map/Map1.png').convert_alpha()
+    tiled_map = None
+    def __init__(self, level):
         self.pos = pygame.Vector2(0, 0)
+        tiled_map = pytmx.TiledMap(f'resource/Map/Map{level}.tmx')
+        Map.tiled_map = tiled_map
 
     @classmethod
     def get_width(cls):

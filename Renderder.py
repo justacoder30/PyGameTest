@@ -1,5 +1,4 @@
-import Globals
-import pygame
+import Globals, pygame
 
 FullScreen = None
 display = None
@@ -7,19 +6,18 @@ width = 0
 height = 0
 scale = 0 
 
-
 def FullScreenToggle():
     global FullScreen, display
     
     if FullScreen:
-        display = pygame.display.set_mode((width, height), vsync=1)
+        Globals.display = pygame.display.set_mode((width, height), vsync=1)
         FullScreen = False
     else:
-        display = pygame.display.set_mode((width, height), pygame.FULLSCREEN, vsync=1)
+        Globals.display = pygame.display.set_mode((width, height), pygame.FULLSCREEN, vsync=1)
         FullScreen = True
 
 def SetResolution(_width, _height, _fullScreen=False):
-    global display, FullScreen, width, height, scale
+    global display, FullScreen, width, height, scale, bg1, pos1, pos2
 
     FullScreen = _fullScreen
     width, height = _width, _height
@@ -30,9 +28,14 @@ def SetResolution(_width, _height, _fullScreen=False):
     scale = min(int(scale_x), int(scale_y))
 
     if(FullScreen):
-        display = pygame.display.set_mode((width, height), pygame.FULLSCREEN, vsync=1)
+        Globals.display = pygame.display.set_mode((width, height), pygame.FULLSCREEN, vsync=1)
     else:
-        display = pygame.display.set_mode((width, height), vsync=1) 
+        Globals.display = pygame.display.set_mode((width, height), vsync=1) 
+
+    bg1 = pygame.image.load('resource/Background/Background2.png')
+
+    pos1 = pygame.Vector2(0, 0)
+    pos2 = pygame.Vector2(Globals.CameraSize_X, 0)
 
 def render():
-    display.blit(pygame.transform.scale(Globals.Surface, display.get_size()), Globals.Surface.get_rect())
+    Globals.display.blit(pygame.transform.scale(Globals.Surface, Globals.display.get_size()), Globals.Surface.get_rect())

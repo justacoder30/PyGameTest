@@ -7,13 +7,16 @@ from Entity.Map import *
 class EnemyManager:
     skeleton_list = []
     def __init__(self):
+        skeleton_list = []
         for pos in Map.GetListPosition("SkeletonPosition"):
             skeleton = Skeleton(pos)
-            self.skeleton_list.append(skeleton)
+            skeleton_list.append(skeleton)
+
+        EnemyManager.skeleton_list = skeleton_list
     
     @classmethod
     def GetEnemyList(self):
-        return self.skeleton_list
+        return EnemyManager.skeleton_list
 
     def Update(self, player):
         for skeleton in self.skeleton_list:

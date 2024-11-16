@@ -8,8 +8,11 @@ Surface = None
 P_pos = None
 scroll_x = 0
 scroll_y = 0
-camera_rect = None
+camera = pygame.Vector2
+camera_bg = pygame.Vector2
 running = True
+IsLevelEnd = False
+display = None
 
 def Init():
     global Surface, Clock

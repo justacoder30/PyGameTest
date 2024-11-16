@@ -32,10 +32,9 @@ class Game:
         if self.NextState != None:
             self.CurrentState = self.NextState
             self.NextState = None
-        # self.game.CurrentState = self.game
-        # self.game.CurrentState.Update()
 
         self.CurrentState.Update()
+        print(Globals.Clock.get_fps())
 
     def Draw(self):
         # fill the Surface with a color to wipe away anything from last frame

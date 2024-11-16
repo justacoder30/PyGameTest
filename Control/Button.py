@@ -34,7 +34,7 @@ class Button:
         else:
             self.isHovering = False
 
-        if self.isHovering and self.currentMouse and not self.previousMouse:
+        if self.isHovering and not self.currentMouse and self.previousMouse:
             self.isClick = True
 
     def Draw(self):

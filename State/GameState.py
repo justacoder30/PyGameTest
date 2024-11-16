@@ -2,8 +2,10 @@ import pygame, sys
 sys.path.append('..')
 import Game
 from Control.Button import *
+from Manager.EntityManager import *
 
 class GameSate:
+    level = 1
     def __init__(self, game: Game):
         self.game = game
 
