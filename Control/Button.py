@@ -4,7 +4,7 @@ import Renderder, Globals
 
 class Button:
     def __init__(self, f_path, rect: pygame.Rect):
-        self.btn = pygame.image.load(f_path)
+        self.btn = pygame.image.load(f_path).convert_alpha()
         self.btn_rect = rect
         self.btn_rect_scale = pygame.rect.Rect(rect.x * Renderder.scale, 
                                          rect.y * Renderder.scale, rect.width * Renderder.scale, 
