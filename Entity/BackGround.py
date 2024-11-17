@@ -20,14 +20,19 @@ class BackGround:
         self.scroll = 0
         self.speed = 0.6
     def Update(self):
-        self.speed = 0.6
-        self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
+        # self.speed = 0.6
+        # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
+        pass
 
     def Draw(self):
-        pass
+        # self.speed = 0.6
+        # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
         # for i in range(2):
-        #     Globals.Surface.blit(self.bg, (i * self.bg_width + int(self.scroll), 0))
+        #     Globals.Surface.blit(self.bg_list[5], (i * self.bg_width + int(self.scroll), 0))
                 
         for i in range(2):
-            for n in range(len(self.bg_list)):
-                Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + int(self.scroll), 0))
+            self.speed = 0.6
+            for n in range(0, len(self.bg_list)):
+                self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
+                Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + self.scroll, 0))
+                # self.speed+=0.1
