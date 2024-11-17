@@ -4,30 +4,52 @@ sys.path.append('..')
 class BackGround:
     def __init__(self):
 
-        bg1 = pygame.transform.scale(pygame.image.load('resource/Background/layers/sky.png').convert_alpha(), Globals.Surface.get_size())
-        bg2 = pygame.transform.scale(pygame.image.load('resource/Background/layers/clouds_1.png').convert_alpha(), Globals.Surface.get_size())
-        bg3 = pygame.transform.scale(pygame.image.load('resource/Background/layers/rocks.png').convert_alpha(), Globals.Surface.get_size())
-        bg4 = pygame.transform.scale(pygame.image.load('resource/Background/layers/clouds_2.png').convert_alpha(), Globals.Surface.get_size())
-        bg5 = pygame.transform.scale(pygame.image.load('resource/Background/layers/ground_1.png').convert_alpha(), Globals.Surface.get_size())
-        bg6 = pygame.transform.scale(pygame.image.load('resource/Background/layers/ground_2.png').convert_alpha(), Globals.Surface.get_size())
-        bg7 = pygame.transform.scale(pygame.image.load('resource/Background/layers/plant.png').convert_alpha(), Globals.Surface.get_size())
+        bg1 = self.GetImg('resource/Background/layers/sky.png')
+        bg2 = self.GetImg('resource/Background/layers/clouds_1.png')
+        bg3 = self.GetImg('resource/Background/layers/rocks.png')
+        bg4 = self.GetImg('resource/Background/layers/clouds_2.png')
+        bg5 = self.GetImg('resource/Background/layers/ground_1.png')
+        bg6 = self.GetImg('resource/Background/layers/ground_2.png')
+        bg7 = self.GetImg('resource/Background/layers/plant.png')
 
         self.bg_list = [ bg1, bg2, bg3, bg4, bg5, bg6, bg7]
+        # self.bg_list = [ bg1, bg2]
         self.bg = pygame.image.load('resource/Background/Background2.png').convert_alpha()
         self.bg = pygame.transform.scale(self.bg, Globals.Surface.get_size())
 
         self.bg_width = Globals.CameraSize_X
         self.scroll = 0
         self.speed = 0.6
+        self.cloud_speed = [10, 20]
+        self.pos_cloud = [0, 0]
+
+    def GetImg(self, f_path):
+        return pygame.transform.scale(pygame.image.load(f_path).convert_alpha(), Globals.Surface.get_size())
+
     def Update(self):
         # self.speed = 0.6
         # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
+        for i in range(2):
+            self.pos_cloud[i] -= self.cloud_speed[i] * Globals.DeltaTime
+            if self.pos_cloud[i] <= -self.bg_width:
+                self.pos_cloud[i] = 0
         pass
 
     def Draw(self):
-                
+        # for i in range(7):
+        #     self.speed = 0.1
+        #     for n in range(len(self.bg_list)):
+        #         Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + Globals.camera.x * self.speed, 0))
+        #         self.speed+=0.1
+
         for i in range(7):
             self.speed = 0.1
+            # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
             for n in range(len(self.bg_list)):
-                Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + Globals.camera.x * self.speed, 0))
+                if n == 1:
+                    Globals.Surface.blit(self.bg_list[n], (self.pos_cloud[0] + i * self.bg_width + Globals.camera.x * self.speed, 0))
+                elif n == 3:
+                    Globals.Surface.blit(self.bg_list[n], (self.pos_cloud[1] + i * self.bg_width + Globals.camera.x * self.speed, 0))
+                else:
+                    Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + Globals.camera.x * self.speed, 0))
                 self.speed+=0.1
