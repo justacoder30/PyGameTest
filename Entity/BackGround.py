@@ -12,7 +12,8 @@ class BackGround:
         bg6 = pygame.transform.scale(pygame.image.load('resource/Background/layers/ground_2.png').convert_alpha(), Globals.Surface.get_size())
         bg7 = pygame.transform.scale(pygame.image.load('resource/Background/layers/plant.png').convert_alpha(), Globals.Surface.get_size())
 
-        self.bg_list = [ bg1, bg2, bg3, bg4, bg5, bg6, bg7]
+        # self.bg_list = [ bg1, bg2, bg3, bg4, bg5, bg6, bg7]
+        self.bg_list = [ bg1, bg2]
         self.bg = pygame.image.load('resource/Background/Background2.png').convert_alpha()
         self.bg = pygame.transform.scale(self.bg, Globals.Surface.get_size())
 
@@ -32,7 +33,9 @@ class BackGround:
                 
         for i in range(2):
             self.speed = 0.6
-            for n in range(0, len(self.bg_list)):
+            for n in range(len(self.bg_list)):
                 self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
                 Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + self.scroll, 0))
-                # self.speed+=0.1
+                if n==0:
+                    print(int(self.scroll), int(Globals.camera.x * self.speed))
+                self.speed+=0.1
