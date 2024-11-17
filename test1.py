@@ -1,29 +1,81 @@
-import pygame, sys
-from pygame.locals import *
+import pygame, sys, time
+# StaticObstacle((800,600),(100,200),[all_sprites,collision_sprites])
+# StaticObstacle((900,200),(200,10),[all_sprites,collision_sprites])
+# MovingVerticalObstacle((200,300),(200,60),[all_sprites,collision_sprites])
+# MovingHorizontalObstacle((850,350),(100,100),[all_sprites,collision_sprites])
+# player = Player(all_sprites,collision_sprites)
 
-BLACK = ( 0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = ( 255, 0, 0)
 
+
+# loop
+
+import pygame
+
+# pygame setup
 pygame.init()
-size = (700, 500)
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption('P.Earth')
+screen = pygame.display.set_mode((1280, 720))
+clock = pygame.time.Clock()
+running = True
+dt = 0
 
-pygame.font.init() # you have to call this at the start, 
-                   # if you want to use this module.
-my_font = pygame.font.SysFont('Comic Sans MS', 30)
-text_surface = my_font.render('Text', False, "red")
-screen.blit(text_surface, (size[0] / 2, size[1] / 2))
-while 1: # main game loop
+player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+
+class StaticObstacle:
+	def __init__(self, x, y, w, h):
+		self.rect = pygame.Rect(x, y, w, h)
+		self.pos = pygame.Vector2(x, y)
+
+	def Update():
+		pass
+
+	def Draw(self):
+		pygame.draw.rect(screen, "yellow", self.rect, 2)
+		
+class Player:
+	def __init__(self, x, y, w, h):
+		self.rect = pygame.Rect(x, y, w, h)
+		self.pos = pygame.Vector2(x, y)
+
+	def Update(self):
+		pass
+
+	def Draw():
+		pass
+
+# sprite setup
+obj = StaticObstacle(100,300,100,50)
+
+while running:
+    # poll for events
+    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
-        if event.type == QUIT:           
-            pygame.display.update() 
+        if event.type == pygame.QUIT:
+            running = False
 
-import time
+    # fill the screen with a color to wipe away anything from last frame
+    screen.fill("purple")
 
-direction = ''
-print('Welcome to Earth')
-pygame.draw.rect(screen, RED, [55,500,10,5], 0)
-time.sleep(1)
+    pygame.draw.rect(screen, "red", (player_pos.x, player_pos.y,100,50))
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w]:
+        player_pos.y -= 300 * dt
+    if keys[pygame.K_s]:
+        player_pos.y += 300 * dt
+    if keys[pygame.K_a]:
+        player_pos.x -= 300 * dt
+    if keys[pygame.K_d]:
+        player_pos.x += 300 * dt
+
+
+    # flip() the display to put your work on screen
+    pygame.display.flip()
+
+    # limits FPS to 60
+    # dt is delta time in seconds since last frame, used for framerate-
+    # independent physics.
+    dt = clock.tick(60) / 1000
+
+pygame.quit()
+
+
