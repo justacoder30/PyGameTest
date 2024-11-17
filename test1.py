@@ -19,6 +19,7 @@ running = True
 dt = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+colliders = []
 
 class StaticObstacle:
 	def __init__(self, x, y, w, h):
@@ -29,7 +30,7 @@ class StaticObstacle:
 		pass
 
 	def Draw(self):
-		pygame.draw.rect(screen, "yellow", self.rect, 2)
+		pygame.draw.rect(screen, "yellow", self.rect)
 		
 class Player:
 	def __init__(self, x, y, w, h):
@@ -39,11 +40,12 @@ class Player:
 	def Update(self):
 		pass
 
-	def Draw():
-		pass
+	def Draw(self):
+		pygame.draw.rect(screen, "red", pygame.Rect(self.pos.x, self.pos.y,50,50))
 
 # sprite setup
-obj = StaticObstacle(100,300,100,50)
+obj = StaticObstacle(800,600,100,200)
+player = Player(player_pos.x, player_pos.y,50,50)
 
 while running:
     # poll for events
@@ -55,17 +57,21 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
 
-    pygame.draw.rect(screen, "red", (player_pos.x, player_pos.y,100,50))
-
     keys = pygame.key.get_pressed()
+        
     if keys[pygame.K_w]:
-        player_pos.y -= 300 * dt
+        player.pos.y -= 300 * dt
     if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
+        player.pos.y += 300 * dt
     if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
+        player.pos.x -= 300 * dt
     if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
+        player.pos.x += 300 * dt
+
+    print(player.pos)
+
+    obj.Draw()
+    player.Draw()
 
 
     # flip() the display to put your work on screen
