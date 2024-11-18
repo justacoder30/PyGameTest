@@ -3,6 +3,7 @@ sys.path.append('..')
 from Entity.Map import *
 from Animation import *
 from Entity.Entity import *
+from Entity.Block import *
 from Manager.EnemyManager import *
 from Manager.AnimationManager import *
 import Globals, pygame
@@ -22,6 +23,8 @@ class Player(Entity):
         self.attackTime = 0 
         self.hp = 50
         self.damage = 10
+
+        self.img = pygame.transform.scale(pygame.image.load('resource/Button/Button.png'), (80.00, 32.00))
 
         self.animations = {
             'Run' : Animation.Animation('resource/img/Player/Run.png', 10, 0.04),
@@ -68,6 +71,30 @@ class Player(Entity):
         
         newPos = self.pos + self.velocity * Globals.DeltaTime
         newRect = None
+
+        # if direction == 'horizontal':
+        # for sprite in Block.Obj:
+        #     # collision on the right
+        #     # if self.rect.right >= sprite.rect.left and self.old_rect.right <= sprite.old_rect.left:
+        #     #     self.rect.right = sprite.rect.left
+        #     #     self.pos.x = self.rect.x
+
+        #     # # collision on the left
+        #     # if self.rect.left <= sprite.rect.right and self.old_rect.left >= sprite.old_rect.right:
+        #     #     self.rect.left = sprite.rect.right
+        #     #     self.pos.x = self.rect.x
+        # newRect = super().caculate_bound(pygame.Vector2(self.pos.x, self.pos.y))
+        # # if direction == 'vertical':
+        # for sprite in Block.Obj:
+        #     # collision on the bottom
+        #     if newRect.bottom >= sprite.rect.top and old_rect.bottom <= sprite.old_rect.top:
+        #         newRect.bottom = sprite.rect.top
+        #         self.pos.y = self.rect.y
+
+        #     # collision on the top
+        #     if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
+        #         self.rect.top = sprite.rect.bottom
+        #         self.pos.y = self.rect.y
 
         for collider in self.map_hodler_colliders:
             if self.velocity.y > 0:
@@ -170,3 +197,7 @@ class Player(Entity):
         self.UpdateVelocity()
         self.UpdatePosition()
         self.SetAnimation()
+
+    def Draw(self):
+        super().Draw()
+        # Globals.Surface.blit(self.img, self.pos)

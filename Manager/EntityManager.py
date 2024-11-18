@@ -8,6 +8,7 @@ from Manager.AnimationManager import *
 from Animation import *
 from Entity.Player import *
 from Entity.Flag import *
+from Entity.Block import *
 from Entity.BackGround import *
 from Manager.EnemyManager import *
 
@@ -19,8 +20,10 @@ class EntityManager:
         self.camera = Camera()
         self.flag = Flag()
         self.bg = BackGround()
+        self.rect = Block(240.00, 432.00, 80.00, 32.00)
 
     def Updated(self):
+        self.rect.Update()
         self.camera.Update(self.player)
         self.bg.Update()
         self.enemy.Update(self.player)
@@ -32,4 +35,5 @@ class EntityManager:
         self.map.Draw()
         self.enemy.Draw()
         self.flag.Draw()
+        self.rect.Draw()
         self.player.Draw()
