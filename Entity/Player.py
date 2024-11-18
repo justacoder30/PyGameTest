@@ -46,12 +46,16 @@ class Player(Entity):
         self.map_colliders = Map.GetListBound("MapCollider")
         self.map_hodler_colliders = Map.GetListBound("HolderCollider")
 
+        self.rect = self.caculate_bound(self.pos)
+        self.old_rect = self.rect.copy()
+
     def UpdateVelocity(self):
         if self.state == State.Die:
             self.velocity.x = 0 
             return
         
         self.velocity.x = 0
+        # self.velocity = pygame.Vector2(0, 0)
 
         if self.IsFalling():
             self.falling = True
@@ -62,39 +66,18 @@ class Player(Entity):
         if Player.CurrentKey[pygame.K_SPACE] and not self.falling:
             self.velocity.y = -self.jump
             self.falling = True
+        # if Player.CurrentKey[pygame.K_w]:
+        #     self.velocity.y = -self.speed
+        # if Player.CurrentKey[pygame.K_s]:
+        #     self.velocity.y = self.speed
         if Player.CurrentKey[pygame.K_a]:
             self.velocity.x = -self.speed
         if Player.CurrentKey[pygame.K_d]:
             self.velocity.x = self.speed
 
     def UpdatePosition(self):
-        
         newPos = self.pos + self.velocity * Globals.DeltaTime
         newRect = None
-
-        # if direction == 'horizontal':
-        # for sprite in Block.Obj:
-        #     # collision on the right
-        #     # if self.rect.right >= sprite.rect.left and self.old_rect.right <= sprite.old_rect.left:
-        #     #     self.rect.right = sprite.rect.left
-        #     #     self.pos.x = self.rect.x
-
-        #     # # collision on the left
-        #     # if self.rect.left <= sprite.rect.right and self.old_rect.left >= sprite.old_rect.right:
-        #     #     self.rect.left = sprite.rect.right
-        #     #     self.pos.x = self.rect.x
-        # newRect = super().caculate_bound(pygame.Vector2(self.pos.x, self.pos.y))
-        # # if direction == 'vertical':
-        # for sprite in Block.Obj:
-        #     # collision on the bottom
-        #     if newRect.bottom >= sprite.rect.top and old_rect.bottom <= sprite.old_rect.top:
-        #         newRect.bottom = sprite.rect.top
-        #         self.pos.y = self.rect.y
-
-        #     # collision on the top
-        #     if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
-        #         self.rect.top = sprite.rect.bottom
-        #         self.pos.y = self.rect.y
 
         for collider in self.map_hodler_colliders:
             if self.velocity.y > 0:
@@ -128,6 +111,23 @@ class Player(Entity):
                     continue
         
         self.pos = newPos
+    
+    def UpdatePosition1(self):
+        self.old_rect = self.rect.copy()
+        self.rect = self.caculate_bound(self.pos)
+        for sprite in Block.Obj:
+            # collision on the bottom
+            # print(sprite.rect)
+            if self.rect.colliderect(sprite.rect):
+                # print(self.texture_height)
+                if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <= sprite.old_rect.top:
+                    print(True)
+                    self.pos.y = sprite.rect.top - 90
+
+            # # collision on the top
+            # if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
+            #     self.rect.top = sprite.rect.bottom
+            #     self.pos.y = self.rect.y
 
     def Attack(self):
         self.state = State.Attack
@@ -196,8 +196,8 @@ class Player(Entity):
     def Update(self):
         self.UpdateVelocity()
         self.UpdatePosition()
+        self.UpdatePosition1()
         self.SetAnimation()
 
     def Draw(self):
         super().Draw()
-        # Globals.Surface.blit(self.img, self.pos)

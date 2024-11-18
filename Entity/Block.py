@@ -14,19 +14,23 @@ class Block(Entity):
         self.img.fill("red")
         Block.Obj.append(self)
 
+    # @classmethod
+    # def GetObj(cls):
+    #     return cls.Obj
+
     def Update(self):
         self.old_rect = self.rect.copy() # previous frame
         
-        if self.rect.bottom > 544.00:
-            self.rect.bottom = 544.00
-            self.pos.y = self.rect.y
-            self.velocity.y*=-1
-        if self.rect.top < 320.00:
-            self.rect.top = 320.00
-            self.pos.y = self.rect.y
-            self.velocity.y*=-1
+        # if self.rect.bottom > 544.00:
+        #     self.rect.bottom = 544.00
+        #     self.pos.y = self.rect.y
+        #     self.velocity.y*=-1
+        # if self.rect.top < 320.00:
+        #     self.rect.top = 320.00
+        #     self.pos.y = self.rect.y
+        #     self.velocity.y*=-1
 
-        self.pos.y += self.velocity.y * self.speed * Globals.DeltaTime
+        # self.pos.y += self.velocity.y * self.speed * Globals.DeltaTime
         self.rect.y = round(self.pos.y)
         
 

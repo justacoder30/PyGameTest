@@ -20,7 +20,7 @@ class EntityManager:
         self.camera = Camera()
         self.flag = Flag()
         self.bg = BackGround()
-        self.rect = Block(240.00, 432.00, 80.00, 32.00)
+        self.rect = Block(240.00, 592.00, 80.00, 32.00)
 
     def Updated(self):
         self.rect.Update()
