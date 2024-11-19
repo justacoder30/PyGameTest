@@ -62,7 +62,7 @@ class Skeleton(Entity):
         rect = self.ColliderDetetiveBound()
         if self.IsHurt:
             pass
-        elif self.hp <= 0 or Skeleton.IsAttackRange(self):
+        elif self.hp <= 0 or Skeleton.IsAttackRange(self) and not self.IsHurt:
             self.velocity.x = 0
         else:
             self.velocity.x = self.speed if self.IsObjRight(self.player) else -self.speed

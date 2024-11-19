@@ -50,7 +50,7 @@ class Entity:
         return math.sqrt(x + y)
     
     def GravityBound(self, pos):
-        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 1)
+        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 5)
     
     def ColliderDetetiveBound(self):
         rect = self.caculate_bound(self.pos)
@@ -67,6 +67,7 @@ class Entity:
         for collider in self.map_hodler_colliders:
             if newRect.colliderect(collider):
                 return False
+            
         return True
 
     def IsObjRight(self, obj):

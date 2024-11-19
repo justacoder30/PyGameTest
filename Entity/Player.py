@@ -49,6 +49,29 @@ class Player(Entity):
         self.rect = self.caculate_bound(self.pos)
         self.old_rect = self.rect.copy()
 
+    def IsFalling(self):
+        newRect = self.GravityBound(self.pos)
+
+        for collider in self.map_colliders:
+            if newRect.colliderect(collider):
+                return False
+            
+        for collider in self.map_hodler_colliders:
+            if newRect.colliderect(collider):
+                return False
+            
+        for collider in Block.Obj:
+            if newRect.colliderect(collider.rect):
+                if collider.direction == 'vertical':
+                    self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
+                    self.pos.y = round(self.pos.y)
+                else:
+                    self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
+                    self.pos.x = round(self.pos.x)
+                return False
+            
+        return True
+
     def UpdateVelocity(self):
         if self.state == State.Die:
             self.velocity.x = 0 
@@ -60,6 +83,8 @@ class Player(Entity):
         if self.IsFalling():
             self.falling = True
             self.velocity.y += self.Gravity * Globals.DeltaTime
+        else:
+            self.falling = False
 
         Player.PreviousKey = Player.CurrentKey
         Player.CurrentKey = pygame.key.get_pressed()
@@ -121,8 +146,10 @@ class Player(Entity):
             if self.rect.colliderect(sprite.rect):
                 # print(self.texture_height)
                 if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <= sprite.old_rect.top:
-                    print(True)
-                    self.pos.y = sprite.rect.top - 90
+                    # print(True)
+                    self.velocity.y = 0
+                    self.rect.bottom = sprite.rect.top 
+                    self.pos.y = sprite.rect.top - self.texture_height
 
             # # collision on the top
             # if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
