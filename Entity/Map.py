@@ -43,6 +43,9 @@ class Map(Entity):
             rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
             list_bound.append(rect)
         return list_bound
+    
+    def Update(self):
+        pass
 
     def Draw(self):
         super().DrawSprite(self.map_img, self.pos)

@@ -21,3 +21,6 @@ class Camera:
         Globals.camera_bg = pygame.Vector2(self.current_pos.x, self.current_pos.y)
         Globals.camera = pygame.Vector2(x, y)
         self.previous_pos = Globals.camera
+
+    def Draw(self):
+        pass

@@ -23,24 +23,21 @@ class EntityManager:
         self.flag = Flag(self.player)
         self.camera = Camera(self.player)
 
-        self.enities = [
-            
+        self.entities = [
+            self.bg,
+            self.map,
+            self.rect,
+            self.rect2,
+            self.enemy,
+            self.flag,
+            self.camera,
+            self.player,
         ]
 
     def Updated(self):
-        self.rect.Update()
-        self.rect2.Update()
-        self.camera.Update()
-        self.bg.Update()
-        self.enemy.Update()
-        self.player.Update()
-        self.flag.Update()
+        for entity in self.entities:
+            entity.Update()
 
     def Draw(self):
-        self.bg.Draw()
-        self.map.Draw()
-        self.enemy.Draw()
-        self.flag.Draw()
-        self.rect.Draw()
-        self.rect2.Draw()
-        self.player.Draw()
+        for entity in self.entities:
+            entity.Draw()
