@@ -1,5 +1,6 @@
 import pygame, Globals, sys
 sys.path.append('..')
+# from Entity.Block import *
 
 class BackGround:
     def __init__(self):
@@ -22,6 +23,8 @@ class BackGround:
         self.speed = 0.6
         self.cloud_speed = [10, 20]
         self.pos_cloud = [0, 0]
+        # Block.Obj.append(self)
+        
 
     def GetImg(self, f_path):
         return pygame.transform.scale(pygame.image.load(f_path).convert_alpha(), Globals.Surface.get_size())

@@ -6,6 +6,7 @@ from Entity.Entity import *
 from Entity.Block import *
 from Manager.EnemyManager import *
 from Manager.AnimationManager import *
+from Entity.Block import *
 import Globals, pygame
 
 class Player(Entity):
@@ -48,6 +49,7 @@ class Player(Entity):
 
         self.rect = self.caculate_bound(self.pos)
         self.old_rect = self.rect.copy()
+        # Block.Obj.append(self)
 
     def IsFalling(self):
         newRect = self.GravityBound(self.pos)

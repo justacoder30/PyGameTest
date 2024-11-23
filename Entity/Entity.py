@@ -29,6 +29,8 @@ class Entity:
         self.IsRemoved = False
         self.map_colliders = None
         self.map_hodler_colliders = None
+        self.rect = None
+        self.old_rect = None
 
     def get_center(self):
         return pygame.Vector2(self.pos.x + self.animationManager.Animation.FrameWidth/2,self.pos.y + self.animationManager.Animation.FrameHeight/2)

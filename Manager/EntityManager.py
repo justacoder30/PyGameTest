@@ -14,6 +14,7 @@ from Manager.EnemyManager import *
 
 class EntityManager:
     def __init__(self, level):
+        Block.Obj = []
         self.map = Map(level)
         self.bg = BackGround()
         self.rect = Block(240.00, 592.00, 80.00, 32.00, 'vertical')
@@ -33,11 +34,19 @@ class EntityManager:
             self.camera,
             self.player,
         ]
+        # Map(level)
+        # self.player = Player()
+        # Camera(self.player)
 
     def Updated(self):
         for entity in self.entities:
             entity.Update()
+        # for b in Block.Obj:
+        #     b.Update()
+        # self.camera.Update()
 
     def Draw(self):
         for entity in self.entities:
             entity.Draw()
+        # for b in Block.Obj:
+        #     b.Draw()

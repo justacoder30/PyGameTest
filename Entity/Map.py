@@ -2,16 +2,19 @@ import pygame, pytmx, sys
 sys.path.append('..')
 
 from Entity.Entity import *
+from Entity.Block import *
 
 class Map(Entity):
     map_img = None
     tiled_map = None
     def __init__(self, level):
+        super().__init__()
         self.pos = pygame.Vector2(0, 0)
         tiled_map = pytmx.TiledMap(f'resource/Map/Map{level}.tmx')
         map_img = pygame.image.load('resource/Map/Map1.png').convert_alpha()
         Map.tiled_map = tiled_map
         Map.map_img = map_img
+        # Block.Obj.append(self)
 
     @classmethod
     def get_width(cls):
