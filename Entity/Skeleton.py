@@ -11,7 +11,7 @@ class Skeleton(Entity):
     PreviousKey = None
     CurrentKey = None
 
-    def __init__(self, pos):
+    def __init__(self, pos, player):
         super().__init__()
 
         self.speed = 60
@@ -23,6 +23,7 @@ class Skeleton(Entity):
         self.IsAttacking = False
         self.attackCoolDown = 0.5
         self.Gravity = 1000
+        self.player = player
 
         self.animations = {
             'Walk' : Animation.Animation('resource/img/Enemy/Skeleton/Walk.png', 10),
@@ -87,13 +88,11 @@ class Skeleton(Entity):
                 self.timer = 0
         else:
             self.FollowPlayer()
-            
-            
+
         if self.IsFalling():
             self.velocity.y += self.Gravity * Globals.DeltaTime
 
     def UpdatePosition(self):
-        
         newPos = self.pos + self.velocity * Globals.DeltaTime
 
         newRect = self.caculate_bound(pygame.Vector2(newPos.x, self.pos.y))
@@ -177,8 +176,7 @@ class Skeleton(Entity):
             case _:
                 print("f{self.state} is not valid!")
 
-    def Update(self, player):
-        self.player = player
+    def Update(self):
         self.UpdateVelocity()
         self.UpdatePosition()
         self.SetAnimation()

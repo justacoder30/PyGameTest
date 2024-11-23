@@ -5,7 +5,7 @@ from Entity.Entity import *
 
 class Block(Entity):
     Obj = []
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, direction):
         super().__init__()
         self.pos = pygame.Vector2(x, y)
         self.rect = pygame.Rect(x, y, w, h)
@@ -14,18 +14,17 @@ class Block(Entity):
         self.velocity = pygame.math.Vector2((1,1))
         self.img = pygame.transform.scale(pygame.image.load('resource/Button/Button.png'), (w, h))
         self.img.fill("red")
-        self.direction = ''
+        self.direction = direction
         Block.Obj.append(self)
 
     # @classmethod
     # def GetObj(cls):
     #     return cls.Obj
 
-    def Update(self, direction):
-        self.direction = direction
+    def Update(self):
         self.old_rect = self.rect.copy() # previous frame
         
-        if direction == 'vertical':
+        if self.direction == 'vertical':
             if self.rect.bottom > 544.00:
                 self.rect.bottom = 544.00
                 self.pos.y = self.rect.y
@@ -37,7 +36,7 @@ class Block(Entity):
 
             self.pos.y += self.velocity.y * self.speed * Globals.DeltaTime
 
-        if direction == 'horizontal':
+        if self.direction == 'horizontal':
             
             if self.rect.right < 320.00:
                 self.rect.right = 320.00

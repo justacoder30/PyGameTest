@@ -83,14 +83,11 @@ class Player(Entity):
         if self.IsFalling():
             self.falling = True
             self.velocity.y += self.Gravity * Globals.DeltaTime
-        else:
-            self.falling = False
 
         Player.PreviousKey = Player.CurrentKey
         Player.CurrentKey = pygame.key.get_pressed()
         if Player.CurrentKey[pygame.K_SPACE] and not self.falling:
             self.velocity.y = -self.jump
-            self.falling = True
         # if Player.CurrentKey[pygame.K_w]:
         #     self.velocity.y = -self.speed
         # if Player.CurrentKey[pygame.K_s]:
@@ -150,6 +147,7 @@ class Player(Entity):
                     self.velocity.y = 0
                     self.rect.bottom = sprite.rect.top 
                     self.pos.y = sprite.rect.top - self.texture_height
+                    self.falling = False
 
             # # collision on the top
             # if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:

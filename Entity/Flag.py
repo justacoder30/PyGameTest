@@ -9,9 +9,8 @@ from Manager.AnimationManager import *
 import Globals
 
 class Flag(Entity):
-    def __init__(self):
+    def __init__(self, player):
         super().__init__()
-
         self.pos = Map.GetPosition("FlagPosition")
         self.OFFSET = [0, 0]
 
@@ -27,6 +26,8 @@ class Flag(Entity):
 
         self.player = None
         self.state = State.Idle
+        
+        self.player = player
 
     def IsTouched(self):
         p_Rect = self.player.caculate_bound(self.player.pos)
@@ -59,7 +60,5 @@ class Flag(Entity):
             case _:
                 print("f{self.state} is not valid!")
 
-    def Update(self, player):
-        self.player = player
-
+    def Update(self):
         self.SetAnimation()
