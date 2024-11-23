@@ -44,7 +44,7 @@ class Player(Entity):
 
         self.state = State
 
-        self.map_colliders = Map.GetListBound("MapCollider")
+        self.map_colliders = Map.GetTilesBound()
         self.map_hodler_colliders = Map.GetListBound("HolderCollider")
 
         self.rect = self.caculate_bound(self.pos)

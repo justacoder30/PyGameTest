@@ -1,8 +1,6 @@
 import pygame
 
-vec1 = pygame.Vector2(0, 1)
-vec2 = pygame.Vector2(1, 1)
+rec1 = pygame.Rect(0, 0, 110, 96)
+rec2 = rec1.inflate(0, -22)
 
-vec1 += 1
-
-print(vec1)
+print(rec2)
