@@ -17,35 +17,30 @@ class MapTile(Entity):
         self.old_rect = self.rect.copy()
         Tiles.append(self)
 
-    def Update():
+    def Update(self):
         pass
 
     def Draw(self):
         super().DrawSprite(self.img, self.pos)
 
 class Map(Entity):
-    map_img = None
-    tiled_map = None
-    Tiles = []
     def __init__(self, level):
         super().__init__()
+        Map.max_x, Map.max_y = 0, 0
         Map.Tiles = []
-        tiled_map = load_pygame(f'resource/Map/Map{level}.tmx')
-        map_img = pygame.image.load('resource/Map/Map1.png').convert_alpha()
-
-        for x, y, img in tiled_map.get_layer_by_name('Tile Layer 1').tiles():
+        Map.tiled_map = load_pygame(f'resource/Map/Map{level}.tmx')
+        for x, y, img in Map.tiled_map.get_layer_by_name('Tile Layer 1').tiles():
+            Map.max_x = x if x > Map.max_x else Map.max_x
+            Map.max_y = y if y > Map.max_y else Map.max_y
             MapTile(x * TileSize, y * TileSize, img, Map.Tiles)
-
-        Map.tiled_map = tiled_map
-        Map.map_img = map_img
 
     @classmethod
     def get_width(cls):
-        return cls.map_img.get_rect().width
+        return (Map.max_x + 1) * TileSize
 
     @classmethod
     def get_height(cls):
-        return cls.map_img.get_rect().height
+        return (Map.max_y + 1) * TileSize
     
     @classmethod   
     def GetPosition(cls, obj_name):
@@ -78,7 +73,8 @@ class Map(Entity):
         return list_bound
     
     def Update(self):
-        pass
+        for tile in Map.Tiles:
+            tile.Update()
 
     def Draw(self):
         for tile in Map.Tiles:
