@@ -1,7 +1,6 @@
 import pygame, Globals, sys
 sys.path.append("..")
 import Entity.Map as TiledMap
-# from Entity.Block import *
 
 class Camera:
     def __init__(self, player):
@@ -9,9 +8,8 @@ class Camera:
         self.width = TiledMap.Map.get_width()
         self.height = TiledMap.Map.get_height()
         self.current_pos = pygame.Vector2(0, 0)
-        self.previous_pos = pygame.Vector2(0, 0)
+        self.previous_pos = self.current_pos
         self.speed = 0.05
-        # Block.Obj.append(self)
     
     def Update(self):
         self.current_pos.x = pygame.math.clamp(Globals.CameraSize_X/2 - self.player.get_center().x, Globals.CameraSize_X - self.width, 0)
@@ -23,6 +21,3 @@ class Camera:
         Globals.camera_bg = pygame.Vector2(self.current_pos.x, self.current_pos.y)
         Globals.camera = pygame.Vector2(x, y)
         self.previous_pos = Globals.camera
-
-    def Draw(self):
-        pass

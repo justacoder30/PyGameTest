@@ -38,4 +38,4 @@ def SetResolution(_width, _height, _fullScreen=False):
     pos2 = pygame.Vector2(Globals.CameraSize_X, 0)
 
 def render():
-    Globals.display.blit(pygame.transform.scale(Globals.Surface, Globals.display.get_size()), Globals.Surface.get_rect())
+    Globals.display.blit(Globals.Surface, Globals.Surface.get_rect())

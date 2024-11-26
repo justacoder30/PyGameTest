@@ -43,7 +43,7 @@ class EntityManager:
             entity.Update()
         # for b in Block.Obj:
         #     b.Update()
-        # self.camera.Update()
+        self.camera.Update()
 
     def Draw(self):
         for entity in self.entities:
