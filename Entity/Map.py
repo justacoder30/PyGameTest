@@ -12,7 +12,7 @@ class MapTile(Entity):
     def __init__(self, x, y, img, Tiles):
         self.pos = pygame.Vector2(x, y)
         self.img = img
-        self.img.fill('red')
+        # self.img.fill('red')
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
         Tiles.append(self)

@@ -58,9 +58,9 @@ class Player(Entity):
             if newRect.colliderect(collider):
                 return False
             
-        for collider in self.map_hodler_colliders:
-            if newRect.colliderect(collider):
-                return False
+        # for collider in self.map_hodler_colliders:
+        #     if newRect.colliderect(collider):
+        #         return False
             
         for collider in Block.Obj:
             if newRect.colliderect(collider.rect):

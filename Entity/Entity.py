@@ -62,9 +62,9 @@ class Entity:
     def IsFalling(self):
         newRect = self.GravityBound(self.pos)
 
-        for collider in self.map_colliders:
-            if newRect.colliderect(collider):
-                return False
+        # for collider in self.map_colliders:
+        #     if newRect.colliderect(collider):
+        #         return False
             
         for collider in self.map_hodler_colliders:
             if newRect.colliderect(collider):
