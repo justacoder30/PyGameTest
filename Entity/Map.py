@@ -7,27 +7,34 @@ from Entity.Block import *
 
 TileSize = 16
 
-class MapTile():
-    Tiles = []
-    def __init__(self, x, y, img):
+class MapTile(Entity):
+    
+    def __init__(self, x, y, img, Tiles):
         self.pos = pygame.Vector2(x, y)
         self.img = img
         self.img.fill('red')
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
-        MapTile.Tiles.append(self)
+        Tiles.append(self)
+
+    def Update():
+        pass
+
+    def Draw(self):
+        super().DrawSprite(self.img, self.pos)
 
 class Map(Entity):
     map_img = None
     tiled_map = None
+    Tiles = []
     def __init__(self, level):
         super().__init__()
-        Tiles = []
+        Map.Tiles = []
         tiled_map = load_pygame(f'resource/Map/Map{level}.tmx')
         map_img = pygame.image.load('resource/Map/Map1.png').convert_alpha()
 
         for x, y, img in tiled_map.get_layer_by_name('Tile Layer 1').tiles():
-            MapTile(x * TileSize, y * TileSize, img)
+            MapTile(x * TileSize, y * TileSize, img, Map.Tiles)
 
         Map.tiled_map = tiled_map
         Map.map_img = map_img
@@ -66,7 +73,7 @@ class Map(Entity):
     @classmethod 
     def GetTilesBound(cls):
         list_bound = []
-        for obj in MapTile.Tiles:
+        for obj in Map.Tiles:
             list_bound.append(obj.rect)
         return list_bound
     
@@ -74,6 +81,6 @@ class Map(Entity):
         pass
 
     def Draw(self):
-        for tile in MapTile.Tiles:
-            super().DrawSprite(tile.img, tile.pos)
+        for tile in Map.Tiles:
+            tile.Draw()
 

@@ -31,7 +31,6 @@ class EntityManager:
             # self.rect2,
             self.enemy,
             self.flag,
-            self.camera,
             self.player,
         ]
         # Map(level)
