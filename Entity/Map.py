@@ -10,6 +10,7 @@ TileSize = 16
 
 class MapTile(Entity):
     def __init__(self, x, y, img, Tiles):
+        super().__init__()
         self.pos = pygame.Vector2(x, y)
         self.img = img
         self.img.fill('red')
@@ -21,8 +22,7 @@ class MapTile(Entity):
         pass
 
     def Draw(self):
-        if Camera.rect.colliderect(self.rect):
-            Globals.Surface.blit(self.img, (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y))
+        self.DrawSprite(self.img, self.pos)
 
 class Map(Entity):
     def __init__(self, level):

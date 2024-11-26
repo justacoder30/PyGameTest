@@ -106,7 +106,8 @@ class Entity:
         return finalImage
 
     def DrawSprite(self, texture, pos):
-        Globals.Surface.blit(texture, (pos.x + Globals.camera.x, pos.y + Globals.camera.y))
+        if Camera.rect.colliderect(self.rect):
+            Globals.Surface.blit(texture, (pos.x + Globals.camera.x, pos.y + Globals.camera.y))
 
     def Draw(self):
         color = "white"
@@ -118,7 +119,7 @@ class Entity:
             Globals.Surface.blit(pygame.transform.flip(self.changColor(self.animationManager.Animation.texture, color),
                                                     self.animationManager.Isflip, 0), 
                                                     (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y), 
-                                                        self.animationManager.Rect())
+                                                    self.animationManager.Rect())
         
 class State(Enum):
     Idle = "Idle"
