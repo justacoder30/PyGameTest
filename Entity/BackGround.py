@@ -14,9 +14,6 @@ class BackGround:
         bg7 = self.GetImg('resource/Background/layers/plant.png')
 
         self.bg_list = [ bg1, bg2, bg3, bg4, bg5, bg6, bg7]
-        # self.bg_list = [ bg1, bg2]
-        self.bg = pygame.image.load('resource/Background/Background2.png').convert_alpha()
-        self.bg = pygame.transform.scale(self.bg, Globals.Surface.get_size())
 
         self.bg_width = Globals.CameraSize_X
         self.scroll = 0
