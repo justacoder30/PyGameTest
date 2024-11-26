@@ -43,6 +43,7 @@ class Skeleton(Entity):
         self.Skeleton_colliders = Map.GetListBound("EnemyCollider")
         self.map_colliders = Map.GetListBound("MapCollider")
         self.map_hodler_colliders = Map.GetListBound("HolderCollider")
+        self.rect = self.caculate_bound(self.pos)
 
     def IsNearPlayer(self):
         if self.ObjectDistance(self.player) <= self.enemyZone[0] and abs(self.get_center().y - self.player.get_center().y) <= self.GetAttackBound().height:
@@ -120,6 +121,7 @@ class Skeleton(Entity):
                     self.velocity.y = 0
                     continue
         self.pos = newPos
+        self.rect = self.caculate_bound(self.pos)
 
     def HitFrame(self, frame):
         return frame-1 if not self.animationManager.Isflip else self.animationManager.Animation.FrameCount-frame

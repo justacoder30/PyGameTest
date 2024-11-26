@@ -114,10 +114,11 @@ class Entity:
         if self.IsHurt:
             color = "red"
 
-        Globals.Surface.blit(pygame.transform.flip(self.changColor(self.animationManager.Animation.texture, color),
-                                                   self.animationManager.Isflip, 0), 
-                                                   (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y), 
-                                                    self.animationManager.Rect())
+        if Camera.rect.colliderect(self.rect):
+            Globals.Surface.blit(pygame.transform.flip(self.changColor(self.animationManager.Animation.texture, color),
+                                                    self.animationManager.Isflip, 0), 
+                                                    (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y), 
+                                                        self.animationManager.Rect())
         
 class State(Enum):
     Idle = "Idle"

@@ -28,12 +28,12 @@ class Flag(Entity):
         self.state = State.Idle
         
         self.player = player
+        self.rect = self.caculate_bound(self.pos)
 
     def IsTouched(self):
         p_Rect = self.player.caculate_bound(self.player.pos)
-        flag_Rect = self.caculate_bound(self.pos)
 
-        if flag_Rect.colliderect(p_Rect):
+        if self.rect.colliderect(p_Rect):
             return True
 
         return False

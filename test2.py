@@ -1,6 +1,10 @@
 import pygame
 
-rec1 = pygame.Rect(0, 0, 110, 96)
-rec2 = rec1.inflate(0, -22)
 
-print(rec2)
+def Print(i):
+    if i%2==0:
+        return
+    print(i)
+    
+for i in range(10):
+    Print(i)

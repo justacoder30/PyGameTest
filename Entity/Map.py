@@ -1,18 +1,18 @@
-import pygame, pytmx, sys
+import pygame, pytmx, sys, Globals
 from pytmx.util_pygame import load_pygame
 sys.path.append('..')
 
 from Entity.Entity import *
 from Entity.Block import *
+from Camera import *
 
 TileSize = 16
 
 class MapTile(Entity):
-    
     def __init__(self, x, y, img, Tiles):
         self.pos = pygame.Vector2(x, y)
         self.img = img
-        # self.img.fill('red')
+        self.img.fill('red')
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
         Tiles.append(self)
@@ -21,7 +21,8 @@ class MapTile(Entity):
         pass
 
     def Draw(self):
-        super().DrawSprite(self.img, self.pos)
+        if Camera.rect.colliderect(self.rect):
+            Globals.Surface.blit(self.img, (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y))
 
 class Map(Entity):
     def __init__(self, level):
