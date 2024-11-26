@@ -45,7 +45,7 @@ class Player(Entity):
         self.state = State
 
         self.map_colliders = Map.GetTilesBound()
-        self.map_hodler_colliders = Map.GetListBound("HolderCollider")
+        # self.map_hodler_colliders = Map.GetListBound("HolderCollider")
 
         self.rect = self.caculate_bound(self.pos)
         self.old_rect = self.rect.copy()
@@ -103,14 +103,14 @@ class Player(Entity):
         newPos = self.pos + self.velocity * Globals.DeltaTime
         newRect = None
 
-        for collider in self.map_hodler_colliders:
-            if self.velocity.y > 0:
-                newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
-                if(newRect.colliderect(collider)):
-                    newPos.y = collider.top - self.texture_height 
-                    self.velocity.y = 0
-                    self.falling = False
-                    continue
+        # for collider in self.map_hodler_colliders:
+        #     if self.velocity.y > 0:
+        #         newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
+        #         if(newRect.colliderect(collider)):
+        #             newPos.y = collider.top - self.texture_height 
+        #             self.velocity.y = 0
+        #             self.falling = False
+        #             continue
 
         for collider in self.map_colliders:
 
