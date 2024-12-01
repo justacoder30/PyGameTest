@@ -11,6 +11,12 @@ class Camera:
         self.current_pos = pygame.Vector2(0, 0)
         self.previous_pos = self.current_pos
         self.speed = 0.05
+
+    @classmethod
+    def SetSize(cls, width, height):
+        Camera.width = width
+        Camera.height = height
+        Globals.CameraSize(Camera.width, Camera.height)
     
     def Update(self):
         self.current_pos.x = pygame.math.clamp(Globals.CameraSize_X/2 - self.player.get_center().x, Globals.CameraSize_X - self.width, 0)

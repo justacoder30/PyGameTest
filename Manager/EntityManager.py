@@ -17,8 +17,8 @@ class EntityManager:
         Block.Obj = []
         self.map = Map(level)
         self.bg = BackGround()
-        # self.rect = Block(240.00, 592.00, 80.00, 32.00, 'vertical')
-        # self.rect2 = Block(320.00, 320.00, 80.00, 32.00,'horizontal')
+        self.rect = Block(240.00, 592.00, 80.00, 32.00, 'vertical')
+        self.rect2 = Block(320.00, 320.00, 80.00, 32.00,'horizontal')
         self.player = Player()
         self.enemy = EnemyManager(self.player)
         self.flag = Flag(self.player)
@@ -27,8 +27,8 @@ class EntityManager:
         self.entities = [
             self.bg,
             self.map,
-            # self.rect,
-            # self.rect2,
+            self.rect,
+            self.rect2,
             self.enemy,
             self.flag,
             self.player,

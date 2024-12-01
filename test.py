@@ -148,9 +148,18 @@ class Player(pygame.sprite.Sprite):
 					self.pos.y = sprite.rect.top - self.rect.height
 			
 				# # collision on the top
-				# if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
-				# 	self.rect.top = sprite.rect.bottom
-				# 	self.pos.y = self.rect.y
+				if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
+					self.rect.top = sprite.rect.bottom
+					self.pos.y = self.rect.y
+
+				if self.rect.right >= sprite.rect.left and self.old_rect.right <= sprite.old_rect.left:
+					self.rect.right = sprite.rect.left
+					self.pos.x = self.rect.x
+
+				# collision on the left
+				if self.rect.left <= sprite.rect.right and self.old_rect.left >= sprite.old_rect.right:
+					self.rect.left = sprite.rect.right
+					self.pos.x = self.rect.x
 
 	def update(self,dt):
 		self.old_rect = self.rect.copy()

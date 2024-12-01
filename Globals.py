@@ -15,7 +15,8 @@ IsLevelEnd = False
 display = None
 
 def Init():
-    global Surface, Clock
+    global Surface, Clock, CameraSize_X, CameraSize_Y
+
 
     Clock = pygame.time.Clock()
     Surface = pygame.Surface((CameraSize_X, CameraSize_Y))
