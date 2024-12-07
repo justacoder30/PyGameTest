@@ -24,7 +24,7 @@ flag = Flag(player)
 camera = Camera(player)
 
 entities = [
-    bg,
+    # bg,
     rect,
     rect2,
     enemy,

@@ -1,5 +1,6 @@
 import pygame, pytmx, sys, Globals
-from pytmx.util_pygame import load_pygame
+# from pytmx.util_pygame import load_pygame
+import pytmx
 sys.path.append('..')
 
 from Entity.Entity import *
@@ -25,12 +26,11 @@ class MapTile(Entity):
         self.DrawSprite(self.img, self.pos)
 
 class Map(Entity):
-    max_x, max_y = 0, 0
-    Tiles = []
-    tiled_map = None
     def __init__(self, level):
-        super().__init__()
-        Map.tiled_map = load_pygame(f'resource/Map/Map{level}.tmx')
+        super().__init__() 
+        Map.max_x, Map.max_y = 0, 0
+        Map.Tiles = []
+        Map.tiled_map = pytmx.load_pygame(f'resource/Map/Map{level}.tmx')
         for x, y, img in Map.tiled_map.get_layer_by_name('Tile Layer 1').tiles():
             Map.max_x = x if x > Map.max_x else Map.max_x
             Map.max_y = y if y > Map.max_y else Map.max_y

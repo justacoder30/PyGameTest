@@ -44,4 +44,4 @@ class AnimationManager:
                 self.Isloop = False
 
     def Rect(self):
-        return pygame.Rect(self.Animation.CurrentFrame * self.Animation.FrameWidth, 0 , self.Animation.FrameWidth, self.Animation.FrameWidth)
+        return pygame.Rect(self.Animation.CurrentFrame * self.Animation.FrameWidth, 0 , self.Animation.FrameWidth, self.Animation.FrameHeight)
