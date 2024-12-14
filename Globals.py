@@ -5,6 +5,7 @@ camera = pygame.Vector2
 camera_bg = pygame.Vector2
 running = True
 IsLevelEnd = False
+ShowText = False
 display = None
 Text = pygame.Surface
 
