@@ -135,6 +135,46 @@ class Player(Entity):
                     continue
         
         self.pos = newPos
+
+    def UpdatePosition2(self):
+        # Tính vị trí tiếp theo của nhân vật
+        newPos = self.pos + self.velocity * Globals.DeltaTime 
+        newRect = None 
+
+        for collider in self.map_colliders:
+
+            # Kiểm tra nếu có đang chuyển theo chiều ngang không
+            if newPos.x != self.pos.x:  
+                # Tính Rect mới của nhân vật
+                newRect = super().caculate_bound(pygame.Vector2(newPos.x, self.pos.y)) 
+                if newRect.colliderect(collider):  
+                    if self.velocity.x > 0: 
+                        # Điều chỉnh vị trí sang bên trái của collider
+                        newPos.x = collider.left - self.texture_width + self.OFFSET[0]  
+                    elif self.velocity.x < 0: 
+                        # Điều chỉnh vị trí sang bên phải của collider
+                        newPos.x = collider.right - self.OFFSET[0]  
+                    continue 
+            
+            # Kiểm tra nếu có đang chuyển theo chiều dọc không
+            if newPos.y != self.pos.y:  
+                # Tính Rect mới của nhân vật
+                newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
+                if newRect.colliderect(collider):
+                    if self.velocity.y > 0:
+                        # Điều chỉnh vị trí sang bên trên của collider
+                        newPos.y = collider.top - self.texture_height
+                        # Nhân vật ngừng rơi  
+                        self.falling = False  
+                    elif self.velocity.y < 0:  
+                        # Điều chỉnh vị trí sang bên dưới của collider
+                        newPos.y = collider.bottom - self.OFFSET[1]  
+                    self.velocity.y = 0  
+                    continue  
+        
+        # Cập nhập ví trí mới 
+        self.pos = newPos  
+
     
     def UpdatePosition1(self):
         self.old_rect = self.rect.copy()

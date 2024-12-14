@@ -6,6 +6,7 @@ width = 0
 height = 0
 scale = 0 
 
+
 def FullScreenToggle():
     global FullScreen, display
     
@@ -17,7 +18,7 @@ def FullScreenToggle():
     FullScreen = not FullScreen
 
 def SetResolution(_width, _height, _fullScreen=False):
-    global display, FullScreen, width, height, scale, bg1, pos1, pos2
+    global display, FullScreen, width, height, scale
 
     FullScreen = _fullScreen
     width, height = _width, _height
@@ -32,5 +33,9 @@ def SetResolution(_width, _height, _fullScreen=False):
     else:
         Globals.display = pygame.display.set_mode((width, height), vsync=1) 
 
+    Globals.Text = pygame.Surface(Globals.display.get_size(), pygame.SRCALPHA)
+
 def render():
     Globals.display.blit(pygame.transform.scale(Globals.Surface, Globals.display.get_size()), Globals.Surface.get_rect())
+    if Globals.IsLevelEnd:
+        Globals.display.blit(Globals.Text, Globals.display.get_rect())

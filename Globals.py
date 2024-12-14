@@ -1,25 +1,19 @@
 import pygame, Globals
 
-DeltaTime = float
-Clock = None
-CameraSize_X = 0
-CameraSize_Y = 0
-Surface = None
 P_pos = None
-scroll_x = 0
-scroll_y = 0
 camera = pygame.Vector2
 camera_bg = pygame.Vector2
 running = True
 IsLevelEnd = False
 display = None
+Text = pygame.Surface
 
 def Init():
-    global Surface, Clock, CameraSize_X, CameraSize_Y
+    global Surface, Text, Clock, CameraSize_X, CameraSize_Y
 
 
     Clock = pygame.time.Clock()
-    Surface = pygame.Surface((CameraSize_X, CameraSize_Y))
+    Surface = pygame.Surface((CameraSize_X, CameraSize_Y), pygame.SRCALPHA)
 
 def Updated():
     global DeltaTime, scroll_x, scroll_y

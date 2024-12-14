@@ -38,7 +38,7 @@ class Game:
 
     def Draw(self):
         # fill the Surface with a color to wipe away anything from last frame
-        Globals.Surface.fill("blue")
+        Globals.Surface.fill((0, 0, 0, 0))
         
         self.CurrentState.Draw()
         

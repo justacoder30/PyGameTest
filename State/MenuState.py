@@ -8,7 +8,6 @@ import State.GameState as GameState
 class MenuSate(GameState.GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.bg = pygame.image.load('resource/Background/Background1.png').convert_alpha()
         self.playBtn = Button('resource/Button/Play Button.png', pygame.Rect(176.00, 96, 120, 40))
         self.quitBtn = Button('resource/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
@@ -26,7 +25,7 @@ class MenuSate(GameState.GameSate):
 
         if self.quitBtn.isClick:
             Globals.running = False
-
+        
     def Draw(self):
         Globals.Surface.blit(pygame.transform.scale(self.bg, Globals.Surface.get_size()), (0, 0))
         for btn in self.buttons:

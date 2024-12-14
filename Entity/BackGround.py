@@ -45,13 +45,13 @@ class BackGround:
         for i in range(7):
             self.speed = 0.1
             # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
-            for n in range(len(self.bg_list)):
+            for layer in range(len(self.bg_list)):
                 pos_x = 0
-                if n == 1:
+                if layer == 1:
                     pos_x = self.pos_cloud[0] + i * self.bg_width + Globals.camera.x * self.speed
-                elif n == 3:
+                elif layer == 3:
                     pos_x = self.pos_cloud[1] + i * self.bg_width + Globals.camera.x * self.speed
                 else:
                     pos_x = i * self.bg_width + Globals.camera.x * self.speed
-                Globals.Surface.blit(self.bg_list[n], (pos_x, 0))
+                Globals.Surface.blit(self.bg_list[layer], (pos_x, 0))
                 self.speed+=0.1

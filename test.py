@@ -161,6 +161,29 @@ class Player(pygame.sprite.Sprite):
 					self.rect.left = sprite.rect.right
 					self.pos.x = self.rect.x
 
+	def collision(self,direction):
+		for sprite in collision_sprites:
+			# Kiểm tra phía dưới
+			if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <= sprite.old_rect.top:
+				self.rect.bottom = sprite.rect.top
+				self.pos.x += sprite.direction.x * dt
+				self.pos.y = sprite.rect.top - self.rect.height
+		
+			# Kiểm tra phía trên
+			if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
+				self.rect.top = sprite.rect.bottom
+				self.pos.y = self.rect.y
+
+			# Kiểm tra bên phải
+			if self.rect.right >= sprite.rect.left and self.old_rect.right <= sprite.old_rect.left:
+				self.rect.right = sprite.rect.left
+				self.pos.x = self.rect.x
+
+			# Kiểm tra bên trái
+			if self.rect.left <= sprite.rect.right and self.old_rect.left >= sprite.old_rect.right:
+				self.rect.left = sprite.rect.right
+				self.pos.x = self.rect.x
+
 	def update(self,dt):
 		self.old_rect = self.rect.copy()
 		self.input(dt)
