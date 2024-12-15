@@ -62,15 +62,15 @@ class Player(Entity):
         #     if newRect.colliderect(collider):
         #         return False
             
-        for collider in Block.Obj:
-            if newRect.colliderect(collider.rect):
-                if collider.direction == 'vertical':
-                    self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
-                    self.pos.y = round(self.pos.y)
-                else:
-                    self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
-                    self.pos.x = round(self.pos.x)
-                return False
+        # for collider in Block.Obj:
+        #     if newRect.colliderect(collider.rect):
+        #         if collider.direction == 'vertical':
+        #             self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
+        #             self.pos.y = round(self.pos.y)
+        #         else:
+        #             self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
+        #             self.pos.x = round(self.pos.x)
+        #         return False
             
         return True
 
@@ -80,7 +80,6 @@ class Player(Entity):
             return
         
         self.velocity.x = 0
-        # self.velocity = pygame.Vector2(0, 0)
 
         if self.IsFalling():
             self.falling = True
@@ -100,107 +99,44 @@ class Player(Entity):
             self.velocity.x = self.speed
 
     def UpdatePosition(self):
-        newPos = self.pos + self.velocity * Globals.DeltaTime
-        newRect = None
-
-        # for collider in self.map_hodler_colliders:
-        #     if self.velocity.y > 0:
-        #         newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
-        #         if(newRect.colliderect(collider)):
-        #             newPos.y = collider.top - self.texture_height 
-        #             self.velocity.y = 0
-        #             self.falling = False
-        #             continue
-
-        for collider in self.map_colliders:
-
-            if (newPos.x != self.pos.x):
-                newRect = super().caculate_bound(pygame.Vector2(newPos.x, self.pos.y))
-                if(newRect.colliderect(collider)):
-                    if self.velocity.x > 0:
-                        newPos.x = collider.left - self.texture_width + self.OFFSET[0]
-                    elif self.velocity.x < 0:
-                        newPos.x = collider.right -  self.OFFSET[0]
-                    continue
-            
-            if (newPos.y != self.pos.y):
-                newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
-                if(newRect.colliderect(collider)):
-                    if self.velocity.y > 0:
-                        newPos.y = collider.top - self.texture_height 
-                        self.falling = False
-                    elif self.velocity.y < 0:
-                        newPos.y = collider.bottom - self.OFFSET[1]
-                    self.velocity.y = 0
-                    continue
-        
-        self.pos = newPos
-
-    def UpdatePosition2(self):
         # Tính vị trí tiếp theo của nhân vật
-        newPos = self.pos + self.velocity * Globals.DeltaTime 
-        newRect = None 
-
-        for collider in self.map_colliders:
-
-            # Kiểm tra nếu có đang chuyển theo chiều ngang không
-            if newPos.x != self.pos.x:  
-                # Tính Rect mới của nhân vật
-                newRect = super().caculate_bound(pygame.Vector2(newPos.x, self.pos.y)) 
-                if newRect.colliderect(collider):  
-                    if self.velocity.x > 0: 
-                        # Điều chỉnh vị trí sang bên trái của collider
-                        newPos.x = collider.left - self.texture_width + self.OFFSET[0]  
-                    elif self.velocity.x < 0: 
-                        # Điều chỉnh vị trí sang bên phải của collider
-                        newPos.x = collider.right - self.OFFSET[0]  
-                    continue 
-            
-            # Kiểm tra nếu có đang chuyển theo chiều dọc không
-            if newPos.y != self.pos.y:  
-                # Tính Rect mới của nhân vật
-                newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
-                if newRect.colliderect(collider):
-                    if self.velocity.y > 0:
-                        # Điều chỉnh vị trí sang bên trên của collider
-                        newPos.y = collider.top - self.texture_height
-                        # Nhân vật ngừng rơi  
-                        self.falling = False  
-                    elif self.velocity.y < 0:  
-                        # Điều chỉnh vị trí sang bên dưới của collider
-                        newPos.y = collider.bottom - self.OFFSET[1]  
-                    self.velocity.y = 0  
-                    continue  
-        
-        # Cập nhập ví trí mới 
-        self.pos = newPos  
-
-    
-    def UpdatePosition1(self):
+        self.pos += self.velocity * Globals.DeltaTime 
         self.old_rect = self.rect.copy()
         self.rect = self.caculate_bound(self.pos)
-        for sprite in Block.Obj:
-            # collision on the bottom
-            # print(sprite.rect)
-            if self.rect.colliderect(sprite.rect):
-                # print(self.texture_height)
-                if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <= sprite.old_rect.top:
-                    # print(True)
+
+        for collider in self.map_colliders:
+            if self.rect.colliderect(collider.rect):
+
+                # collision on the top
+                if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
                     self.velocity.y = 0
-                    self.rect.bottom = sprite.rect.top 
-                    self.pos.y = sprite.rect.top - self.texture_height
+                    self.rect.top = collider.rect.bottom
+                    self.pos.y = collider.rect.bottom - self.OFFSET[1]
+
+                # collision on the bottom
+                if self.rect.bottom >= collider.rect.top and self.old_rect.bottom <= collider.old_rect.top:
+                    self.velocity.y = 0
+                    self.rect.bottom = collider.rect.top 
+                    self.pos.y = collider.rect.top - self.texture_height
                     self.falling = False
 
-            # # collision on the top
-            # if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
-            #     self.rect.top = sprite.rect.bottom
-            #     self.pos.y = self.rect.y
+                # collision on the right
+                if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
+                    self.rect.right = collider.rect.left 
+                    self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
+
+                # collision on the left
+                if self.rect.left <= collider.rect.right and self.old_rect.left >= collider.old_rect.right:
+                    self.rect.left = collider.rect.right
+                    self.pos.x = collider.rect.right -  self.OFFSET[0]
 
     def Attack(self):
         self.state = State.Attack
-        atk_rect = super().GetAttackBound()
+        if not EnemyManager.GetEnemyList():
+            return
 
         if super().FrameEnd():
+            atk_rect = super().GetAttackBound()
             for enemy in EnemyManager.GetEnemyList():
                 if atk_rect.colliderect(enemy.caculate_bound(enemy.pos)):
                     enemy.BeingHurt(self.damage)
@@ -228,7 +164,7 @@ class Player(Entity):
                 if self.hp <= 0:
                     self.state = State.Die
                     if super().FrameEnd():
-                        Globals.running = False
+                        Globals.GameOver = True
                 elif Player.CurrentKey[pygame.K_j] and not Player.PreviousKey[pygame.K_j] or self.animationManager.Isloop:
                     Player.Attack(self)
                 else:
@@ -263,8 +199,9 @@ class Player(Entity):
     def Update(self):
         self.UpdateVelocity()
         self.UpdatePosition()
-        self.UpdatePosition1()
         self.SetAnimation()
+        self.CheckOutOfMap()
 
     def Draw(self):
         super().Draw()
+        

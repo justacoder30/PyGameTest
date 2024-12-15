@@ -1,13 +1,15 @@
 import pygame, Globals
 
 P_pos = None
-camera = pygame.Vector2
+camera = pygame.Vector2(0, 0)
 camera_bg = pygame.Vector2
 running = True
 IsLevelEnd = False
+GameOver = False
 ShowText = False
 display = None
 Text = pygame.Surface
+MapSize = pygame.Rect(0, 0, 0, 0)
 
 def Init():
     global Surface, Text, Clock, CameraSize_X, CameraSize_Y

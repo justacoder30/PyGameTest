@@ -10,11 +10,11 @@ from Camera import *
 TileSize = 16
 
 class MapTile(Entity):
-    def __init__(self, x, y, img, Tiles):
+    def __init__(self, pos: pygame.Vector2, img, Tiles):
         super().__init__()
-        self.pos = pygame.Vector2(x, y)
+        self.pos = pos
         self.img = img
-        self.img.fill('red')
+        # self.img.fill('red')
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
         Tiles.append(self)
@@ -30,11 +30,12 @@ class Map(Entity):
         super().__init__() 
         Map.max_x, Map.max_y = 0, 0
         Map.Tiles = []
-        Map.tiled_map = pytmx.load_pygame(f'resource/Map/Map{level}.tmx')
-        for x, y, img in Map.tiled_map.get_layer_by_name('Tile Layer 1').tiles():
+        Map.tiled_map = pytmx.load_pygame(f'resource/Map1/map{level}.tmx')
+        for x, y, img in Map.tiled_map.get_layer_by_name('Platform').tiles():
             Map.max_x = x if x > Map.max_x else Map.max_x
             Map.max_y = y if y > Map.max_y else Map.max_y
-            MapTile(x * TileSize, y * TileSize, img, Map.Tiles)
+            pos = pygame.Vector2(x * TileSize, y * TileSize)
+            MapTile(pos, img, Map.Tiles)
 
     @classmethod
     def get_width(cls):
@@ -72,6 +73,7 @@ class Map(Entity):
         list_bound = []
         for obj in Map.Tiles:
             list_bound.append(obj.rect)
+        return Map.Tiles
         return list_bound
     
     def Update(self):

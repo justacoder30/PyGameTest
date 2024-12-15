@@ -17,20 +17,20 @@ class EntityManager:
         Block.Obj = []
         self.map = Map(level)
         self.bg = BackGround()
-        self.rect = Block(240.00, 592.00, 80.00, 32.00, 'vertical')
-        self.rect2 = Block(320.00, 320.00, 80.00, 32.00,'horizontal')
+        # self.rect = Block(240.00, 592.00, 80.00, 32.00, 'vertical')
+        # self.rect2 = Block(320.00, 320.00, 80.00, 32.00,'horizontal')
         self.player = Player()
-        self.enemy = EnemyManager(self.player)
-        self.flag = Flag(self.player)
+        # self.enemy = EnemyManager(self.player)
+        # self.flag = Flag(self.player)
         self.camera = Camera(self.player)
 
         self.entities = [
             self.bg,
             self.map,
-            self.rect,
-            self.rect2,
-            self.enemy,
-            self.flag,
+            # self.rect,
+            # self.rect2,
+            # self.enemy,
+            # self.flag,
             self.player,
         ]
         # Map(level)

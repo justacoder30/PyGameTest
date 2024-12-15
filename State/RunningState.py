@@ -23,6 +23,9 @@ class RunningState(GameState.GameSate):
         if Globals.IsLevelEnd:
             Globals.IsLevelEnd = False
             self.game.ChangeState(ChangeLevelState(self.game))
+        elif Globals.GameOver:
+            Globals.GameOver = False
+            self.game.ChangeState(StopSate(self.game))
         else:
             self.enityManager.Updated()
 

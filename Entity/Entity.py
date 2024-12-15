@@ -28,7 +28,6 @@ class Entity:
         self.HurtTime = 0
         self.IsRemoved = False
         self.map_colliders = None
-        self.map_hodler_colliders = None
         self.rect = None
         self.old_rect = None
 
@@ -43,8 +42,8 @@ class Entity:
 
     def GetAttackBound(self):
         if self.animationManager.Isflip:
-            return pygame.Rect(self.pos.x, self.pos.y + self.OFFSET[1], self.OFFSET[0], self.OFFSET[1])
-        return pygame.Rect(self.pos.x + self.texture_width - self.OFFSET[0], self.pos.y + self.OFFSET[1], self.OFFSET[0], self.OFFSET[1])
+            return pygame.Rect(self.pos.x, self.pos.y + self.OFFSET[1], self.OFFSET[0], self.texture_height - self.OFFSET[1])
+        return pygame.Rect(self.pos.x + self.texture_width - self.OFFSET[0], self.pos.y + self.OFFSET[1], self.OFFSET[0], self.texture_height - self.OFFSET[1])
     
     def ObjectDistance(self, player):
         x = math.pow(self.get_center().x - player.get_center().x, 2)
@@ -96,6 +95,12 @@ class Entity:
             self.Time = 0
             return True
         return False
+    
+    def CheckOutOfMap(self):
+        # print(self.pos.x, Globals.MapSize.width - self.OFFSET[0])
+        self.pos.x  = pygame.math.clamp(self.pos.x, -self.OFFSET[0], Globals.MapSize.width - self.OFFSET[0])
+        if self.pos.y > Globals.MapSize.height:
+            Globals.GameOver = True
 
     def changColor(self, image, color):
         colouredImage = pygame.Surface(image.get_size())
@@ -120,6 +125,23 @@ class Entity:
                                                     self.animationManager.Isflip, 0), 
                                                     (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y), 
                                                     self.animationManager.Rect())
+            
+        cnt = 0
+        rect = pygame.Rect(self.pos.x, self.pos.y, self.texture_width , self.texture_height * 1.5)
+        for collider in self.map_colliders:
+            cnt+=1
+            if rect.colliderect(collider.rect):
+                pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
+        # print(cnt)
+        pygame.draw.rect(Globals.Surface, (0, 255, 0), (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y, self.texture_width , self.texture_height * 1.5), 1)
+        atkRect = self.GetAttackBound()
+        pygame.draw.rect(Globals.Surface, (0, 0, 255), (atkRect.x + Globals.camera.x, atkRect.y + Globals.camera.y, atkRect.w , atkRect.h), 1)
+        self_rect = self.caculate_bound(self.pos)
+        pygame.draw.rect(Globals.Surface, (0, 255, 0), (self_rect.x + Globals.camera.x, self_rect.y + Globals.camera.y, self_rect.w , self_rect.h), 1)
+        g_rect = self.GravityBound(self.pos)
+        r = g_rect.copy()
+        print(r.colliderect(g_rect))
+        pygame.draw.rect(Globals.Surface, (0, 0, 255), (g_rect.x + Globals.camera.x, g_rect.y + Globals.camera.y, g_rect.w , g_rect.h), 1)
         
 class State(Enum):
     Idle = "Idle"

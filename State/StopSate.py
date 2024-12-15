@@ -12,12 +12,12 @@ class StopSate(GameState.GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
         self.resumeBtn = Button('resource/Button/Resume Button.png', pygame.Rect(176.00, 32.00, 120, 40))
-        self.playBtn = Button('resource/Button/Play Button.png', pygame.Rect(176.00, 96.00, 120, 40))
+        self.newGameBtn = Button('resource/Button/New game Button.png', pygame.Rect(176.00, 96.00, 120, 40))
         self.quitBtn = Button('resource/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
         self.buttons = [
             self.resumeBtn,
-            self.playBtn,
+            self.newGameBtn,
             self.quitBtn
         ]
 
@@ -28,7 +28,7 @@ class StopSate(GameState.GameSate):
         if self.resumeBtn.isClick or InputManager.CurrentKey[pygame.K_ESCAPE] and not InputManager.PreviousKey[pygame.K_ESCAPE]:
             self.game.ChangeState(self.game.PreviousState) 
 
-        if self.playBtn.isClick:
+        if self.newGameBtn.isClick:
             GameState.GameSate.level = 1
             self.game.ChangeState(RunningState.RunningState(self.game, GameState.GameSate.level))
 
