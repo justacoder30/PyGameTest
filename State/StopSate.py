@@ -36,6 +36,6 @@ class StopSate(GameState.GameSate):
             Globals.running = False
 
     def Draw(self):
-        Globals.display.blit(pygame.transform.scale(self.Surface, Globals.display.get_size()), Globals.Surface.get_rect())
+        Globals.Surface.blit(pygame.transform.scale(self.bg, Globals.Surface.get_size()), (0, 0))
         for btn in self.buttons:
             btn.Draw()

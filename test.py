@@ -216,8 +216,8 @@ class Ball(pygame.sprite.Sprite):
 	def collision(self,direction):
 		collision_sprites = pygame.sprite.spritecollide(self,self.obstacles,False)
 		
-		if self.rect.colliderect(self.player.rect):
-			collision_sprites.append(self.player)
+		# if self.rect.colliderect(self.player.rect):
+		# 	collision_sprites.append(self.player)
 
 		if collision_sprites:
 			if direction == 'horizontal':

@@ -98,7 +98,7 @@ class Entity:
     
     def CheckOutOfMap(self):
         # print(self.pos.x, Globals.MapSize.width - self.OFFSET[0])
-        self.pos.x  = pygame.math.clamp(self.pos.x, -self.OFFSET[0], Globals.MapSize.width - self.OFFSET[0])
+        self.pos.x  = pygame.math.clamp(self.pos.x, -self.OFFSET[0], Globals.MapSize.width - self.texture_width + self.OFFSET[0])
         if self.pos.y > Globals.MapSize.height:
             Globals.GameOver = True
 
@@ -127,20 +127,18 @@ class Entity:
                                                     self.animationManager.Rect())
             
         cnt = 0
-        rect = pygame.Rect(self.pos.x, self.pos.y, self.texture_width , self.texture_height * 1.5)
+        rect = pygame.Rect(self.pos.x, self.pos.y, self.texture_width , self.texture_height * 1.2)
         for collider in self.map_colliders:
             cnt+=1
             if rect.colliderect(collider.rect):
                 pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
         # print(cnt)
-        pygame.draw.rect(Globals.Surface, (0, 255, 0), (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y, self.texture_width , self.texture_height * 1.5), 1)
+        pygame.draw.rect(Globals.Surface, (0, 255, 0), (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y, self.texture_width , self.texture_height * 1.2), 1)
         atkRect = self.GetAttackBound()
         pygame.draw.rect(Globals.Surface, (0, 0, 255), (atkRect.x + Globals.camera.x, atkRect.y + Globals.camera.y, atkRect.w , atkRect.h), 1)
         self_rect = self.caculate_bound(self.pos)
         pygame.draw.rect(Globals.Surface, (0, 255, 0), (self_rect.x + Globals.camera.x, self_rect.y + Globals.camera.y, self_rect.w , self_rect.h), 1)
         g_rect = self.GravityBound(self.pos)
-        r = g_rect.copy()
-        print(r.colliderect(g_rect))
         pygame.draw.rect(Globals.Surface, (0, 0, 255), (g_rect.x + Globals.camera.x, g_rect.y + Globals.camera.y, g_rect.w , g_rect.h), 1)
         
 class State(Enum):

@@ -36,6 +36,6 @@ def SetResolution(_width, _height, _fullScreen=False):
     Globals.Text = pygame.Surface(Globals.display.get_size(), pygame.SRCALPHA)
 
 def render():
-    Globals.display.blit(pygame.transform.scale(Globals.Surface, Globals.display.get_size()), Globals.Surface.get_rect())
+    Globals.display.blit(pygame.transform.scale(Globals.Surface, Globals.display.get_size(), Globals.display), Globals.Surface.get_rect())
     if Globals.ShowText:
         Globals.display.blit(Globals.Text, Globals.display.get_rect())
