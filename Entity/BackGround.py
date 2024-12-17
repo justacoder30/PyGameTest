@@ -5,13 +5,13 @@ sys.path.append('..')
 class BackGround:
     def __init__(self):
 
-        bg1 = self.GetImg('resource/Background/layers/sky.png')
-        bg2 = self.GetImg('resource/Background/layers/clouds_1.png')
-        bg3 = self.GetImg('resource/Background/layers/rocks.png')
-        bg4 = self.GetImg('resource/Background/layers/clouds_2.png')
-        bg5 = self.GetImg('resource/Background/layers/ground_1.png')
-        bg6 = self.GetImg('resource/Background/layers/ground_2.png')
-        bg7 = self.GetImg('resource/Background/layers/plant.png')
+        bg1 = self.GetImg('resource/img/Background/layers/sky.png')
+        bg2 = self.GetImg('resource/img/Background/layers/clouds_1.png')
+        bg3 = self.GetImg('resource/img/Background/layers/rocks.png')
+        bg4 = self.GetImg('resource/img/Background/layers/clouds_2.png')
+        bg5 = self.GetImg('resource/img/Background/layers/ground_1.png')
+        bg6 = self.GetImg('resource/img/Background/layers/ground_2.png')
+        bg7 = self.GetImg('resource/img/Background/layers/plant.png')
 
         self.bg_list = [ bg1, bg2, bg3, bg4, bg5, bg6, bg7]
 
@@ -33,7 +33,6 @@ class BackGround:
             self.pos_cloud[i] -= self.cloud_speed[i] * Globals.DeltaTime
             if self.pos_cloud[i] <= -self.bg_width:
                 self.pos_cloud[i] = 0
-        pass
 
     def Draw(self):
         # for i in range(7):
@@ -42,16 +41,14 @@ class BackGround:
         #         Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + Globals.camera.x * self.speed, 0))
         #         self.speed+=0.1
 
-        for i in range(6):
+        for i in range(5):
             self.speed = 0.1
             # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
             for layer in range(len(self.bg_list)):
-                pos_x = 0
+                pos_x = i * self.bg_width + Globals.camera.x * self.speed
                 if layer == 1:
-                    pos_x = self.pos_cloud[0] + i * self.bg_width + Globals.camera.x * self.speed
+                    pos_x += self.pos_cloud[0]
                 elif layer == 3:
-                    pos_x = self.pos_cloud[1] + i * self.bg_width + Globals.camera.x * self.speed
-                else:
-                    pos_x = i * self.bg_width + Globals.camera.x * self.speed
+                    pos_x += self.pos_cloud[1]
                 Globals.Surface.blit(self.bg_list[layer], (pos_x, 0))
                 self.speed+=0.1

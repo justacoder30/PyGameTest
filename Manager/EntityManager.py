@@ -47,5 +47,6 @@ class EntityManager:
     def Draw(self):
         for entity in self.entities:
             entity.Draw()
+        # Globals.quadtree.draw()
         # for b in Block.Obj:
         #     b.Draw()

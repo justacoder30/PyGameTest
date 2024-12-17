@@ -11,9 +11,9 @@ import Manager.InputManager as InputManager
 class StopSate(GameState.GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.resumeBtn = Button('resource/Button/Resume Button.png', pygame.Rect(176.00, 32.00, 120, 40))
-        self.newGameBtn = Button('resource/Button/New game Button.png', pygame.Rect(176.00, 96.00, 120, 40))
-        self.quitBtn = Button('resource/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
+        self.resumeBtn = Button('resource/img/Button/Resume Button.png', pygame.Rect(176.00, 32.00, 120, 40))
+        self.newGameBtn = Button('resource/img/Button/New game Button.png', pygame.Rect(176.00, 96.00, 120, 40))
+        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
         self.buttons = [
             self.resumeBtn,

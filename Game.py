@@ -10,10 +10,10 @@ class Game:
         self.PreviousState = None
         self.NextState = None
 
-
         # pygame setup
         pygame.init()
         Camera.SetSize(480, 270)
+        # Camera.SetSize(960, 540)
         Globals.Init()
         Renderder.SetResolution(1920, 1080)
         

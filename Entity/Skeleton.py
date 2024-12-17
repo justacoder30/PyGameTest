@@ -178,6 +178,12 @@ class Skeleton(Entity):
             case _:
                 print("f{self.state} is not valid!")
 
+    def UpdateColor(self):
+        self.color = "white"
+
+        if self.IsHurt:
+            self.color = "red"
+
     def Update(self):
         self.UpdateVelocity()
         self.UpdatePosition()

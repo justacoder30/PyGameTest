@@ -15,8 +15,8 @@ class Flag(Entity):
         self.OFFSET = [0, 0]
 
         self.animations = {
-            "No Flag": Animation.Animation('resource/Item/No Flag.png', 1),
-            "Flag Out": Animation.Animation('resource/Item/Flag Out.png', 26, 0.07, True)
+            "No Flag": Animation.Animation('resource/img/Item/No Flag.png', 1),
+            "Flag Out": Animation.Animation('resource/img/Item/Flag Out.png', 26, 0.07, True)
         }
 
         self.animationManager = AnimationManager(self.animations['No Flag'])

@@ -5,8 +5,7 @@ import Entity.Map as TiledMap
 class Camera:
     def __init__(self, player):
         self.player = player
-        Globals.MapSize.width = TiledMap.Map.get_width()
-        Globals.MapSize.height = TiledMap.Map.get_height()
+        
         Camera.rect = pygame.Rect(0, 0, Globals.CameraSize_X / 2, Globals.CameraSize_Y)
         self.current_pos = pygame.Vector2(0, 0)
         self.previous_pos = self.current_pos
