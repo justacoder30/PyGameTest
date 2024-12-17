@@ -13,7 +13,7 @@ class Game:
         # pygame setup
         pygame.init()
         Camera.SetSize(480, 270)
-        # Camera.SetSize(960, 540)
+        # Camera.SetSize(560, 315)
         Globals.Init()
         Renderder.SetResolution(1920, 1080)
         

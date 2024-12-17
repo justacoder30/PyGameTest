@@ -83,7 +83,6 @@ class Player(Entity):
             self.velocity.x = self.speed
 
     def UpdatePosition(self):
-        self.pos += self.velocity * Globals.DeltaTime
         self.old_rect = self.rect.copy()
         self.rect = self.caculate_bound(self.pos)
         
@@ -113,6 +112,7 @@ class Player(Entity):
                     self.rect.left = collider.rect.right
                     self.pos.x = collider.rect.right -  self.OFFSET[0]
         
+        self.pos += self.velocity * Globals.DeltaTime
 
     def Attack(self):
         self.state = State.Attack
