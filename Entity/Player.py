@@ -50,13 +50,12 @@ class Player(Entity):
         collision_sprites = Globals.quadtree.query(rect)
         if collision_sprites:
             for collider in collision_sprites:
-                if collider.direction == 'vertical':
+                if collider.direction == 'y':
                     self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
                     self.pos.y = round(self.pos.y)
                 else:
                     self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
                     self.pos.x = round(self.pos.x)
-                # self.pos += collider.velocity * collider.speed * Globals.DeltaTime
             return False
             
         return True

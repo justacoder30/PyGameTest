@@ -66,7 +66,7 @@ class Entity(pygame.sprite.Sprite):
         return math.sqrt(x + y)
     
     def GravityBound(self, pos):
-        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 4)
+        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 2)
 
     def IsFalling(self):
         rect = self.GravityBound(self.pos)
@@ -169,8 +169,8 @@ class Entity(pygame.sprite.Sprite):
         #         pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
         # self.DrawRect((0, 0, 255), self.GetAttackBound())
-        self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
-        self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
+        # self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
+        # self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
         # self.DrawRect((0, 0, 255), self.wall_rect())
         # self.DrawRect((0, 0, 255), self.edge_rect())
         # center = self.get_center() + + Globals.camera
