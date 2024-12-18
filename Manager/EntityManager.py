@@ -7,29 +7,40 @@ from Camera import *
 from Manager.AnimationManager import *
 from Animation import *
 from Entity.Player import *
-from Entity.Flag import *
+from Entity.Item import *
 from Entity.Block import *
 from Entity.BackGround import *
-from Manager.EnemyManager import *
+from Entity.Enemy import *
 
 class EntityManager:
     def __init__(self, level):
         self.all_sprites = pygame.sprite.Group()
+
         BackGround(self.all_sprites)
         Map(level, self.all_sprites)
+
+        # for rect in Map.GetRectList("MovingPlatform"):
+        #     Movingplatform(rect, self.all_sprites)
+        Block(416.00, 256.00, 48.00, 32.00, 'vertical', self.all_sprites)
+
         self.player = Player(self.all_sprites)
+
         for pos in Map.GetListPosition("SkeletonPosition"):
             Skeleton(pos, self.all_sprites, self.player)
-        # self.enemy = EnemyManager(self.player)
+
         # self.flag = Flag(self.player)
         self.camera = Camera(self.player)
 
+        self.static_quadtree = Globals.quadtree
+
     def Updated(self):
+        # Globals.quadtree = self.static_quadtree
+        Globals.InitQuadTree(Globals.MapSize, 10)
+
         for sprite in self.all_sprites:
             sprite.Update()
-            if type(sprite) == Skeleton:
-                sprite.pos += sprite.velocity * Globals.DeltaTime
-                print(round(sprite.pos1.x), round(sprite.pos.x))
+            if sprite.IsRemoved:
+                sprite.kill()
         self.camera.Update()
 
     def Draw(self):

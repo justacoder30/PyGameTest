@@ -4,18 +4,16 @@ sys.path.append('..')
 from Entity.Entity import *
 
 class Block(Entity):
-    Obj = []
-    def __init__(self, x, y, w, h, direction):
-        super().__init__()
+    def __init__(self, x, y, w, h, direction, groups):
+        super().__init__(groups)
         self.pos = pygame.Vector2(x, y)
         self.rect = pygame.Rect(x, y, w, h)
         self.old_rect = self.rect.copy()
         self.speed = 90
-        self.velocity = pygame.math.Vector2((1,1))
-        self.img = pygame.transform.scale(pygame.image.load('resource/Button/Button.png'), (w, h))
+        self.velocity = pygame.math.Vector2((1, 1))
+        self.img = pygame.transform.scale(pygame.image.load('resource/img/Button/Button.png'), (w, h))
         self.img.fill("red")
         self.direction = direction
-        Block.Obj.append(self)
 
     # @classmethod
     # def GetObj(cls):
@@ -53,6 +51,7 @@ class Block(Entity):
         self.rect.y = round(self.pos.y)
         self.pos.x = round(self.pos.x)
         self.rect.x = round(self.pos.x)
+        Globals.quadtree.insert(self)
         
 
     def Draw(self):

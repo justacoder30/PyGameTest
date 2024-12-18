@@ -20,7 +20,7 @@ class Entity(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2(0, 0)
         self.texture_width = 0
         self.texture_height = 0
-        self.OFFSET = []
+        self.OFFSET = [0, 0]
         self.IsNearPlayer = False
         self.IsHurt = False
         self.timer = 0 
@@ -29,7 +29,9 @@ class Entity(pygame.sprite.Sprite):
         self.Time = 0
         self.HurtTime = 0
         self.IsRemoved = False
-        self.map_colliders = None
+        self.isplatfrom = False
+        self.enemyZone = [0, 0]
+        self.atkSize = [0, 0]
         self.rect = None
         self.old_rect = None
         self.direction = ""
@@ -42,11 +44,21 @@ class Entity(pygame.sprite.Sprite):
                            pos.y + self.OFFSET[1],
                            self.texture_width - self.OFFSET[0] * 2,
                            self.texture_height - self.OFFSET[1])
+    
+    def edge_rect(self):
+        size = 3
+        if self.animationManager.Isflip:
+            return pygame.Rect(self.rect.left - size, self.rect.bottom, size, size)
+        return pygame.Rect(self.rect.right, self.rect.bottom, size, size)
+    
+    def wall_rect(self):
+        pos_x = self.rect.left-2 if self.animationManager.Isflip else self.rect.right
+        return pygame.Rect(pos_x, self.rect.top, 3, self.rect.height)
 
     def GetAttackBound(self):
         if self.animationManager.Isflip:
-            return pygame.Rect(self.pos.x, self.pos.y + self.OFFSET[1], self.OFFSET[0], self.texture_height - self.OFFSET[1])
-        return pygame.Rect(self.pos.x + self.texture_width - self.OFFSET[0], self.pos.y + self.OFFSET[1], self.OFFSET[0], self.texture_height - self.OFFSET[1])
+            return pygame.Rect(self.rect.left - self.atkSize[0], self.rect.top, self.atkSize[0], self.atkSize[1])
+        return pygame.Rect(self.rect.right, self.rect.top, self.atkSize[0], self.atkSize[1])
     
     def ObjectDistance(self, player):
         x = math.pow(self.get_center().x - player.get_center().x, 2)
@@ -54,24 +66,12 @@ class Entity(pygame.sprite.Sprite):
         return math.sqrt(x + y)
     
     def GravityBound(self, pos):
-        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 5)
-    
-    def ColliderDetetiveBound(self):
-        rect = self.caculate_bound(self.pos)
-        pos_x = rect.left-2 if self.animationManager.Isflip else rect.right
-        return pygame.Rect(pos_x, rect.top, 2, rect.height * 0.8)
+        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 4)
 
     def IsFalling(self):
         rect = self.GravityBound(self.pos)
         collision_sprites = Globals.quadtree.query(rect)
         if collision_sprites:
-            for collider in collision_sprites:
-                if collider.direction == 'vertical':
-                    self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
-                    self.pos.y = round(self.pos.y)
-                else:
-                    self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
-                    self.pos.x = round(self.pos.x)
             return False
         return True
 
@@ -99,6 +99,36 @@ class Entity(pygame.sprite.Sprite):
             self.Time = 0
             return True
         return False
+    
+    def Collision(self, direction):
+        self.rect = self.caculate_bound(self.pos)
+        
+        collision_sprites = Globals.quadtree.query(self.rect)
+        if collision_sprites:
+            for collider in collision_sprites:
+                # if direction == 'vertical':
+                    # collision on the top
+                    if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
+                        self.velocity.y = 0
+                        self.rect.top = collider.rect.bottom
+                        self.pos.y = collider.rect.bottom - self.OFFSET[1]
+
+                    # collision on the bottom
+                    if self.rect.bottom >= collider.rect.top and self.old_rect.bottom <= collider.old_rect.top:
+                        self.velocity.y = 0
+                        self.rect.bottom = collider.rect.top 
+                        self.pos.y = collider.rect.top - self.texture_height
+                        self.falling = False
+                # else:
+                    # collision on the right
+                    if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
+                        self.rect.right = collider.rect.left 
+                        self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
+
+                    # collision on the left
+                    if self.rect.left <= collider.rect.right and self.old_rect.left >= collider.old_rect.right:
+                        self.rect.left = collider.rect.right
+                        self.pos.x = collider.rect.right -  self.OFFSET[0]
     
     def CheckOutOfMap(self):
         self.pos.x  = pygame.math.clamp(self.pos.x, -self.OFFSET[0], Globals.MapSize.width - self.texture_width + self.OFFSET[0])
@@ -139,8 +169,12 @@ class Entity(pygame.sprite.Sprite):
         #         pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
         # self.DrawRect((0, 0, 255), self.GetAttackBound())
-        self.DrawRect((0, 255, 0), self.caculate_bound(self.pos))
-        self.DrawRect((0, 0, 255), self.ColliderDetetiveBound())
+        self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
+        self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
+        # self.DrawRect((0, 0, 255), self.wall_rect())
+        # self.DrawRect((0, 0, 255), self.edge_rect())
+        # center = self.get_center() + + Globals.camera
+        # # pygame.draw.circle(Globals.Surface, (0, 0, 255), center, self.enemyZone[0], 1)
         
         # rect = pygame.Rect(self.rect.x - 2, self.rect.y - 2, self.rect.width + 4, self.rect.height + 4)
         # collision_sprites = Globals.quadtree.query(rect)

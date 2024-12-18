@@ -14,7 +14,7 @@ layers = {
 }
 
 class MapTile(Entity):
-    def __init__(self, pos: pygame.Vector2, img, Tiles, groups, isplatfrom = True):
+    def __init__(self, pos: pygame.Vector2, img, groups, isplatfrom = True):
         super().__init__(groups)
         self.pos = pos
         self.img = img
@@ -26,19 +26,18 @@ class MapTile(Entity):
         self.speed = 0
         self.direction = ""
         self.velocity = pygame.Vector2(0, 0)
-        Tiles.append(self)
 
     def Update(self):
+        Globals.quadtree.insert(self)
         pass
 
     def Draw(self):
         self.DrawSprite(self.img, self.pos)
 
 class Map():
-    def __init__(self, level, group):
+    def __init__(self, level, groups):
         # super().__init__() 
         Map.max_x, Map.max_y = 0, 0
-        Map.Tiles = []
         Map.tiled_map = pytmx.load_pygame(f'resource/Map1/map{level}.tmx')
         for layer in layers:
             isplatfrom = True if layer == 'Platform' else False
@@ -46,15 +45,15 @@ class Map():
                 Map.max_x = x if x > Map.max_x else Map.max_x
                 Map.max_y = y if y > Map.max_y else Map.max_y
                 pos = pygame.Vector2(x * TileSize, y * TileSize)
-                MapTile(pos, img, Map.Tiles, group, isplatfrom)
+                MapTile(pos, img, groups, isplatfrom)
 
         Globals.MapSize.w= Map.get_width()
         Globals.MapSize.h = Map.get_height()
-        Globals.InitQuadTree(Globals.MapSize, 10)
-        for tile in Map.Tiles:
-            if not tile.isplatfrom:
-                continue
-            Globals.quadtree.insert(tile)
+        # Globals.InitQuadTree(Globals.MapSize, 10)
+        # for sprite in groups:
+        #     if not sprite.isplatfrom:
+        #         continue
+        #     Globals.quadtree.insert(sprite)
 
     @classmethod
     def get_width(cls):
@@ -79,23 +78,23 @@ class Map():
         return pos_list
         
     @classmethod 
-    def GetListBound(cls, obj_name):
+    def GetRectList(cls, obj_name):
         obj_group = cls.tiled_map.get_layer_by_name(obj_name)
-        list_bound = []
+        rect_list = []
         for obj in obj_group:
             rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
-            list_bound.append(rect)
-        return list_bound
+            rect_list.append(rect)
+        return rect_list
     
-    @classmethod 
-    def GetTilesBound(cls):
-        return Map.Tiles
+    # @classmethod 
+    # def GetTilesBound(cls):
+    #     return Map.Tiles
     
-    def Update(self):
-        for tile in Map.Tiles:
-            tile.Update()
+    # def Update(self):
+    #     for tile in Map.Tiles:
+    #         tile.Update()
 
-    def Draw(self):
-        for tile in Map.Tiles:
-            tile.Draw()
+    # def Draw(self):
+    #     for tile in Map.Tiles:
+    #         tile.Draw()
 

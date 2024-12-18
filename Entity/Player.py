@@ -4,7 +4,6 @@ from Entity.Map import *
 from Animation import *
 from Entity.Entity import *
 from Entity.Block import *
-from Manager.EnemyManager import *
 from Manager.AnimationManager import *
 from Entity.Block import *
 import Globals, pygame
@@ -24,6 +23,7 @@ class Player(Entity):
         self.attackTime = 0 
         self.hp = 50
         self.damage = 10
+        self.atkSize = [42, 38]
 
         self.animations = {
             'Run' : Animation.Animation('resource/img/Player/Run.png', 10, 0.04),
@@ -42,25 +42,24 @@ class Player(Entity):
 
         self.state = State
 
-        self.map_colliders = Map.GetTilesBound()
-
         self.rect = self.caculate_bound(self.pos)
         self.old_rect = self.rect.copy()
 
-    # def IsFalling(self):
-    #     rect = self.GravityBound(self.pos)
-    #     collision_sprites = Globals.quadtree.query(rect)
-    #     if collision_sprites:
-    #         for collider in collision_sprites:
-    #             if collider.direction == 'vertical':
-    #                 self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
-    #                 self.pos.y = round(self.pos.y)
-    #             else:
-    #                 self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
-    #                 self.pos.x = round(self.pos.x)
-    #         return False
+    def IsFalling(self):
+        rect = self.GravityBound(self.pos)
+        collision_sprites = Globals.quadtree.query(rect)
+        if collision_sprites:
+            for collider in collision_sprites:
+                if collider.direction == 'vertical':
+                    self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
+                    self.pos.y = round(self.pos.y)
+                else:
+                    self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
+                    self.pos.x = round(self.pos.x)
+                # self.pos += collider.velocity * collider.speed * Globals.DeltaTime
+            return False
             
-    #     return True
+        return True
 
     def UpdateVelocity(self):
         if self.state == State.Die:
@@ -82,37 +81,6 @@ class Player(Entity):
         if Player.CurrentKey[pygame.K_d]:
             self.velocity.x = self.speed
 
-    def Collision(self, direction):
-        
-        self.rect = self.caculate_bound(self.pos)
-        
-        collision_sprites = Globals.quadtree.query(self.rect)
-        if collision_sprites:
-            for collider in collision_sprites:
-                if direction == 'vertical':
-                    # collision on the top
-                    if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
-                        self.velocity.y = 0
-                        self.rect.top = collider.rect.bottom
-                        self.pos.y = collider.rect.bottom - self.OFFSET[1]
-
-                    # collision on the bottom
-                    if self.rect.bottom >= collider.rect.top and self.old_rect.bottom <= collider.old_rect.top:
-                        self.velocity.y = 0
-                        self.rect.bottom = collider.rect.top 
-                        self.pos.y = collider.rect.top - self.texture_height
-                        self.falling = False
-                else:
-                    # collision on the right
-                    if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
-                        self.rect.right = collider.rect.left 
-                        self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
-
-                    # collision on the left
-                    if self.rect.left <= collider.rect.right and self.old_rect.left >= collider.old_rect.right:
-                        self.rect.left = collider.rect.right
-                        self.pos.x = collider.rect.right -  self.OFFSET[0]
-
     def UpdatePosition(self):
         self.old_rect = self.rect.copy()
 
@@ -123,14 +91,11 @@ class Player(Entity):
 
     def Attack(self):
         self.state = State.Attack
-        if not EnemyManager.GetEnemyList():
-            return
 
         if super().FrameEnd():
             atk_rect = super().GetAttackBound()
-            for enemy in EnemyManager.GetEnemyList():
-                if atk_rect.colliderect(enemy.caculate_bound(enemy.pos)):
-                    enemy.BeingHurt(self.damage)
+            if atk_rect.colliderect(self.caculate_bound(self.pos)):
+                self.BeingHurt(self.damage)
 
     def BeingHurt(self, damge):
         self.IsHurt = True
@@ -158,7 +123,7 @@ class Player(Entity):
                         Globals.GameOver = True
                 elif Player.CurrentKey[pygame.K_j] and not Player.PreviousKey[pygame.K_j] or self.animationManager.Isloop:
                     self.state = State.Attack
-                    Player.Attack(self)
+                    # Player.Attack(self)
                 else:
                     self.state = State.Idle
         elif self.velocity.y > 0 :
