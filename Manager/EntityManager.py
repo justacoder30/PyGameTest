@@ -14,39 +14,25 @@ from Manager.EnemyManager import *
 
 class EntityManager:
     def __init__(self, level):
-        Block.Obj = []
-        self.map = Map(level)
-        self.bg = BackGround()
-        # self.rect = Block(240.00, 592.00, 80.00, 32.00, 'vertical')
-        # self.rect2 = Block(320.00, 320.00, 80.00, 32.00,'horizontal')
-        self.player = Player()
+        self.all_sprites = pygame.sprite.Group()
+        BackGround(self.all_sprites)
+        Map(level, self.all_sprites)
+        self.player = Player(self.all_sprites)
+        for pos in Map.GetListPosition("SkeletonPosition"):
+            Skeleton(pos, self.all_sprites, self.player)
         # self.enemy = EnemyManager(self.player)
         # self.flag = Flag(self.player)
         self.camera = Camera(self.player)
 
-        self.entities = [
-            self.bg,
-            self.map,
-            # self.rect,
-            # self.rect2,
-            # self.enemy,
-            # self.flag,
-            self.player,
-        ]
-        # Map(level)
-        # self.player = Player()
-        # Camera(self.player)
-
     def Updated(self):
-        for entity in self.entities:
-            entity.Update()
-        # for b in Block.Obj:
-        #     b.Update()
+        for sprite in self.all_sprites:
+            sprite.Update()
+            if type(sprite) == Skeleton:
+                sprite.pos += sprite.velocity * Globals.DeltaTime
+                print(round(sprite.pos1.x), round(sprite.pos.x))
         self.camera.Update()
 
     def Draw(self):
-        for entity in self.entities:
-            entity.Draw()
+        for sprite in self.all_sprites:
+            sprite.Draw()
         # Globals.quadtree.draw()
-        # for b in Block.Obj:
-        #     b.Draw()

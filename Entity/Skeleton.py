@@ -11,8 +11,8 @@ class Skeleton(Entity):
     PreviousKey = None
     CurrentKey = None
 
-    def __init__(self, pos, player):
-        super().__init__()
+    def __init__(self, pos, groups, player):
+        super().__init__(groups)
 
         self.speed = 60
         self.OFFSET = [39, 18]
@@ -35,6 +35,7 @@ class Skeleton(Entity):
 
         self.animationManager = AnimationManager(self.animations['Idle'])
         self.pos = pos
+        self.pos1 = self.pos
         self.texture_width = self.animationManager.Animation.FrameWidth
         self.texture_height = self.animationManager.Animation.FrameHeight
 
@@ -42,7 +43,6 @@ class Skeleton(Entity):
 
         self.Skeleton_colliders = Map.GetListBound("EnemyCollider")
         self.map_colliders = Map.GetListBound("MapCollider")
-        self.map_hodler_colliders = Map.GetListBound("HolderCollider")
         self.rect = self.caculate_bound(self.pos)
 
     def IsNearPlayer(self):
@@ -62,6 +62,7 @@ class Skeleton(Entity):
     def FollowPlayer(self):
         self.timer = 0 
         rect = self.ColliderDetetiveBound()
+        # collision_sprites = Globals.quadtree.query(rect)
         if self.IsHurt:
             pass
         elif self.hp <= 0 or Skeleton.IsAttackRange(self) and not self.IsHurt:
@@ -69,44 +70,47 @@ class Skeleton(Entity):
         else:
             self.velocity.x = self.speed if self.IsObjRight(self.player) else -self.speed
 
+        # if collision_sprites:
         for collider in self.Skeleton_colliders:
             if rect.colliderect(collider):
+                print(True)
                 if self.animationManager.Isflip and not self.IsObjRight(self.player) or not self.animationManager.Isflip and self.IsObjRight(self.player):
                     self.velocity.x = 0  
 
     def UpdateVelocity(self):
         self.timer += Globals.DeltaTime
 
-        if not Skeleton.IsNearPlayer(self):
-            self.timechange = random.randint(1, 4)
-            if self.IsAttacking:
-                self.velocity.x = 0
-            elif self.velocity.x != 0 and self.timer >= self.timechange:
-                self.velocity.x = 0
-                self.timer = 0
-            elif self.velocity.x == 0 and self.timer >= self.timechange:
-                self.velocity.x = random.choice([-self.speed, self.speed])
-                self.timer = 0
-        else:
-            self.FollowPlayer()
+        # if not Skeleton.IsNearPlayer(self):
+        self.timechange = random.randint(1, 4)
+        if self.IsAttacking:
+            self.velocity.x = 0
+        elif self.velocity.x != 0 and self.timer >= self.timechange:
+            self.velocity.x = 0
+            self.timer = 0
+        elif self.velocity.x == 0 and self.timer >= self.timechange:
+            self.velocity.x = random.choice([-self.speed, self.speed])
+            self.timer = 0
+        # else:
+        #     self.FollowPlayer()
 
         if self.IsFalling():
             self.velocity.y += self.Gravity * Globals.DeltaTime
 
-    def UpdatePosition(self):
+    def UpdatePosition1(self):
         newPos = self.pos + self.velocity * Globals.DeltaTime
 
         newRect = self.caculate_bound(pygame.Vector2(newPos.x, self.pos.y))
         for collider in self.Skeleton_colliders:
             if(newRect.colliderect(collider)):
+                print(True)
                 if self.velocity.x > 0:
                     newPos.x = collider.left - self.texture_width + self.OFFSET[0]
                 elif self.velocity.x < 0:
                     newPos.x = collider.right -  self.OFFSET[0]
-                if Skeleton.IsNearPlayer(self):
-                    self.velocity.x = 0
-                else:
-                    self.velocity.x *= -1
+                # if Skeleton.IsNearPlayer(self):
+                #     self.velocity.x = 0
+                # else:
+                #     self.velocity.x *= -1
                 continue
 
         newRect = super().caculate_bound(pygame.Vector2(self.pos.x, newPos.y))
@@ -122,6 +126,52 @@ class Skeleton(Entity):
                     continue
         self.pos = newPos
         self.rect = self.caculate_bound(self.pos)
+        # print(self.pos.x, newPos.x)
+
+    def Collision(self, direction):
+        self.rect = self.caculate_bound(self.pos)
+        
+        collision_sprites = Globals.quadtree.query(self.rect)
+        if collision_sprites:
+            for collider in collision_sprites:
+                if direction == 'vertical':
+                    # collision on the top
+                    if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
+                        self.velocity.y = 0
+                        self.rect.top = collider.rect.bottom
+                        self.pos.y = collider.rect.bottom - self.OFFSET[1]
+
+                    # collision on the bottom
+                    if self.rect.bottom >= collider.rect.top and self.old_rect.bottom <= collider.old_rect.top:
+                        self.velocity.y = 0
+                        self.rect.bottom = collider.rect.top 
+                        self.pos.y = collider.rect.top - self.texture_height
+                        self.falling = False
+
+                    if Skeleton.IsNearPlayer(self):
+                        self.velocity.x = 0
+                    else:
+                        self.velocity.x *= -1
+                else:
+                    # collision on the right
+                    if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
+                        self.rect.right = collider.rect.left 
+                        self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
+
+                    # collision on the left
+                    if self.rect.left <= collider.rect.right and self.old_rect.left >= collider.old_rect.right:
+                        self.rect.left = collider.rect.right
+                        self.pos.x = collider.rect.right -  self.OFFSET[0]
+    
+    def UpdatePosition(self):
+        # self.old_rect = self.rect.copy()
+        
+        # self.pos.x += self.velocity.x * Globals.DeltaTime
+        # self.Collision('horizontal')
+        # self.pos.y += self.velocity.y * Globals.DeltaTime
+        # self.Collision('vertical')
+
+        self.UpdatePosition1()
 
     def HitFrame(self, frame):
         return frame-1 if not self.animationManager.Isflip else self.animationManager.Animation.FrameCount-frame
@@ -186,5 +236,5 @@ class Skeleton(Entity):
 
     def Update(self):
         self.UpdateVelocity()
-        self.UpdatePosition()
+        self.UpdatePosition1()
         self.SetAnimation()

@@ -9,8 +9,9 @@ from Manager.AnimationManager import *
 from enum import Enum
 from Camera import *
 
-class Entity:
-    def __init__(self):
+class Entity(pygame.sprite.Sprite):
+    def __init__(self, groups):
+        super().__init__(groups)
         self.speed = 0
         self.color = "white"
         self.animations = { }
@@ -57,8 +58,8 @@ class Entity:
     
     def ColliderDetetiveBound(self):
         rect = self.caculate_bound(self.pos)
-        pos_x = rect.left-1 if self.animationManager.Isflip else rect.right
-        return pygame.Rect(pos_x, rect.top, 1, rect.height)
+        pos_x = rect.left-2 if self.animationManager.Isflip else rect.right
+        return pygame.Rect(pos_x, rect.top, 2, rect.height * 0.8)
 
     def IsFalling(self):
         rect = self.GravityBound(self.pos)
@@ -115,6 +116,11 @@ class Entity:
     def DrawRect(self, color, rect: pygame.Rect):
         pygame.draw.rect(Globals.Surface, color, (rect.x + Globals.camera.x, rect.y + Globals.camera.y, rect.width , rect.height), 1)
 
+    def DrawOnly(self, texture, pos, rect):
+        cam_rect = pygame.Rect(0, 0, Camera.width, Camera.height)
+        if cam_rect.colliderect(rect):
+            Globals.Surface.blit(texture, (pos[0] , pos[1]))
+
     def DrawSprite(self, texture, pos):
         if Camera.rect.colliderect(self.rect):
             Globals.Surface.blit(texture, (pos.x + Globals.camera.x, pos.y + Globals.camera.y))
@@ -133,8 +139,8 @@ class Entity:
         #         pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
         # self.DrawRect((0, 0, 255), self.GetAttackBound())
-        # self.DrawRect((0, 255, 0), self.caculate_bound(self.pos))
-        # self.DrawRect((0, 0, 255), self.GravityBound(self.pos))
+        self.DrawRect((0, 255, 0), self.caculate_bound(self.pos))
+        self.DrawRect((0, 0, 255), self.ColliderDetetiveBound())
         
         # rect = pygame.Rect(self.rect.x - 2, self.rect.y - 2, self.rect.width + 4, self.rect.height + 4)
         # collision_sprites = Globals.quadtree.query(rect)

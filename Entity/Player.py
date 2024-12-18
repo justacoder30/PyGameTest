@@ -13,8 +13,8 @@ class Player(Entity):
     PreviousKey = None
     CurrentKey = None
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, groups):
+        super().__init__(groups)
 
         self.speed = 150
         self.jump = 400
@@ -82,37 +82,44 @@ class Player(Entity):
         if Player.CurrentKey[pygame.K_d]:
             self.velocity.x = self.speed
 
-    def UpdatePosition(self):
-        self.old_rect = self.rect.copy()
+    def Collision(self, direction):
+        
         self.rect = self.caculate_bound(self.pos)
         
         collision_sprites = Globals.quadtree.query(self.rect)
         if collision_sprites:
             for collider in collision_sprites:
-                # collision on the top
-                if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
-                    self.velocity.y = 0
-                    self.rect.top = collider.rect.bottom
-                    self.pos.y = collider.rect.bottom - self.OFFSET[1]
+                if direction == 'vertical':
+                    # collision on the top
+                    if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
+                        self.velocity.y = 0
+                        self.rect.top = collider.rect.bottom
+                        self.pos.y = collider.rect.bottom - self.OFFSET[1]
 
-                # collision on the bottom
-                if self.rect.bottom >= collider.rect.top and self.old_rect.bottom <= collider.old_rect.top:
-                    self.velocity.y = 0
-                    self.rect.bottom = collider.rect.top 
-                    self.pos.y = collider.rect.top - self.texture_height
-                    self.falling = False
+                    # collision on the bottom
+                    if self.rect.bottom >= collider.rect.top and self.old_rect.bottom <= collider.old_rect.top:
+                        self.velocity.y = 0
+                        self.rect.bottom = collider.rect.top 
+                        self.pos.y = collider.rect.top - self.texture_height
+                        self.falling = False
+                else:
+                    # collision on the right
+                    if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
+                        self.rect.right = collider.rect.left 
+                        self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
 
-                # collision on the right
-                if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
-                    self.rect.right = collider.rect.left 
-                    self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
+                    # collision on the left
+                    if self.rect.left <= collider.rect.right and self.old_rect.left >= collider.old_rect.right:
+                        self.rect.left = collider.rect.right
+                        self.pos.x = collider.rect.right -  self.OFFSET[0]
 
-                # collision on the left
-                if self.rect.left <= collider.rect.right and self.old_rect.left >= collider.old_rect.right:
-                    self.rect.left = collider.rect.right
-                    self.pos.x = collider.rect.right -  self.OFFSET[0]
-        
-        self.pos += self.velocity * Globals.DeltaTime
+    def UpdatePosition(self):
+        self.old_rect = self.rect.copy()
+
+        self.pos.x += self.velocity.x * Globals.DeltaTime
+        self.Collision('horizontal')
+        self.pos.y += self.velocity.y * Globals.DeltaTime
+        self.Collision('vertical')
 
     def Attack(self):
         self.state = State.Attack

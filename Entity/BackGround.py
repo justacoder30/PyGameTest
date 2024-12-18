@@ -1,10 +1,12 @@
-import pygame, Globals, sys
+
+import Entity.Entity as enity
+import pygame, Globals, sys, Entity
 sys.path.append('..')
 # from Entity.Block import *
 
-class BackGround:
-    def __init__(self):
-
+class BackGround(enity.Entity):
+    def __init__(self, groups):
+        super().__init__(groups)
         bg1 = self.GetImg('resource/img/Background/layers/sky.png')
         bg2 = self.GetImg('resource/img/Background/layers/clouds_1.png')
         bg3 = self.GetImg('resource/img/Background/layers/rocks.png')
@@ -20,28 +22,20 @@ class BackGround:
         self.speed = 0.6
         self.cloud_speed = [10, 20]
         self.pos_cloud = [0, 0]
-        # Block.Obj.append(self)
         
 
     def GetImg(self, f_path):
         return pygame.transform.scale(pygame.image.load(f_path).convert_alpha(), Globals.Surface.get_size())
 
     def Update(self):
-        # self.speed = 0.6
-        # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
         for i in range(2):
             self.pos_cloud[i] -= self.cloud_speed[i] * Globals.DeltaTime
             if self.pos_cloud[i] <= -self.bg_width:
                 self.pos_cloud[i] = 0
 
     def Draw(self):
-        # for i in range(7):
-        #     self.speed = 0.1
-        #     for n in range(len(self.bg_list)):
-        #         Globals.Surface.blit(self.bg_list[n], (i * self.bg_width + Globals.camera.x * self.speed, 0))
-        #         self.speed+=0.1
 
-        for i in range(5):
+        for i in range(10):
             self.speed = 0.1
             # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
             for layer in range(len(self.bg_list)):
@@ -50,5 +44,6 @@ class BackGround:
                     pos_x += self.pos_cloud[0]
                 elif layer == 3:
                     pos_x += self.pos_cloud[1]
-                Globals.Surface.blit(self.bg_list[layer], (pos_x, 0))
+                rect = Globals.Surface.get_rect(left = pos_x)
+                super().DrawOnly(self.bg_list[layer], (pos_x, 0), rect)
                 self.speed+=0.1

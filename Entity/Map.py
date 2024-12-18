@@ -9,15 +9,23 @@ from Camera import *
 
 TileSize = 16
 
+layers = {
+    'Platform': 0
+}
+
 class MapTile(Entity):
-    def __init__(self, pos: pygame.Vector2, img, Tiles, isplatfrom = True):
-        super().__init__()
+    def __init__(self, pos: pygame.Vector2, img, Tiles, groups, isplatfrom = True):
+        super().__init__(groups)
         self.pos = pos
         self.img = img
         # self.img.fill('red')
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
         self.isplatfrom = isplatfrom
+        
+        self.speed = 0
+        self.direction = ""
+        self.velocity = pygame.Vector2(0, 0)
         Tiles.append(self)
 
     def Update(self):
@@ -26,18 +34,19 @@ class MapTile(Entity):
     def Draw(self):
         self.DrawSprite(self.img, self.pos)
 
-class Map(Entity):
-    def __init__(self, level):
-        super().__init__() 
+class Map():
+    def __init__(self, level, group):
+        # super().__init__() 
         Map.max_x, Map.max_y = 0, 0
         Map.Tiles = []
         Map.tiled_map = pytmx.load_pygame(f'resource/Map1/map{level}.tmx')
-
-        for x, y, img in Map.tiled_map.get_layer_by_name('Platform').tiles():
-            Map.max_x = x if x > Map.max_x else Map.max_x
-            Map.max_y = y if y > Map.max_y else Map.max_y
-            pos = pygame.Vector2(x * TileSize, y * TileSize)
-            MapTile(pos, img, Map.Tiles)
+        for layer in layers:
+            isplatfrom = True if layer == 'Platform' else False
+            for x, y, img in Map.tiled_map.get_layer_by_name(layer).tiles():
+                Map.max_x = x if x > Map.max_x else Map.max_x
+                Map.max_y = y if y > Map.max_y else Map.max_y
+                pos = pygame.Vector2(x * TileSize, y * TileSize)
+                MapTile(pos, img, Map.Tiles, group, isplatfrom)
 
         Globals.MapSize.w= Map.get_width()
         Globals.MapSize.h = Map.get_height()
@@ -81,10 +90,6 @@ class Map(Entity):
     @classmethod 
     def GetTilesBound(cls):
         return Map.Tiles
-        list_bound = []
-        for obj in Map.Tiles:
-            list_bound.append(obj.rect)
-        return list_bound
     
     def Update(self):
         for tile in Map.Tiles:
