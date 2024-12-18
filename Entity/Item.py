@@ -11,7 +11,7 @@ class Movingplatform(Entity):
         super().__init__(groups)
         self.active_zone = rect
         self.direction = 'y' if self.active_zone.w < self.active_zone.h else 'x'
-        self.speed = 90
+        self.speed = 65
 
         self.animations = {
             'Idle' : Animation.Animation('resource/img/MovingPlatform/Idle.png', 4)
@@ -31,47 +31,48 @@ class Movingplatform(Entity):
     def UpdatePosition(self):
         # print(self.direction)
         self.old_rect = self.rect.copy()
-        
-        self.rect.topleft += self.velocity * self.speed * Globals.DeltaTime
+        # self.pos += self.velocity * self.speed * Globals.DeltaTime
 
         if self.direction == 'y':
-            print(self.velocity.y)
             if self.rect.bottom >= self.active_zone.bottom and self.velocity.y == 1:
                 # self.rect.bottom = self.active_zone.bottom
+                # self.pos.y = self.rect.y
                 self.velocity.y = -1
             if self.rect.top <= self.active_zone.top and self.velocity.y == -1:
                 # self.rect.top = self.active_zone.top
+                # self.pos.y = self.rect.y
                 self.velocity.y = 1
+            # self.pos.y += self.velocity.y * self.speed * Globals.DeltaTime
 
         if self.direction == 'x':
             if self.rect.right >= self.active_zone.right and self.velocity.x == 1:
                 # self.rect.right = self.active_zone.right
+                # self.pos.x = self.rect.x
                 self.velocity.x = -1
             if self.rect.left <= self.active_zone.left and self.velocity.x == -1:
                 # self.rect.left = self.active_zone.left
+                # self.pos.x = self.rect.x
                 self.velocity.x = 1
+            # self.pos.x += self.velocity.x * self.speed * Globals.DeltaTime
 
         
-        # self.pos.y = round(self.pos.y)
-        # self.pos.x = round(self.pos.x)
-        # self.rect.y = round(self.pos.y)
-        # self.rect.x = round(self.pos.x)
-            # print(self.rect.topleft)
-        # self.rect = self.caculate_bound(self.pos)
-        self.pos = pygame.Vector2(self.rect.topleft)
+        # self.pos.y = round(self.pos.y, 1)
+        # self.pos.x = round(self.pos.x, 1)
+        self.rect = self.caculate_bound(self.pos)
+        # self.pos = pygame.Vector2(self.rect.topleft)
 
     def UpdateAnimation(self):
         self.animationManager.Update()
         self.animationManager.Play(self.animations["Idle"])
 
-    def Draw(self):
-        return super().Draw()
-
     def Update(self):
         self.UpdatePosition()
-        self.UpdateAnimation()
-        Globals.quadtree.insert(self)
+        self.UpdateAnimation()        
+        # Globals.static_quadtree.insert(self)
+        Globals.moving_quadtree.insert(self)
         
+    def Draw(self):
+        return super().Draw()
 
 class Flag(Entity):
     def __init__(self, player):

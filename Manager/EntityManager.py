@@ -15,6 +15,7 @@ from Entity.Enemy import *
 class EntityManager:
     def __init__(self, level):
         self.all_sprites = pygame.sprite.Group()
+        Globals.static_quadtree = Globals.Quadtree(Globals.MapSize, 10)
 
         BackGround(self.all_sprites)
         Map(level, self.all_sprites)
@@ -31,11 +32,11 @@ class EntityManager:
         # self.flag = Flag(self.player)
         self.camera = Camera(self.player)
 
-        # self.static_quadtree = Globals.quadtree
+        
 
     def Updated(self):
-        # Globals.quadtree = self.static_quadtree
-        Globals.InitQuadTree(Globals.MapSize, 10)
+        Globals.moving_quadtree = Globals.Quadtree(Globals.MapSize, 1)
+        # Globals.static_quadtree = Globals.Quadtree(Globals.MapSize, 10)
 
         for sprite in self.all_sprites:
             sprite.Update()
@@ -46,4 +47,4 @@ class EntityManager:
     def Draw(self):
         for sprite in self.all_sprites:
             sprite.Draw()
-        # Globals.quadtree.draw()
+        # Globals.moving_quadtree.draw()

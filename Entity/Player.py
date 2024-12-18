@@ -45,20 +45,23 @@ class Player(Entity):
         self.rect = self.caculate_bound(self.pos)
         self.old_rect = self.rect.copy()
 
-    def IsFalling(self):
+    def IsOnMovingPlatform(self):
+
         rect = self.GravityBound(self.pos)
-        collision_sprites = Globals.quadtree.query(rect)
-        if collision_sprites:
+        collision_sprites = Globals.moving_quadtree.query(rect)
+
+        if collision_sprites:         
             for collider in collision_sprites:
                 if collider.direction == 'y':
-                    self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
-                    self.pos.y = round(self.pos.y)
+                    if collider.velocity.y > 0:
+                        self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
+                        # self.pos.y = round(self.pos.x, 1)
                 else:
                     self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
-                    self.pos.x = round(self.pos.x)
-            return False
+                    # self.pos.x = round(self.pos.x, 1)
+                return True
             
-        return True
+        return False
 
     def UpdateVelocity(self):
         if self.state == State.Die:
@@ -67,7 +70,7 @@ class Player(Entity):
         
         self.velocity.x = 0
 
-        if self.IsFalling():
+        if self.IsFalling() and not self.IsOnMovingPlatform():
             self.falling = True
             self.velocity.y += self.Gravity * Globals.DeltaTime
 

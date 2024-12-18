@@ -78,8 +78,8 @@ class Skeleton(Entity):
     def UpdateVelocity(self):
         self.timer += Globals.DeltaTime
 
-        touch_wall = Globals.quadtree.query(self.wall_rect())
-        edge_end = Globals.quadtree.query(self.edge_rect())
+        touch_wall = Globals.static_quadtree.query(self.wall_rect())
+        edge_end = Globals.static_quadtree.query(self.edge_rect())
         
 
         if not Skeleton.IsNearPlayer(self):

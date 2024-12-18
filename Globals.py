@@ -11,7 +11,8 @@ ShowText = False
 display = None
 Text = pygame.Surface
 MapSize = pygame.Rect(0, 0, 0, 0)
-quadtree = Quadtree
+static_quadtree = Quadtree
+moving_quadtree = Quadtree
 
 def Init():
     global Surface, Text, Clock, CameraSize_X, CameraSize_Y
@@ -20,12 +21,8 @@ def Init():
     Clock = pygame.time.Clock()
     Surface = pygame.Surface((CameraSize_X, CameraSize_Y), pygame.SRCALPHA)
 
-def InitQuadTree(boundary: pygame.Rect, n: int):
-    global quadtree
-    quadtree = Quadtree(boundary, n)
-
 def Updated():
-    global DeltaTime, scroll_x, scroll_y
+    global DeltaTime
 
     DeltaTime = Clock.tick() / 1000
 

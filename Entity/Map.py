@@ -18,7 +18,6 @@ class MapTile(Entity):
         super().__init__(groups)
         self.pos = pos
         self.img = img
-        # self.img.fill('red')
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
         self.isplatfrom = isplatfrom
@@ -28,7 +27,7 @@ class MapTile(Entity):
         self.velocity = pygame.Vector2(0, 0)
 
     def Update(self):
-        Globals.quadtree.insert(self)
+        # Globals.static_quadtree.insert(self)
         pass
 
     def Draw(self):
@@ -49,11 +48,11 @@ class Map():
 
         Globals.MapSize.w= Map.get_width()
         Globals.MapSize.h = Map.get_height()
-        # Globals.InitQuadTree(Globals.MapSize, 10)
-        # for sprite in groups:
-        #     if not sprite.isplatfrom:
-        #         continue
-        #     Globals.quadtree.insert(sprite)
+        
+        for sprite in groups:
+            if not sprite.isplatfrom:
+                continue
+            Globals.static_quadtree.insert(sprite)
 
     @classmethod
     def get_width(cls):
