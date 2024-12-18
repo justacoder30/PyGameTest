@@ -55,10 +55,10 @@ class Player(Entity):
                 if collider.direction == 'y':
                     if collider.velocity.y > 0:
                         self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
-                        # self.pos.y = round(self.pos.x, 1)
+                        # self.pos.y = round(self.pos.x)
                 else:
                     self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
-                    # self.pos.x = round(self.pos.x, 1)
+                    # self.pos.x = round(self.pos.x)
                 return True
             
         return False
