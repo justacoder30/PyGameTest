@@ -55,11 +55,11 @@ class Player(Entity):
                 if collider.direction == 'y':
                     if collider.velocity.y > 0:
                         self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
-                        # self.pos.y = round(self.pos.x)
+                        self.pos.y = round(self.pos.y)
                 else:
                     self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
-                    # self.pos.x = round(self.pos.x)
-                return True
+                    self.pos.x = round(self.pos.x)
+            return True
             
         return False
 
@@ -76,6 +76,7 @@ class Player(Entity):
 
         Player.PreviousKey = Player.CurrentKey
         Player.CurrentKey = pygame.key.get_pressed()
+        print(self.falling)
         if Player.CurrentKey[pygame.K_SPACE] and not self.falling:
             self.velocity.y = -self.jump
         if Player.CurrentKey[pygame.K_a]:

@@ -66,7 +66,7 @@ class Entity(pygame.sprite.Sprite):
         return math.sqrt(x + y)
     
     def GravityBound(self, pos):
-        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 5)
+        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 3)
 
     def IsFalling(self):
         rect = self.GravityBound(self.pos)
@@ -103,10 +103,12 @@ class Entity(pygame.sprite.Sprite):
     def Collision(self, direction):
         self.rect = self.caculate_bound(self.pos)
         
-        collision_sprites = Globals.static_quadtree.query(self.rect) + Globals.moving_quadtree.query(self.rect)
-        if collision_sprites:
+        static_sprites = Globals.static_quadtree.query(self.rect)
+        moving_sprites = Globals.moving_quadtree.query(self.rect)
+        if static_sprites or moving_sprites:
+            collision_sprites = static_sprites + moving_sprites
             for collider in collision_sprites:
-                # if direction == 'vertical':
+                if direction == 'vertical':
                     # collision on the top
                     if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
                         self.velocity.y = 0
@@ -119,7 +121,7 @@ class Entity(pygame.sprite.Sprite):
                         self.rect.bottom = collider.rect.top 
                         self.pos.y = collider.rect.top - self.texture_height
                         self.falling = False
-                # else:
+                else:
                     # collision on the right
                     if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
                         self.rect.right = collider.rect.left 

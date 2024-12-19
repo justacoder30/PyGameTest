@@ -11,7 +11,7 @@ class Movingplatform(Entity):
         super().__init__(groups)
         self.active_zone = rect
         self.direction = 'y' if self.active_zone.w < self.active_zone.h else 'x'
-        self.speed = 82
+        self.speed = 85
 
         self.animations = {
             'Idle' : Animation.Animation('resource/img/MovingPlatform/Idle.png', 4)
@@ -31,7 +31,7 @@ class Movingplatform(Entity):
     def UpdatePosition(self):
         # print(self.direction)
         self.old_rect = self.rect.copy()
-        self.rect.topleft += self.velocity * self.speed * Globals.DeltaTime
+        self.pos += self.velocity * self.speed * Globals.DeltaTime
 
         if self.direction == 'y':
             if self.rect.bottom >= self.active_zone.bottom and self.velocity.y == 1:
@@ -56,12 +56,12 @@ class Movingplatform(Entity):
             # self.pos.x += self.velocity.x * self.speed * Globals.DeltaTime
 
         
-        # self.pos.y = round(self.pos.y)
+        self.pos.y = round(self.pos.y)
+        self.pos.x = round(self.pos.x)
         # self.rect.y = round(self.pos.y)
-        # self.pos.x = round(self.pos.x)
         # self.rect.x = round(self.pos.x)
-        # self.rect = self.caculate_bound(self.pos)
-        self.pos = pygame.Vector2(self.rect.topleft)
+        self.rect = self.caculate_bound(self.pos)
+        # self.pos = pygame.Vector2(self.rect.topleft)
 
     def UpdateAnimation(self):
         self.animationManager.Update()
@@ -77,8 +77,8 @@ class Movingplatform(Entity):
         return super().Draw()
 
 class Flag(Entity):
-    def __init__(self, player):
-        super().__init__()
+    def __init__(self, groups, player):
+        super().__init__(groups)
         self.pos = Map.GetPosition("FlagPosition")
         self.OFFSET = [0, 0]
 
@@ -99,11 +99,8 @@ class Flag(Entity):
         self.rect = self.caculate_bound(self.pos)
 
     def IsTouched(self):
-        p_Rect = self.player.caculate_bound(self.player.pos)
-
-        if self.rect.colliderect(p_Rect):
+        if self.rect.colliderect(self.player.rect):
             return True
-
         return False
 
     def UpdateAnimation(self):
