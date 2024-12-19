@@ -10,14 +10,17 @@ from Camera import *
 TileSize = 16
 
 layers = {
-    'Platform': 0
+    'Platform': 0,
+    'Trap': 1,
+    'Decorate': 2,
 }
 
 class MapTile(Entity):
-    def __init__(self, pos: pygame.Vector2, img, groups, isplatfrom = True):
+    def __init__(self, pos: pygame.Vector2, img: pygame.surface.Surface, groups, isplatfrom = True):
         super().__init__(groups)
         self.pos = pos
         self.img = img
+        # self.img.fill("white")
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
         self.isplatfrom = isplatfrom

@@ -76,7 +76,7 @@ class Player(Entity):
 
         Player.PreviousKey = Player.CurrentKey
         Player.CurrentKey = pygame.key.get_pressed()
-        print(self.falling)
+        
         if Player.CurrentKey[pygame.K_SPACE] and not self.falling:
             self.velocity.y = -self.jump
         if Player.CurrentKey[pygame.K_a]:
@@ -161,6 +161,7 @@ class Player(Entity):
 
         if self.IsHurt:
             self.color = "red"
+            
 
     def Update(self):
         self.UpdateVelocity()

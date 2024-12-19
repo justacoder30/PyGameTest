@@ -27,6 +27,16 @@ class EntityManager:
 
         for pos in Map.GetListPosition("SkeletonPosition"):
             Skeleton(pos, self.all_sprites, self.player)
+
+        for pos in Map.GetListPosition("HeartPosition"):
+            Heart(pos, self.all_sprites, self.player)
+        
+        for pos in Map.GetListPosition("CoinPosition"):
+            Coin(pos, self.all_sprites, self.player)
+
+        for pos in Map.GetListPosition("GemPosition"):
+            Gem(pos, self.all_sprites, self.player)
+
         Flag(self.all_sprites, self.player)
         self.camera = Camera(self.player)
 
@@ -46,3 +56,5 @@ class EntityManager:
         for sprite in self.all_sprites:
             sprite.Draw()
         # Globals.moving_quadtree.draw()
+        # Globals.static_quadtree.draw()
+        

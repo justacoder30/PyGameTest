@@ -27,9 +27,9 @@ class Movingplatform(Entity):
         self.pos = pygame.Vector2(rect.x, rect.y)
         self.rect = self.caculate_bound(self.pos)
         self.velocity = pygame.Vector2(0, 1) if self.direction == 'y' else pygame.Vector2(1, 0)
+        # Globals.moving.insert(self)
 
     def UpdatePosition(self):
-        # print(self.direction)
         self.old_rect = self.rect.copy()
         self.pos += self.velocity * self.speed * Globals.DeltaTime
 
@@ -70,11 +70,7 @@ class Movingplatform(Entity):
     def Update(self):
         self.UpdatePosition()
         self.UpdateAnimation()        
-        # Globals.static_quadtree.insert(self)
         Globals.moving_quadtree.insert(self)
-        
-    def Draw(self):
-        return super().Draw()
 
 class Flag(Entity):
     def __init__(self, groups, player):
@@ -127,3 +123,132 @@ class Flag(Entity):
 
     def Update(self):
         self.SetAnimation()
+
+class Heart(Entity):
+    def __init__(self, pos: pygame.Vector2, groups, player):
+        super().__init__(groups)
+        self.pos = pos
+
+        self.animations = {
+            "Idle": Animation.Animation('resource/img/Item/Big Heart Idle (18x14).png', 8),
+        }
+
+        self.animationManager = AnimationManager(self.animations["Idle"])
+
+        self.texture_width = self.animationManager.Animation.FrameWidth
+        self.texture_height = self.animationManager.Animation.FrameHeight
+
+        self.player = player
+        self.state = State.Idle
+        self.rect = self.caculate_bound(self.pos)
+
+    def IsTouched(self):
+        if self.rect.colliderect(self.player.rect):
+            return True
+        return False
+
+    def UpdateAnimation(self):
+
+        if not self.IsTouched():
+            return
+        
+        self.IsRemoved = True
+
+    def SetAnimation(self):
+        self.animationManager.Update()
+        self.UpdateAnimation()
+        
+        match self.state:
+            case State.Idle:
+                self.animationManager.Play(self.animations["Idle"])
+            case _:
+                print("f{self.state} is not valid!")
+
+    def Update(self):
+        self.SetAnimation()
+
+class Coin(Entity):
+    def __init__(self, pos: pygame.Vector2, groups, player):
+        super().__init__(groups)
+        self.pos = pos
+
+        self.animations = {
+            "Idle": Animation.Animation('resource/img/Item/Coin.png', 5),
+        }
+
+        self.animationManager = AnimationManager(self.animations["Idle"])
+
+        self.texture_width = self.animationManager.Animation.FrameWidth
+        self.texture_height = self.animationManager.Animation.FrameHeight
+
+        self.player = player
+        self.state = State.Idle
+        self.rect = self.caculate_bound(self.pos)
+
+    def IsTouched(self):
+        if self.rect.colliderect(self.player.rect):
+            return True
+        return False
+
+    def UpdateAnimation(self):
+
+        if not self.IsTouched():
+            return
+        
+        self.IsRemoved = True
+
+    def SetAnimation(self):
+        self.animationManager.Update()
+        self.UpdateAnimation()
+        
+        match self.state:
+            case State.Idle:
+                self.animationManager.Play(self.animations["Idle"])
+            case _:
+                print("f{self.state} is not valid!")
+
+    def Update(self):
+        self.SetAnimation()
+
+class Gem(Entity):
+    def __init__(self, pos: pygame.Vector2, groups, player):
+        super().__init__(groups)
+        self.pos = pos
+
+        self.animations = {
+            "Idle": Animation.Animation('resource/img/Item/Gem.png', 4),
+        }
+
+        self.animationManager = AnimationManager(self.animations["Idle"])
+
+        self.texture_width = self.animationManager.Animation.FrameWidth
+        self.texture_height = self.animationManager.Animation.FrameHeight
+
+        self.player = player
+        self.state = State.Idle
+        self.rect = self.caculate_bound(self.pos)
+
+    def IsTouched(self):
+        if self.rect.colliderect(self.player.rect):
+            return True
+        return False
+
+    def UpdateAnimation(self):
+        if not self.IsTouched():
+            return
+        
+        self.IsRemoved = True
+
+    def SetAnimation(self):
+        self.animationManager.Update()
+        self.UpdateAnimation()
+        
+        match self.state:
+            case State.Idle:
+                self.animationManager.Play(self.animations["Idle"])
+            case _:
+                print("f{self.state} is not valid!")
+
+    def Update(self):
+        self.SetAnimation()
+

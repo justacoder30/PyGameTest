@@ -11,9 +11,9 @@ import Manager.InputManager as InputManager
 class ChangeLevelState(GameState.GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.continuteBtn = Button('resource/Button/Continue Button.png', pygame.Rect(176.00, 32.00, 120, 40))
-        self.playBtn = Button('resource/Button/Play Button.png', pygame.Rect(176.00, 96.00, 120, 40))
-        self.quitBtn = Button('resource/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
+        self.continuteBtn = Button('resource/img/Button/Continue Button.png', pygame.Rect(176.00, 32.00, 120, 40))
+        self.playBtn = Button('resource/img/Button/New game Button.png', pygame.Rect(176.00, 96.00, 120, 40))
+        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
         self.buttons = [
             self.continuteBtn,
