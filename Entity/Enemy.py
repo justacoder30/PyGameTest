@@ -44,12 +44,24 @@ class Skeleton(Entity):
         self.rect = self.caculate_bound(self.pos)
 
     def Hurt(self):
-        if self.player.state != State.Attack or not self.player.FrameEnd():
+        if self.player.state != State.Attack:
             return
         
+        self.player.attackTime += Globals.DeltaTime
+        
         atk_rect = self.player.GetAttackBound()
-        if atk_rect.colliderect(self.caculate_bound(self.pos)):
+        if atk_rect.colliderect(self.caculate_bound(self.pos)) \
+        and self.player.attackTime >= self.player.FrameSpeed(3) \
+        and self.player.animationManager.Animation.CurrentFrame == self.player.HitFrame(3):
             self.BeingHurt(self.damage)
+            self.player.attackTime = 0
+
+        # self.attackTime += Globals.DeltaTime
+        # self.state = State.Attack
+        # if self.attackTime >= self.FrameSpeed(6) and self.animationManager.Animation.CurrentFrame == self.HitFrame(6) and self.IsAttackRange():
+        #     self.player.BeingHurt(self.damage)
+        #     self.player.animationManager.Isflip = False if self.player.get_center().x < self.get_center().x else True
+        #     self.attackTime = 0
 
     def IsNearPlayer(self):
         if self.ObjectDistance(self.player) <= self.enemyZone[0] and abs(self.get_center().y - self.player.get_center().y) <= self.GetAttackBound().height:
@@ -68,14 +80,19 @@ class Skeleton(Entity):
     def FollowPlayer(self):
         self.timer = 0 
         
-        if self.IsHurt:
-            return
-        elif self.hp <= 0 or Skeleton.IsAttackRange(self):
+        if self.hp <= 0 or Skeleton.IsAttackRange(self):
             self.velocity.x = 0
         else:
             self.velocity.x = self.speed if self.IsObjRight(self.player) else -self.speed
 
     def UpdateVelocity(self):
+        if self.IsFalling():
+            self.velocity.y += self.Gravity * Globals.DeltaTime
+
+        if self.IsHurt:
+            print(self.hp)
+            return
+
         self.timer += Globals.DeltaTime
 
         touch_wall = Globals.static_quadtree.query(self.wall_rect())
@@ -99,8 +116,6 @@ class Skeleton(Entity):
             if touch_wall or not edge_end:
                 self.velocity.x = 0
 
-        if self.IsFalling():
-            self.velocity.y += self.Gravity * Globals.DeltaTime
     
     def UpdatePosition(self):
         self.old_rect = self.rect.copy()
@@ -109,9 +124,6 @@ class Skeleton(Entity):
         self.Collision('horizontal')
         self.pos.y += self.velocity.y * Globals.DeltaTime
         self.Collision('vertical')
-
-    def HitFrame(self, frame):
-        return frame-1 if not self.animationManager.Isflip else self.animationManager.Animation.FrameCount-frame
 
     def Attack(self):
         self.attackTime += Globals.DeltaTime

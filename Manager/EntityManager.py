@@ -8,7 +8,6 @@ from Manager.AnimationManager import *
 from Animation import *
 from Entity.Player import *
 from Entity.Item import *
-from Entity.Block import *
 from Entity.BackGround import *
 from Entity.Enemy import *
 
@@ -27,6 +26,7 @@ class EntityManager:
 
         for pos in Map.GetListPosition("SkeletonPosition"):
             Skeleton(pos, self.all_sprites, self.player)
+            # break
 
         for pos in Map.GetListPosition("HeartPosition"):
             Heart(pos, self.all_sprites, self.player)
@@ -50,6 +50,7 @@ class EntityManager:
             sprite.Update()
             if sprite.IsRemoved:
                 sprite.kill()
+            
         self.camera.Update()
 
     def Draw(self):

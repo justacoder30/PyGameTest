@@ -34,15 +34,13 @@ class Game:
             self.NextState = None
 
         self.CurrentState.Update()
-        print(round(Globals.Clock.get_fps()))
+        # print(round(Globals.Clock.get_fps()))
 
     def Draw(self):
-        # fill the Surface with a color to wipe away anything from last frame
         Globals.Surface.fill((0, 0, 0, 0))
         
         self.CurrentState.Draw()
         
-        # flip() the display to put your work on Surface
         Renderder.render()
         pygame.display.update()
         

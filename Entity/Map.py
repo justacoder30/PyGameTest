@@ -4,7 +4,6 @@ import pytmx
 sys.path.append('..')
 
 from Entity.Entity import *
-from Entity.Block import *
 from Camera import *
 
 TileSize = 16

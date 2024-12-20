@@ -3,9 +3,7 @@ sys.path.append('..')
 from Entity.Map import *
 from Animation import *
 from Entity.Entity import *
-from Entity.Block import *
 from Manager.AnimationManager import *
-from Entity.Block import *
 import Globals, pygame
 
 class Player(Entity):
@@ -21,7 +19,7 @@ class Player(Entity):
         self.Gravity = 1000
         self.falling = False
         self.attackTime = 0 
-        self.hp = 50
+        self.hp = 1000
         self.damage = 10
         self.atkSize = [42, 38]
 
@@ -93,7 +91,12 @@ class Player(Entity):
         self.Collision('vertical')
 
     def Attack(self):
+        self.attackTime += Globals.DeltaTime
         self.state = State.Attack
+        if self.attackTime >= self.FrameSpeed(3) and self.animationManager.Animation.CurrentFrame == self.HitFrame(3) and self.IsAttackRange():
+            self.player.BeingHurt(self.damage)
+            self.player.animationManager.Isflip = False if self.player.get_center().x < self.get_center().x else True
+            self.attackTime = 0 
 
         if super().FrameEnd():
             atk_rect = super().GetAttackBound()

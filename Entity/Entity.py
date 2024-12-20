@@ -85,10 +85,13 @@ class Entity(pygame.sprite.Sprite):
         frame_end = self.animationManager.Animation.FrameCount if frame_end == 0 else frame_end 
         return self.animationManager.Animation.FrameSpeed * frame_end
 
+    def HitFrame(self, frame):
+        return frame-1 if not self.animationManager.Isflip else self.animationManager.Animation.FrameCount-frame
+
     def BeingHurt(self, damge):
         if self.hp <= 0:
             return
-        self.velocity.y = -150
+        self.velocity.y = -100
         self.velocity.x = 50 if self.animationManager.Isflip else -50
         self.IsHurt = True
         self.hp -= damge
@@ -170,8 +173,8 @@ class Entity(pygame.sprite.Sprite):
         #     if rect.colliderect(collider.rect):
         #         pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
-        # self.DrawRect((0, 0, 255), self.GetAttackBound())
-        # self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
+        self.DrawRect((0, 0, 255), self.GetAttackBound())
+        self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
         # self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
         # self.DrawRect((0, 0, 255), self.wall_rect())
         # self.DrawRect((0, 0, 255), self.edge_rect())
