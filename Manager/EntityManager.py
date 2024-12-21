@@ -13,6 +13,7 @@ from Entity.Enemy import *
 
 class EntityManager:
     def __init__(self, level):
+        Globals.score = 0
         self.all_sprites = pygame.sprite.Group()
         Globals.static_quadtree = Globals.Quadtree(Globals.MapSize, 10)
 
@@ -22,23 +23,25 @@ class EntityManager:
         for rect in Map.GetRectList("MovingPlatform"):
             Movingplatform(rect, self.all_sprites)
 
-        self.player = Player(self.all_sprites)
+        player = Player(self.all_sprites)
 
         for pos in Map.GetListPosition("SkeletonPosition"):
-            Skeleton(pos, self.all_sprites, self.player)
-            # break
+            Skeleton(pos, self.all_sprites, player)
+        
+        for pos in Map.GetListPosition("SlimePosition"):
+            Slime(pos, self.all_sprites, player)
 
         for pos in Map.GetListPosition("HeartPosition"):
-            Heart(pos, self.all_sprites, self.player)
+            Heart(pos, self.all_sprites, player)
         
         for pos in Map.GetListPosition("CoinPosition"):
-            Coin(pos, self.all_sprites, self.player)
+            Coin(pos, self.all_sprites, player)
 
         for pos in Map.GetListPosition("GemPosition"):
-            Gem(pos, self.all_sprites, self.player)
+            Gem(pos, self.all_sprites, player)
 
-        Flag(self.all_sprites, self.player)
-        self.camera = Camera(self.player)
+        Flag(self.all_sprites, player)
+        self.camera = Camera(player)
 
         
 
@@ -49,6 +52,7 @@ class EntityManager:
         for sprite in self.all_sprites:
             sprite.Update()
             if sprite.IsRemoved:
+                Globals.score+=sprite.score
                 sprite.kill()
             
         self.camera.Update()

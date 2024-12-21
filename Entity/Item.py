@@ -36,32 +36,23 @@ class Movingplatform(Entity):
         if self.direction == 'y':
             if self.rect.bottom >= self.active_zone.bottom and self.velocity.y == 1:
                 self.rect.bottom = self.active_zone.bottom
-                # self.pos.y = self.rect.y
                 self.velocity.y = -1
             if self.rect.top <= self.active_zone.top and self.velocity.y == -1:
-                # self.rect.top = self.active_zone.top
-                # self.pos.y = self.rect.y
+                self.rect.top = self.active_zone.top
                 self.velocity.y = 1
-            # self.pos.y += self.velocity.y * self.speed * Globals.DeltaTime
 
         if self.direction == 'x':
             if self.rect.right >= self.active_zone.right and self.velocity.x == 1:
                 self.rect.right = self.active_zone.right
-                # self.pos.x = self.rect.x
                 self.velocity.x = -1
             if self.rect.left <= self.active_zone.left and self.velocity.x == -1:
                 self.rect.left = self.active_zone.left
-                # self.pos.x = self.rect.x
                 self.velocity.x = 1
-            # self.pos.x += self.velocity.x * self.speed * Globals.DeltaTime
 
         
         self.pos.y = round(self.pos.y)
         self.pos.x = round(self.pos.x)
-        # self.rect.y = round(self.pos.y)
-        # self.rect.x = round(self.pos.x)
         self.rect = self.caculate_bound(self.pos)
-        # self.pos = pygame.Vector2(self.rect.topleft)
 
     def UpdateAnimation(self):
         self.animationManager.Update()
@@ -141,6 +132,8 @@ class Heart(Entity):
         self.player = player
         self.state = State.Idle
         self.rect = self.caculate_bound(self.pos)
+        self.hp = 10
+        self.score = 5
 
     def IsTouched(self):
         if self.rect.colliderect(self.player.rect):
@@ -152,6 +145,7 @@ class Heart(Entity):
         if not self.IsTouched():
             return
         
+        self.player.hp += self.hp
         self.IsRemoved = True
 
     def SetAnimation(self):
@@ -184,6 +178,7 @@ class Coin(Entity):
         self.player = player
         self.state = State.Idle
         self.rect = self.caculate_bound(self.pos)
+        self.score = 10
 
     def IsTouched(self):
         if self.rect.colliderect(self.player.rect):
@@ -227,6 +222,7 @@ class Gem(Entity):
         self.player = player
         self.state = State.Idle
         self.rect = self.caculate_bound(self.pos)
+        self.score = 30
 
     def IsTouched(self):
         if self.rect.colliderect(self.player.rect):

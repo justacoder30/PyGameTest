@@ -19,7 +19,7 @@ class Player(Entity):
         self.Gravity = 1000
         self.falling = False
         self.attackTime = 0 
-        self.hp = 1000
+        self.hp = 30
         self.damage = 10
         self.atkSize = [42, 38]
 
@@ -43,24 +43,6 @@ class Player(Entity):
         self.rect = self.caculate_bound(self.pos)
         self.old_rect = self.rect.copy()
 
-    def IsOnMovingPlatform(self):
-
-        rect = self.GravityBound(self.pos)
-        collision_sprites = Globals.moving_quadtree.query(rect)
-
-        if collision_sprites:         
-            for collider in collision_sprites:
-                if collider.direction == 'y':
-                    if collider.velocity.y > 0:
-                        self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
-                        self.pos.y = round(self.pos.y)
-                else:
-                    self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
-                    self.pos.x = round(self.pos.x)
-            return True
-            
-        return False
-
     def UpdateVelocity(self):
         if self.state == State.Die:
             self.velocity.x = 0 
@@ -82,32 +64,22 @@ class Player(Entity):
         if Player.CurrentKey[pygame.K_d]:
             self.velocity.x = self.speed
 
-    def UpdatePosition(self):
-        self.old_rect = self.rect.copy()
+    def BeingHurt(self, entity):
+        self.animationManager.Isflip = False if self.get_center().x < entity.get_center().x else True
+        self.IsHurt = True
+        self.hp -= entity.damage
 
-        self.pos.x += self.velocity.x * Globals.DeltaTime
-        self.Collision('horizontal')
-        self.pos.y += self.velocity.y * Globals.DeltaTime
-        self.Collision('vertical')
+    def Attack(self, enity, atk_frame):
+        if not self.IsAttackRange(enity.rect):
+            return
 
-    def Attack(self):
         self.attackTime += Globals.DeltaTime
         self.state = State.Attack
-        if self.attackTime >= self.FrameSpeed(3) and self.animationManager.Animation.CurrentFrame == self.HitFrame(3) and self.IsAttackRange():
-            self.player.BeingHurt(self.damage)
-            self.player.animationManager.Isflip = False if self.player.get_center().x < self.get_center().x else True
-            self.attackTime = 0 
+        if self.attackTime >= self.FrameSpeed(atk_frame) and self.animationManager.Animation.CurrentFrame == self.HitFrame(atk_frame) and self.IsAttackRange(enity.rect):
+            enity.BeingHurt(self)
+            self.attackTime = 0
 
-        if super().FrameEnd():
-            atk_rect = super().GetAttackBound()
-            if atk_rect.colliderect(self.caculate_bound(self.pos)):
-                self.BeingHurt(self.damage)
-
-    def BeingHurt(self, damge):
-        self.IsHurt = True
-        self.hp -= damge
-
-    def UpdateAnimation(self):
+    def SetState(self):
         if self.velocity.x > 0:
             self.animationManager.Isflip = False
         elif self.velocity.x < 0:
@@ -129,7 +101,6 @@ class Player(Entity):
                         Globals.GameOver = True
                 elif Player.CurrentKey[pygame.K_j] and not Player.PreviousKey[pygame.K_j] or self.animationManager.Isloop:
                     self.state = State.Attack
-                    # Player.Attack(self)
                 else:
                     self.state = State.Idle
         elif self.velocity.y > 0 :
@@ -137,9 +108,9 @@ class Player(Entity):
         else: 
             self.state = State.Jump
 
-    def SetAnimation(self):
+    def UpdateAnimation(self):
         self.animationManager.Update()
-        self.UpdateAnimation()
+        self.SetState()
 
         match self.state:
             case State.Idle:
@@ -158,17 +129,10 @@ class Player(Entity):
                 self.animationManager.Play(self.animations["Hurt"])
             case _:
                 print("f{self.state} is not valid!")
-    
-    def UpdateColor(self):
-        self.color = "white"
-
-        if self.IsHurt:
-            self.color = "red"
-            
 
     def Update(self):
         self.UpdateVelocity()
         self.UpdatePosition()
-        self.SetAnimation()
+        self.UpdateAnimation()
         self.CheckOutOfMap()
-        self.UpdateColor()
+        self.HurtColor("red")

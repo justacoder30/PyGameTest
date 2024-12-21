@@ -9,17 +9,20 @@ IsLevelEnd = False
 GameOver = False
 ShowText = False
 display = None
+score = 0
 Text = pygame.Surface
 MapSize = pygame.Rect(0, 0, 0, 0)
 static_quadtree = Quadtree
 moving_quadtree = Quadtree
 
+
 def Init():
-    global Surface, Text, Clock, CameraSize_X, CameraSize_Y
+    global Surface, Text, Clock, CameraSize_X, CameraSize_Y, text_font
 
-
+    text_font = pygame.font.SysFont("Helvetica", 70, bold=True)
     Clock = pygame.time.Clock()
     Surface = pygame.Surface((CameraSize_X, CameraSize_Y), pygame.SRCALPHA)
+    Text = pygame.Surface((1920, 1080), pygame.SRCALPHA)
 
 def Updated():
     global DeltaTime

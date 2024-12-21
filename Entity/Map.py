@@ -9,7 +9,7 @@ from Camera import *
 TileSize = 16
 
 layers = {
-    'Platform': 0,
+    'Terrain': 0,
     'Trap': 1,
     'Decorate': 2,
 }
@@ -41,7 +41,7 @@ class Map():
         Map.max_x, Map.max_y = 0, 0
         Map.tiled_map = pytmx.load_pygame(f'resource/Map1/map{level}.tmx')
         for layer in layers:
-            isplatfrom = True if layer == 'Platform' else False
+            isplatfrom = True if layer == 'Terrain' else False
             for x, y, img in Map.tiled_map.get_layer_by_name(layer).tiles():
                 Map.max_x = x if x > Map.max_x else Map.max_x
                 Map.max_y = y if y > Map.max_y else Map.max_y

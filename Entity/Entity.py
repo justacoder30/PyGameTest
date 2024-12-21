@@ -1,5 +1,5 @@
 import Globals, pygame, sys
-import math
+import math, random
 
 sys.path.append('..')
 
@@ -34,10 +34,12 @@ class Entity(pygame.sprite.Sprite):
         self.atkSize = [0, 0]
         self.rect = None
         self.old_rect = None
+        self.IsAttacking = False
         self.direction = ""
+        self.score = 0 
 
     def get_center(self):
-        return pygame.Vector2(self.pos.x + self.animationManager.Animation.FrameWidth/2,self.pos.y + self.animationManager.Animation.FrameHeight/2)
+        return pygame.Vector2(self.pos.x + self.animationManager.Animation.FrameWidth/2, self.pos.y + self.animationManager.Animation.FrameHeight/2)
     
     def caculate_bound(self, pos):
         return pygame.Rect(pos.x + self.OFFSET[0],
@@ -60,13 +62,13 @@ class Entity(pygame.sprite.Sprite):
             return pygame.Rect(self.rect.left - self.atkSize[0], self.rect.top, self.atkSize[0], self.atkSize[1])
         return pygame.Rect(self.rect.right, self.rect.top, self.atkSize[0], self.atkSize[1])
     
+    def GravityBound(self, pos):
+        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 3)
+    
     def ObjectDistance(self, player):
         x = math.pow(self.get_center().x - player.get_center().x, 2)
         y = math.pow(self.get_center().y - player.get_center().y, 2)
         return math.sqrt(x + y)
-    
-    def GravityBound(self, pos):
-        return pygame.Rect(pos.x + self.OFFSET[0], pos.y + self.texture_height, self.texture_width - self.OFFSET[0] * 2, 3)
 
     def IsFalling(self):
         rect = self.GravityBound(self.pos)
@@ -87,14 +89,29 @@ class Entity(pygame.sprite.Sprite):
 
     def HitFrame(self, frame):
         return frame-1 if not self.animationManager.Isflip else self.animationManager.Animation.FrameCount-frame
+    
+    def HurtColor(self, color):
+        self.color = "white"
 
-    def BeingHurt(self, damge):
+        if self.IsHurt:
+            self.color = color
+    
+    def Attack(self, enity, atk_frame):
+
+        self.attackTime += Globals.DeltaTime
+        self.state = State.Attack
+        if self.attackTime >= self.FrameSpeed(atk_frame) and self.animationManager.Animation.CurrentFrame == self.HitFrame(atk_frame) and self.IsAttackRange(enity.rect):
+            enity.BeingHurt(self)
+            self.attackTime = 0
+
+    def BeingHurt(self, entity):
         if self.hp <= 0:
             return
-        self.velocity.y = -100
+        self.animationManager.Isflip = False if self.get_center().x < entity.get_center().x else True
+        self.velocity.y = -120
         self.velocity.x = 50 if self.animationManager.Isflip else -50
         self.IsHurt = True
-        self.hp -= damge
+        self.hp -= entity.damage
 
     def FrameEnd(self):
         self.Time += Globals.DeltaTime
@@ -102,6 +119,88 @@ class Entity(pygame.sprite.Sprite):
             self.Time = 0
             return True
         return False
+    
+    def IsAttackRange(self, entity_rect):
+        atk_rect = self.GetAttackBound()
+        if atk_rect.colliderect(entity_rect):
+            self.IsAttacking = True
+            return True
+        return False
+    
+    def IsNearEntity(self, entity):
+        return self.ObjectDistance(entity) <= self.enemyZone[0] and \
+            abs(self.get_center().y - entity.get_center().y) <= self.enemyZone[1]
+        
+    def Hurt(self, entity):
+        if entity.state != State.Attack:
+            return
+
+        entity.Attack(self, 3)
+        
+    def IsOnMovingPlatform(self):
+
+        rect = self.GravityBound(self.pos)
+        collision_sprites = Globals.moving_quadtree.query(rect)
+
+        if collision_sprites:         
+            for collider in collision_sprites:
+                if collider.direction == 'y':
+                    if collider.velocity.y > 0:
+                        self.pos.y += collider.velocity.y * collider.speed * Globals.DeltaTime
+                        self.pos.y = round(self.pos.y)
+                else:
+                    self.pos.x += collider.velocity.x * collider.speed * Globals.DeltaTime
+                    self.pos.x = round(self.pos.x)
+            return True
+            
+        return False
+    
+    def FollowPlayer(self, player):
+        self.timer = 0 
+        
+        if self.hp <= 0 or self.IsAttackRange(player):
+            self.velocity.x = 0
+            self.velocity.y = 0
+        else:
+            self.velocity.x = self.speed if self.IsObjRight(player) else -self.speed
+        
+    def UpdateEnemyVelocity(self, player):
+        if self.IsFalling():
+            self.velocity.y += self.Gravity * Globals.DeltaTime
+
+        if self.IsHurt:
+            return
+
+        self.timer += Globals.DeltaTime
+        touch_wall = Globals.static_quadtree.query(self.wall_rect())
+        edge_end = Globals.static_quadtree.query(self.edge_rect())
+        
+
+        if not self.IsNearEntity(player):
+            self.timechange = random.randint(1, 4)
+            if self.IsAttacking:
+                self.velocity.x = 0
+            elif self.velocity.x != 0 and self.timer >= self.timechange:
+                self.velocity.x = 0
+                self.timer = 0
+            elif self.velocity.x == 0 and self.timer >= self.timechange:
+                self.velocity.x = random.choice([-self.speed, self.speed])
+                self.timer = 0
+            if touch_wall or not edge_end:
+                self.velocity.x *= -1
+        else:
+            self.FollowPlayer(player)
+            if touch_wall or not edge_end:
+                self.velocity.x = 0
+    
+    def UpdatePosition(self):
+        self.old_rect = self.rect.copy()
+        
+        self.pos.x += self.velocity.x * Globals.DeltaTime
+        self.Collision('horizontal')
+        self.pos.y += self.velocity.y * Globals.DeltaTime
+        self.Collision('vertical')     
+
     
     def Collision(self, direction):
         self.rect = self.caculate_bound(self.pos)
@@ -161,7 +260,6 @@ class Entity(pygame.sprite.Sprite):
             Globals.Surface.blit(texture, (pos.x + Globals.camera.x, pos.y + Globals.camera.y))
 
     def Draw(self):
-
         if Camera.rect.colliderect(self.rect):
             Globals.Surface.blit(pygame.transform.flip(self.changColor(self.animationManager.Animation.texture, self.color),
                                                     self.animationManager.Isflip, 0), 
@@ -173,8 +271,8 @@ class Entity(pygame.sprite.Sprite):
         #     if rect.colliderect(collider.rect):
         #         pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
-        self.DrawRect((0, 0, 255), self.GetAttackBound())
-        self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
+        # self.DrawRect((0, 0, 255), self.GetAttackBound())
+        # self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
         # self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
         # self.DrawRect((0, 0, 255), self.wall_rect())
         # self.DrawRect((0, 0, 255), self.edge_rect())
