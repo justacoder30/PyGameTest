@@ -18,15 +18,11 @@ class MapTile(Entity):
     def __init__(self, pos: pygame.Vector2, img: pygame.surface.Surface, groups, isplatfrom = True):
         super().__init__(groups)
         self.pos = pos
+        self.isplatfrom = isplatfrom
         self.img = img
         # self.img.fill("white")
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
-        self.isplatfrom = isplatfrom
-        
-        self.speed = 0
-        self.direction = ""
-        self.velocity = pygame.Vector2(0, 0)
 
     def Update(self):
         # Globals.static_quadtree.insert(self)
@@ -37,7 +33,6 @@ class MapTile(Entity):
 
 class Map():
     def __init__(self, level, groups):
-        # super().__init__() 
         Map.max_x, Map.max_y = 0, 0
         Map.tiled_map = pytmx.load_pygame(f'resource/Map1/map{level}.tmx')
         for layer in layers:
@@ -50,7 +45,7 @@ class Map():
 
         Globals.MapSize.w= Map.get_width()
         Globals.MapSize.h = Map.get_height()
-        
+
         for sprite in groups:
             if not sprite.isplatfrom:
                 continue
@@ -92,10 +87,8 @@ class Map():
     #     return Map.Tiles
     
     # def Update(self):
-    #     for tile in Map.Tiles:
-    #         tile.Update()
+    #     pass
 
     # def Draw(self):
-    #     for tile in Map.Tiles:
-    #         tile.Draw()
+    #     Globals.Surface.blit(self.map, (0 + Globals.camera.x, 0 + Globals.camera.y))
 

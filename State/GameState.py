@@ -8,9 +8,8 @@ class GameSate:
     level = 1
     def __init__(self, game: Game):
         self.game = game
-        self.bg = pygame.image.load('resource/img/Background/Background2.png').convert_alpha()
+        self.bg = pygame.image.load('resource/img/Background/Background2.png').convert()
         self.Surface = pygame.Surface(Globals.display.get_size())
-        self.Surface.blit(pygame.transform.scale(self.bg, Globals.display.get_size()), (0, 0))
 
     def __del__(self):
         pass
@@ -24,8 +23,8 @@ class GameSate:
 class MenuSate(GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.playBtn = Button('resource/img/Button/Play Button.png', pygame.Rect(208.00, 110.00, 120, 40))
-        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(208.00, 160.00, 120, 40))
+        self.playBtn = Button('resource/img/Button/Play Button.png', pygame.Rect(176.00, 110.00, 120, 40))
+        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
         self.buttons = [
             self.playBtn,
@@ -75,9 +74,9 @@ class RunningState(GameSate):
 class StopSate(GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.resumeBtn = Button('resource/img/Button/Resume Button.png', pygame.Rect(208.00, 32.00, 120, 40))
-        self.newGameBtn = Button('resource/img/Button/New game Button.png', pygame.Rect(208.00, 96.00, 120, 40))
-        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(208.00, 160.00, 120, 40))
+        self.resumeBtn = Button('resource/img/Button/Resume Button.png', pygame.Rect(176.00, 32.00, 120, 40))
+        self.newGameBtn = Button('resource/img/Button/New game Button.png', pygame.Rect(176.00, 96.00, 120, 40))
+        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
         self.buttons = [
             self.resumeBtn,
@@ -107,9 +106,9 @@ class StopSate(GameSate):
 class ChangeLevelState(GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.continuteBtn = Button('resource/img/Button/Continue Button.png', pygame.Rect(208.00, 32.00, 120, 40))
-        self.playBtn = Button('resource/img/Button/New game Button.png', pygame.Rect(208.00, 96.00, 120, 40))
-        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(208.00, 160.00, 120, 40))
+        self.continuteBtn = Button('resource/img/Button/Continue Button.png', pygame.Rect(176.00, 32.00, 120, 40))
+        self.playBtn = Button('resource/img/Button/New game Button.png', pygame.Rect(176.00, 96.00, 120, 40))
+        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
 
         self.buttons = [
             self.continuteBtn,
@@ -173,8 +172,8 @@ class GameWin(GameSate):
 class GameOver(GameSate):
     def __init__(self, game: Game):
         super().__init__(game)
-        self.playBtn = Button('resource/img/Button/New Game Button.png', pygame.Rect(224.00, 190.00, 120, 40))
-        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(224.00, 240.00, 120, 40))
+        self.playBtn = Button('resource/img/Button/New Game Button.png', pygame.Rect(176.00, 110.00, 120, 40))
+        self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
         self.score = 0
         self.time = 0
         self.speed = 0.01
@@ -207,7 +206,7 @@ class GameOver(GameSate):
         
     def Draw(self):
         Globals.Surface.blit(pygame.transform.scale(self.bg, Globals.Surface.get_size()), (0, 0))
-        Globals.Text.blit(self.text, ((Globals.Text.get_width() - self.text.get_width())/2, (Globals.Text.get_height() - self.text.get_height())/2))
+        Globals.Text.blit(self.text, ((Globals.Text.get_width() - self.text.get_width())/2, 200))
         for btn in self.buttons:
             btn.Draw()
         

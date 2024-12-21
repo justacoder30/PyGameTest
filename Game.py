@@ -11,12 +11,13 @@ class Game:
         self.NextState = None
 
         # pygame setup
+        pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
-        # Camera.SetSize(480, 270)
-        Camera.SetSize(560, 315)
+        Camera.SetSize(480, 270)
+        # Camera.SetSize(560, 315)
         Globals.Init()
-        Renderder.SetResolution(1920, 1080)
-        # Renderder.SetResolution(1280, 720)
+        # Renderder.SetResolution(1920, 1080)
+        Renderder.SetResolution(1280, 720)
         # Renderder.SetResolution(960, 540)
         
         self.CurrentState = MenuSate(self)
