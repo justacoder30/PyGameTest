@@ -75,7 +75,7 @@ class Player(Entity):
 
         self.attackTime += Globals.DeltaTime
         self.state = State.Attack
-        if self.attackTime >= self.FrameSpeed(atk_frame) and self.animationManager.Animation.CurrentFrame == self.HitFrame(atk_frame) and self.IsAttackRange(enity.rect):
+        if self.attackTime >= self.FrameSpeed(atk_frame) and self.animationManager.Animation.CurrentFrame == self.HitFrame(atk_frame):
             enity.BeingHurt(self)
             self.attackTime = 0
 
