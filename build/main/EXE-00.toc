@@ -73,7 +73,7 @@
  [],
  False,
  False,
- 1734877698,
+ 1734879616,
  [('runw.exe',
    'c:\\Users\\quang\\OneDrive\\Desktop\\Python\\Project\\PyGameTest\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
    'EXECUTABLE')],
