@@ -52,6 +52,7 @@ class RunningState(GameSate):
         self.enityManager = EntityManager(level)
         pygame.mixer.music.load("resource/Music/bg_music.ogg")
         pygame.mixer.music.play(-1, 0.0, 3000)
+        pygame.mouse.set_visible(False)
 
     def __del__(self):
         return super().__del__()
@@ -60,16 +61,20 @@ class RunningState(GameSate):
         if InputManager.CurrentKey[pygame.K_ESCAPE] and not InputManager.PreviousKey[pygame.K_ESCAPE]:
             self.game.SaveState()
             pygame.mixer.music.fadeout(1000)
-            # pygame.mixer.music.pause()
+            pygame.mouse.set_visible(True)
             self.game.ChangeState(StopSate(self.game)) 
 
         if Globals.IsLevelEnd:
             Globals.IsLevelEnd = False
             pygame.mixer.music.stop()
+            pygame.mouse.set_visible(True)
+            SoundManager.PlaySound("WinGame")
             self.game.ChangeState(GameOver(self.game))
         elif Globals.GameOver:
             Globals.GameOver = False
             pygame.mixer.music.stop()
+            pygame.mouse.set_visible(True)
+            SoundManager.PlaySound("LoseGame")
             self.game.ChangeState(GameOver(self.game))
         else:
             self.enityManager.Updated()
@@ -96,6 +101,7 @@ class StopSate(GameSate):
 
         if self.resumeBtn.isClick or InputManager.CurrentKey[pygame.K_ESCAPE] and not InputManager.PreviousKey[pygame.K_ESCAPE]:
             pygame.mixer.music.play(-1, 0.0, 1000)
+            pygame.mouse.set_visible(False)
             self.game.ChangeState(self.game.PreviousState) 
 
         if self.newGameBtn.isClick:

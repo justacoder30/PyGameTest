@@ -14,9 +14,9 @@ def Init():
         "LoseGame": Sound("resource/SoundFX/GameLose_sound.wav", 1),
 
     }
+    
+def PlaySound(name, volume=1):
+    sounds[name].play()
 
 def PlayMusic():
     pass
-
-def PlaySound(name, volume=1):
-    sounds[name].play()

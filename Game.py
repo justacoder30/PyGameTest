@@ -20,7 +20,7 @@ class Game:
         # Camera.SetSize(560, 315)
         Globals.Init()
         # Renderder.SetResolution(1920, 1080)
-        Renderder.SetResolution(1280, 720)
+        Renderder.SetResolution(1280, 720, True)
         # Renderder.SetResolution(960, 540)
         
         self.CurrentState = MenuSate(self)

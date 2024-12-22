@@ -1,6 +1,7 @@
 import pygame, sys
 sys.path.append('..')
 import Renderder, Globals
+import Manager.SoundManager as SoundManager
 
 class Button:
     def __init__(self, f_path, rect: pygame.Rect):
@@ -14,6 +15,7 @@ class Button:
         self.currentMouse = False
         self.previousMouse = False
         self.isClick = False
+        self.isHovering = False
 
     def changColor(self, image, color):
         colouredImage = pygame.Surface(image.get_size())
@@ -23,8 +25,8 @@ class Button:
         finalImage.blit(colouredImage, (0, 0), special_flags = pygame.BLEND_MULT)
         return finalImage
     
-    def isHovering(self):
-        return self.mouse_rect.colliderect(self.btn_rect_scale)
+    # def isHovering(self):
+    #     return self.mouse_rect.colliderect(self.btn_rect_scale)
     
     def Update(self):
         self.previousMouse = self.currentMouse
@@ -32,12 +34,21 @@ class Button:
         mouse_pos = pygame.mouse.get_pos()
         self.mouse_rect = pygame.rect.Rect(mouse_pos[0], mouse_pos[1], 1, 1)
 
-        if self.isHovering() and not self.currentMouse and self.previousMouse:
+        if not self.mouse_rect.colliderect(self.btn_rect_scale):
+            self.isHovering = False
+            return
+
+        if not self.isHovering:
+            self.isHovering = True
+            SoundManager.PlaySound("button")
+
+        if self.isHovering and not self.currentMouse and self.previousMouse:
+            SoundManager.PlaySound("button_click")
             self.isClick = True
 
     def Draw(self):
         self.color = "white"
-        if self.isHovering():
+        if self.isHovering:
             self.color = "green"
 
 
