@@ -75,13 +75,12 @@ class Entity(pygame.sprite.Sprite):
     def IsFalling(self):
         rect = self.GravityBound(self.pos)
         collision_sprites = Globals.static_quadtree.query(rect)
-        traps = [sprite for sprite in collision_sprites if sprite.isTrap]
-        if collision_sprites and not traps:
+        if collision_sprites:
             return False
         return True
 
-    def IsObjRight(self, obj):
-        return True if obj.get_center().x > self.get_center().x else False
+    def IsObjRight(self, entity):
+        return True if entity.get_center().x > self.get_center().x else False
 
     def SetPosition(self, pos):
         self.pos = pos
@@ -166,17 +165,20 @@ class Entity(pygame.sprite.Sprite):
             self.velocity.y = 0
         else:
             self.velocity.x = self.speed if self.IsObjRight(player) else -self.speed
+
+    def CheckTurn(self, player):
+        return self.IsObjRight(player) != self.animationManager.Isflip
         
     def UpdateEnemyVelocity(self, player):
         if self.IsFalling():
             self.velocity.y += self.Gravity * Globals.DeltaTime
 
         if self.IsHurt:
-            return
+            return 
 
         self.timer += Globals.DeltaTime
         touch_wall = Globals.static_quadtree.query(self.wall_rect())
-        edge_end = [edge for edge in Globals.static_quadtree.query(self.edge_rect()) if not edge.isTrap]
+        edge_end = not [edge for edge in Globals.static_quadtree.query(self.edge_rect()) if not edge.isTrap]
         
 
         if not self.IsNearEntity(player):
@@ -189,13 +191,12 @@ class Entity(pygame.sprite.Sprite):
             elif self.velocity.x == 0 and self.timer >= self.timechange:
                 self.velocity.x = random.choice([-self.speed, self.speed])
                 self.timer = 0
-            if touch_wall or not edge_end:
+            if touch_wall or edge_end:
                 self.velocity.x *= -1
         else:
             self.FollowPlayer(player)
-            if touch_wall or not edge_end:
+            if (touch_wall or edge_end) and self.CheckTurn(player):
                 self.velocity.x = 0
-    
     def UpdatePosition(self):
         self.old_rect = self.rect.copy()
         

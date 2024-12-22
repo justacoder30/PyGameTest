@@ -137,6 +137,9 @@ class Slime(Entity):
         if not self.animationManager.Isflip:
             return pygame.Rect(self.rect.left - self.atkSize[0], self.rect.top, self.atkSize[0], self.atkSize[1])
         return pygame.Rect(self.rect.right, self.rect.top, self.atkSize[0], self.atkSize[1])
+
+    def CheckTurn(self, player):
+        return self.IsObjRight(player) == self.animationManager.Isflip
     
     def BeingHurt(self, entity):
         if self.hp <= 0:

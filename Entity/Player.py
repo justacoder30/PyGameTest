@@ -47,6 +47,7 @@ class Player(Entity):
     def UpdateVelocity(self):
         if self.state == State.Die:
             self.velocity.x = 0 
+            self.velocity.y = 0 
             return
         
         self.velocity.x = 0
@@ -66,7 +67,10 @@ class Player(Entity):
             self.velocity.x = self.speed
 
     def OnTrap(self):
-        traps = [trap for trap in Globals.static_quadtree.query(self.rect) if trap.isTrap]
+        collision_sprites = Globals.static_quadtree.query(self.rect)
+        if not collision_sprites:
+            return
+        traps = [trap for trap in collision_sprites if trap.isTrap]
         if traps:
             self.BeingHurt(None, 5)
 
@@ -114,11 +118,7 @@ class Player(Entity):
             if self.velocity.x != 0:
                 self.state = State.Run
             else:
-                if self.hp <= 0:
-                    self.state = State.Die
-                    if super().FrameEnd():
-                        Globals.GameOver = True
-                elif Player.CurrentKey[pygame.K_j] and not Player.PreviousKey[pygame.K_j] or self.animationManager.Isloop:
+                if Player.CurrentKey[pygame.K_j] and not Player.PreviousKey[pygame.K_j] or self.animationManager.Isloop:
                     self.state = State.Attack
                 else:
                     self.state = State.Idle
@@ -126,6 +126,11 @@ class Player(Entity):
             self.state = State.Fall
         else: 
             self.state = State.Jump
+
+        if self.hp <= 0:
+            self.state = State.Die
+            if super().FrameEnd():
+                Globals.GameOver = True
 
     def UpdateAnimation(self):
         self.animationManager.Update()
