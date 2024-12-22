@@ -34,16 +34,15 @@ class BackGround(enity.Entity):
                 self.pos_cloud[i] = 0
 
     def Draw(self):
-
         for i in range(5):
-            self.speed = 0.1
-            # self.scroll = abs(Globals.camera.x * self.speed) % self.bg_width * -1
+            speed = 0.1
+            # self.scroll = abs(Globals.camera.x * speed) % self.bg_width * -1
             for layer in range(len(self.bg_list)):
-                pos_x = i * self.bg_width + Globals.camera.x * self.speed
+                pos_x = i * self.bg_width + Globals.camera.x * speed
                 if layer == 1:
                     pos_x += self.pos_cloud[0]
                 elif layer == 3:
                     pos_x += self.pos_cloud[1]
                 rect = Globals.Surface.get_rect(left = pos_x)
                 super().DrawOnly(self.bg_list[layer], (pos_x, 0), rect)
-                self.speed+=0.1
+                speed+=0.1

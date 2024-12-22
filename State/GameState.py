@@ -50,6 +50,8 @@ class RunningState(GameSate):
     def __init__(self, game: Game, level):
         super().__init__(game)
         self.enityManager = EntityManager(level)
+        pygame.mixer.music.load("resource/Music/bg_music.ogg")
+        pygame.mixer.music.play(-1, 0.0, 3000)
 
     def __del__(self):
         return super().__del__()
@@ -57,13 +59,17 @@ class RunningState(GameSate):
     def Update(self):
         if InputManager.CurrentKey[pygame.K_ESCAPE] and not InputManager.PreviousKey[pygame.K_ESCAPE]:
             self.game.SaveState()
+            pygame.mixer.music.fadeout(1000)
+            # pygame.mixer.music.pause()
             self.game.ChangeState(StopSate(self.game)) 
 
         if Globals.IsLevelEnd:
             Globals.IsLevelEnd = False
+            pygame.mixer.music.stop()
             self.game.ChangeState(GameOver(self.game))
         elif Globals.GameOver:
             Globals.GameOver = False
+            pygame.mixer.music.stop()
             self.game.ChangeState(GameOver(self.game))
         else:
             self.enityManager.Updated()
@@ -89,6 +95,7 @@ class StopSate(GameSate):
             btn.Update()
 
         if self.resumeBtn.isClick or InputManager.CurrentKey[pygame.K_ESCAPE] and not InputManager.PreviousKey[pygame.K_ESCAPE]:
+            pygame.mixer.music.play(-1, 0.0, 1000)
             self.game.ChangeState(self.game.PreviousState) 
 
         if self.newGameBtn.isClick:
@@ -176,7 +183,7 @@ class GameOver(GameSate):
         self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
         self.score = 0
         self.time = 0
-        self.speed = 0.01
+        self.speed = 0.05
 
         self.buttons = [
             self.playBtn,
@@ -190,7 +197,8 @@ class GameOver(GameSate):
             btn.Update()
 
         if self.time >= self.speed and self.score < Globals.score:
-            self.score+=2
+            SoundManager.PlaySound("coin")
+            self.score+=5
             self.time=0
 
         self.text = Globals.text_font.render(f"Score: {self.score}", True, 'white')

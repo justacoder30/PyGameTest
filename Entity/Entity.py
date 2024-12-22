@@ -6,6 +6,7 @@ sys.path.append('..')
 from Animation import *
 from Entity.Entity import *
 from Manager.AnimationManager import *
+import Manager.SoundManager as SoundManager
 from enum import Enum
 from Camera import *
 
@@ -30,6 +31,7 @@ class Entity(pygame.sprite.Sprite):
         self.HurtTime = 0
         self.IsRemoved = False
         self.isplatfrom = False
+        self.isTrap = False
         self.enemyZone = [0, 0]
         self.atkSize = [0, 0]
         self.rect = None
@@ -73,7 +75,8 @@ class Entity(pygame.sprite.Sprite):
     def IsFalling(self):
         rect = self.GravityBound(self.pos)
         collision_sprites = Globals.static_quadtree.query(rect)
-        if collision_sprites:
+        traps = [sprite for sprite in collision_sprites if sprite.isTrap]
+        if collision_sprites and not traps:
             return False
         return True
 
@@ -101,12 +104,13 @@ class Entity(pygame.sprite.Sprite):
         self.attackTime += Globals.DeltaTime
         self.state = State.Attack
         if self.attackTime >= self.FrameSpeed(atk_frame) and self.animationManager.Animation.CurrentFrame == self.HitFrame(atk_frame) and self.IsAttackRange(enity.rect):
-            enity.BeingHurt(self)
+            enity.BeingHurt(self, enity.damage)
             self.attackTime = 0
 
     def BeingHurt(self, entity):
         if self.hp <= 0:
             return
+        SoundManager.PlaySound("Hurt")
         self.animationManager.Isflip = False if self.get_center().x < entity.get_center().x else True
         self.velocity.y = -120
         self.velocity.x = 50 if self.animationManager.Isflip else -50
@@ -134,7 +138,6 @@ class Entity(pygame.sprite.Sprite):
     def Hurt(self, entity):
         if entity.state != State.Attack:
             return
-
         entity.Attack(self, 3)
         
     def IsOnMovingPlatform(self):
@@ -173,7 +176,7 @@ class Entity(pygame.sprite.Sprite):
 
         self.timer += Globals.DeltaTime
         touch_wall = Globals.static_quadtree.query(self.wall_rect())
-        edge_end = Globals.static_quadtree.query(self.edge_rect())
+        edge_end = [edge for edge in Globals.static_quadtree.query(self.edge_rect()) if not edge.isTrap]
         
 
         if not self.IsNearEntity(player):
@@ -197,9 +200,9 @@ class Entity(pygame.sprite.Sprite):
         self.old_rect = self.rect.copy()
         
         self.pos.x += self.velocity.x * Globals.DeltaTime
-        self.Collision('horizontal')
+        self.Collision('x')
         self.pos.y += self.velocity.y * Globals.DeltaTime
-        self.Collision('vertical')     
+        self.Collision('y')     
 
     
     def Collision(self, direction):
@@ -210,7 +213,9 @@ class Entity(pygame.sprite.Sprite):
         if static_sprites or moving_sprites:
             collision_sprites = static_sprites + moving_sprites
             for collider in collision_sprites:
-                if direction == 'vertical':
+                if collider.isTrap:
+                    continue
+                if direction == 'y':
                     # collision on the top
                     if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
                         self.velocity.y = 0
@@ -266,10 +271,12 @@ class Entity(pygame.sprite.Sprite):
                                                     (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y), 
                                                     self.animationManager.Rect())
             
-        # rect = pygame.Rect(self.pos.x, self.pos.y, self.texture_width , self.texture_height * 1.2)
-        # for collider in self.map_colliders:
-        #     if rect.colliderect(collider.rect):
-        #         pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
+        # rect = self.GravityBound(self.pos)
+        # map_colliders = Globals.static_quadtree.query(rect)
+        # if map_colliders:
+        #     for collider in map_colliders:
+        #         if rect.colliderect(collider.rect):
+        #             pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
         # self.DrawRect((0, 0, 255), self.GetAttackBound())
         # self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))

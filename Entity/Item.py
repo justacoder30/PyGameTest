@@ -115,6 +115,27 @@ class Flag(Entity):
     def Update(self):
         self.SetAnimation()
 
+class HP(Entity):
+    def __init__(self, groups, player):
+        super().__init__(groups)
+
+        self.img = self.GetImg('resource/img/Item/hearts.png')
+        self.width = self.img.get_width()
+
+        self.player = player
+        self.hp = player.hp
+    
+    def GetImg(self, f_path):
+        return pygame.transform.scale(pygame.image.load(f_path).convert_alpha(), (8, 8))
+
+    def Update(self):
+        self.hp = self.player.hp - 1
+        self.count = int((self.hp / 10) + 1)
+
+    def Draw(self):
+        for i in range(self.count):
+            Globals.Surface.blit(self.img, (i * self.width, 0))
+
 class Heart(Entity):
     def __init__(self, pos: pygame.Vector2, groups, player):
         super().__init__(groups)

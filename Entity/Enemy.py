@@ -141,6 +141,7 @@ class Slime(Entity):
     def BeingHurt(self, entity):
         if self.hp <= 0:
             return
+        SoundManager.PlaySound("Hurt")
         self.velocity.y = -120
         self.velocity.x = 50 if not self.animationManager.Isflip else -50
         self.IsHurt = True

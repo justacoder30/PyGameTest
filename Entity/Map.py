@@ -15,12 +15,13 @@ layers = {
 }
 
 class MapTile(Entity):
-    def __init__(self, pos: pygame.Vector2, img: pygame.surface.Surface, groups, isplatfrom = True):
+    def __init__(self, pos: pygame.Vector2, img: pygame.surface.Surface, groups, isplatfrom = True, isTrap = False):
         super().__init__(groups)
         self.pos = pos
         self.isplatfrom = isplatfrom
+        self.isTrap = isTrap
         self.img = img
-        # self.img.fill("white")
+        # self.img.fill("red")
         self.rect = self.img.get_rect(topleft = self.pos)
         self.old_rect = self.rect.copy()
 
@@ -37,17 +38,18 @@ class Map():
         Map.tiled_map = pytmx.load_pygame(f'resource/Map1/map{level}.tmx')
         for layer in layers:
             isplatfrom = True if layer == 'Terrain' else False
+            isTrap = True if layer == 'Trap' else False
             for x, y, img in Map.tiled_map.get_layer_by_name(layer).tiles():
                 Map.max_x = x if x > Map.max_x else Map.max_x
                 Map.max_y = y if y > Map.max_y else Map.max_y
                 pos = pygame.Vector2(x * TileSize, y * TileSize)
-                MapTile(pos, img, groups, isplatfrom)
+                MapTile(pos, img, groups, isplatfrom, isTrap)
 
         Globals.MapSize.w= Map.get_width()
         Globals.MapSize.h = Map.get_height()
 
         for sprite in groups:
-            if not sprite.isplatfrom:
+            if not sprite.isplatfrom and not sprite.isTrap :
                 continue
             Globals.static_quadtree.insert(sprite)
 
@@ -81,10 +83,6 @@ class Map():
             rect = pygame.Rect(obj.x, obj.y, obj.width, obj.height)
             rect_list.append(rect)
         return rect_list
-    
-    # @classmethod 
-    # def GetTilesBound(cls):
-    #     return Map.Tiles
     
     # def Update(self):
     #     pass

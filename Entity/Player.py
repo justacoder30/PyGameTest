@@ -43,6 +43,7 @@ class Player(Entity):
         self.rect = self.caculate_bound(self.pos)
         self.old_rect = self.rect.copy()
 
+
     def UpdateVelocity(self):
         if self.state == State.Die:
             self.velocity.x = 0 
@@ -64,10 +65,28 @@ class Player(Entity):
         if Player.CurrentKey[pygame.K_d]:
             self.velocity.x = self.speed
 
-    def BeingHurt(self, entity):
-        self.animationManager.Isflip = False if self.get_center().x < entity.get_center().x else True
+    def OnTrap(self):
+        traps = [trap for trap in Globals.static_quadtree.query(self.rect) if trap.isTrap]
+        if traps:
+            self.BeingHurt(None, 5)
+
+    def UpdatePosition(self):
+        self.old_rect = self.rect.copy()
+        
+        self.pos.x += self.velocity.x * Globals.DeltaTime
+        self.Collision('x')
+        self.pos.y += self.velocity.y * Globals.DeltaTime
+        self.Collision('y')  
+        self.OnTrap()
+
+    def BeingHurt(self, entity: None, damage: None):
+        if self.HurtTime != 0:
+            return
+        if entity != None:
+            self.animationManager.Isflip = False if self.get_center().x < entity.get_center().x else True
+        SoundManager.PlaySound("Hurt")
         self.IsHurt = True
-        self.hp -= entity.damage
+        self.hp -= damage
 
     def Attack(self, enity, atk_frame):
         if not self.IsAttackRange(enity.rect):
@@ -87,7 +106,7 @@ class Player(Entity):
 
         if self.IsHurt:
             self.HurtTime += Globals.DeltaTime
-            if self.HurtTime >= 0.2:
+            if self.HurtTime >= 0.3:
                 self.HurtTime = 0
                 self.IsHurt = False
             
@@ -129,10 +148,15 @@ class Player(Entity):
                 self.animationManager.Play(self.animations["Hurt"])
             case _:
                 print("f{self.state} is not valid!")
+    def UpdateSound(self):
+        if(self.PreviousState != State.Attack and self.state == State.Attack): SoundManager.PlaySound("attack")
+        if(self.PreviousState == State.Fall and self.state != State.Fall): SoundManager.PlaySound("landing")
 
     def Update(self):
+        self.PreviousState = self.state
         self.UpdateVelocity()
         self.UpdatePosition()
         self.UpdateAnimation()
+        self.UpdateSound()
         self.CheckOutOfMap()
         self.HurtColor("red")

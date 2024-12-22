@@ -1,7 +1,8 @@
 import sys
 sys.path.append('..')
-import pygame, Renderder, Globals, Renderder
+import pygame, Globals, Renderder
 import Entity.Map as Map
+import Manager.SoundManager as SoundManager
 import Manager.InputManager as InputManager
 from Camera import *
 from Manager.AnimationManager import *
@@ -42,6 +43,7 @@ class EntityManager:
 
         Flag(self.all_sprites, player)
         self.camera = Camera(player)
+        HP(self.all_sprites, player)
 
         
 
@@ -53,6 +55,7 @@ class EntityManager:
             sprite.Update()
             if sprite.IsRemoved:
                 Globals.score+=sprite.score
+                SoundManager.PlaySound("coin")
                 sprite.kill()
             
         self.camera.Update()

@@ -1,7 +1,7 @@
 import pygame
 from quadtree import *
+from Manager.SoundManager import *
 
-P_pos = None
 camera = pygame.Vector2(0, 0)
 camera_bg = pygame.Vector2
 running = True
