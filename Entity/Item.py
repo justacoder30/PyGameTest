@@ -11,7 +11,7 @@ class Movingplatform(Entity):
         super().__init__(groups)
         self.active_zone = rect
         self.direction = 'y' if self.active_zone.w < self.active_zone.h else 'x'
-        self.speed = 85
+        self.speed = 125
 
         self.animations = {
             'Idle' : Animation.Animation('resource/img/MovingPlatform/Idle.png', 4)

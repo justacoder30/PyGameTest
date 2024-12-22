@@ -10,6 +10,9 @@ def Init():
         "button_click": Sound("resource/SoundFX/ButtonClick_sound.wav", 1),
         "Hurt": Sound("resource/SoundFX/Hit_sound.mp3", 1),
         "landing": Sound("resource/SoundFX/landing_sound.mp3", 1),
+        "WinGame": Sound("resource/SoundFX/WinGame_sound.mp3", 1),
+        "LoseGame": Sound("resource/SoundFX/GameLose_sound.wav", 1),
+
     }
 
 def PlayMusic():
