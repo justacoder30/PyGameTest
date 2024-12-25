@@ -24,7 +24,6 @@ class Camera:
         x = round(pygame.math.lerp(self.previous_pos.x, self.current_pos.x, self.speed))
         y = round(pygame.math.lerp(self.previous_pos.y, self.current_pos.y, self.speed))
 
-        Globals.camera_bg = pygame.Vector2(self.current_pos.x, self.current_pos.y)
         Camera.rect = pygame.Rect(-x, -y, Globals.CameraSize_X, Globals.CameraSize_Y)
         Globals.camera = pygame.Vector2(x, y)
         self.previous_pos = Globals.camera

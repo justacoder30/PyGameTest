@@ -17,6 +17,7 @@ class Game:
         pygame.init()
         SoundManager.Init()
         Camera.SetSize(480, 270)
+        # Camera.SetSize(1280, 720)
         # Camera.SetSize(560, 315)
         Globals.Init()
         Renderder.SetResolution(1920, 1080)
@@ -40,7 +41,7 @@ class Game:
             self.NextState = None
 
         self.CurrentState.Update()
-        # print(round(Globals.Clock.get_fps()))
+        print(round(Globals.Clock.get_fps()))
 
     def Draw(self):
         Globals.Surface.fill((0, 0, 0, 0))

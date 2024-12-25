@@ -36,7 +36,6 @@ class BackGround(enity.Entity):
     def Draw(self):
         for i in range(5):
             speed = 0.1
-            # self.scroll = abs(Globals.camera.x * speed) % self.bg_width * -1
             for layer in range(len(self.bg_list)):
                 pos_x = i * self.bg_width + Globals.camera.x * speed
                 if layer == 1:

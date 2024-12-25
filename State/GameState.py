@@ -189,7 +189,7 @@ class GameOver(GameSate):
         self.quitBtn = Button('resource/img/Button/Quit Button.png', pygame.Rect(176.00, 160.00, 120, 40))
         self.score = 0
         self.time = 0
-        self.speed = 0.05
+        self.speed = 0.01
 
         self.buttons = [
             self.playBtn,

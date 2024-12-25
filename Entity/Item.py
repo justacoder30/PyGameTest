@@ -162,7 +162,6 @@ class Heart(Entity):
         return False
 
     def UpdateAnimation(self):
-
         if not self.IsTouched():
             return
         

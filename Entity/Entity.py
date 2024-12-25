@@ -272,19 +272,19 @@ class Entity(pygame.sprite.Sprite):
                                                     (self.pos.x + Globals.camera.x, self.pos.y + Globals.camera.y), 
                                                     self.animationManager.Rect())
             
-        # rect = self.GravityBound(self.pos)
+        # rect = pygame.Rect(self.rect.x - 1, self.rect.y - 1, self.rect.w+2, self.rect.h+2)
         # map_colliders = Globals.static_quadtree.query(rect)
         # if map_colliders:
         #     for collider in map_colliders:
         #         if rect.colliderect(collider.rect):
         #             pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
-        # self.DrawRect((0, 0, 255), self.GetAttackBound())
-        # self.DrawRect((255, 0, 0), self.caculate_bound(self.pos))
+        # self.DrawRect((255, 0, 255), self.GetAttackBound())
+        # self.DrawRect((255, 255, 0), self.caculate_bound(self.pos))
         # self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
         # self.DrawRect((0, 0, 255), self.wall_rect())
         # self.DrawRect((0, 0, 255), self.edge_rect())
-        # center = self.get_center() + + Globals.camera
+        # # center = self.get_center() + + Globals.camera
         # # pygame.draw.circle(Globals.Surface, (0, 0, 255), center, self.enemyZone[0], 1)
         
         # rect = pygame.Rect(self.rect.x - 2, self.rect.y - 2, self.rect.width + 4, self.rect.height + 4)
