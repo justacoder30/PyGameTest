@@ -16,11 +16,11 @@ class Game:
         pygame.mixer.init()
         pygame.init()
         SoundManager.Init()
-        Camera.SetSize(480, 270)
-        # Camera.SetSize(1280, 720)
+        # Camera.SetSize(480, 270)
+        Camera.SetSize(960, 540)
         # Camera.SetSize(560, 315)
         Globals.Init()
-        Renderder.SetResolution(1920, 1080, True)
+        Renderder.SetResolution(1920, 1080)
         # Renderder.SetResolution(1280, 720, True)
         # Renderder.SetResolution(960, 540)
         
@@ -44,7 +44,7 @@ class Game:
         print(round(Globals.Clock.get_fps()))
 
     def Draw(self):
-        Globals.Surface.fill((0, 0, 0, 0))
+        Globals.Surface.fill((255, 255, 255, 0))
         
         self.CurrentState.Draw()
         

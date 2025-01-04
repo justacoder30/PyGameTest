@@ -25,9 +25,15 @@ class Quadtree:
         bottomright = pygame.Rect(x, y + h/2, w/2, h/2)
         self.bottomright = Quadtree(bottomright, self.capacity)
         self.divided = True
+    
+    def checkcollide(self, rect1, rect2): 
+        return ( rect1.top < rect2.bottom and 
+                rect1.bottom > rect2.top and 
+                rect1.left < rect2.right and 
+                rect1.right > rect2.left) 
 
     def insert(self, sprite):
-        if not self.boundary.colliderect(sprite.rect):
+        if not self.checkcollide(self.boundary, sprite.rect):
             return
 
         if not self.divided:
@@ -48,14 +54,14 @@ class Quadtree:
             self.bottomleft.insert(sprite)
             self.bottomright.insert(sprite)
 
-    def query(self, range: pygame.Rect, found=None):
+    def query(self, range, found=None):
         if found is None:
             found = []
-        if not self.boundary.colliderect(range):
+        if not self.checkcollide(self.boundary, range):
             return
         else:
             for sprite in self.sprites:
-                if range.colliderect(sprite.rect):
+                if self.checkcollide(range, sprite.rect):
                     found.append(sprite)
         if self.divided:
             self.topleft.query(range, found)

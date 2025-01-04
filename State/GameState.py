@@ -52,7 +52,7 @@ class RunningState(GameSate):
         self.enityManager = EntityManager(level)
         pygame.mixer.music.load("resource/Music/bg_music.ogg")
         pygame.mixer.music.play(-1, 0.0, 3000)
-        pygame.mouse.set_visible(False)
+        # pygame.mouse.set_visible(False)
 
     def __del__(self):
         return super().__del__()
