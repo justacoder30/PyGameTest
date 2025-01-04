@@ -1,5 +1,17 @@
 import pygame, Globals
 
+class Rectangle:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+        self.top = y
+        self.bottom = y + h
+        self.left = x
+        self.right = x + w
+        
 class Quadtree:
     def __init__(self, boundary, n):
         self.boundary = boundary
@@ -16,13 +28,13 @@ class Quadtree:
         y = self.boundary.y
         w = self.boundary.w
         h = self.boundary.h
-        topleft = pygame.Rect(x + w/2, y, w/2, h/2)
+        topleft = Rectangle(x + w/2, y, w/2, h/2)
         self.topleft = Quadtree(topleft, self.capacity)
-        topright = pygame.Rect(x, y, w/2, h/2)
+        topright = Rectangle(x, y, w/2, h/2)
         self.topright = Quadtree(topright, self.capacity)
-        bottomleft = pygame.Rect(x + w/2, y + h/2, w/2, h/2)
+        bottomleft = Rectangle(x + w/2, y + h/2, w/2, h/2)
         self.bottomleft = Quadtree(bottomleft, self.capacity)
-        bottomright = pygame.Rect(x, y + h/2, w/2, h/2)
+        bottomright = Rectangle(x, y + h/2, w/2, h/2)
         self.bottomright = Quadtree(bottomright, self.capacity)
         self.divided = True
     
