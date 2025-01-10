@@ -29,22 +29,22 @@ class BackGround(enity.Entity):
         return pygame.transform.scale(pygame.image.load(f_path).convert_alpha(), Globals.Surface.get_size())
 
     def Update(self):
-        return
+        # return
         for i in range(2):
             self.pos_cloud[i] -= self.cloud_speed[i] * Globals.DeltaTime
             if self.pos_cloud[i] <= -self.bg_width:
                 self.pos_cloud[i] = 0
 
     def Draw(self):
-        # for i in range(5):
-        #     speed = 0.1
-        #     for layer in range(len(self.bg_list)):
-        #         pos_x = i * self.bg_width + Globals.camera.x * speed
-        #         if layer == 1:
-        #             pos_x += self.pos_cloud[0]
-        #         elif layer == 3:
-        #             pos_x += self.pos_cloud[1]
-        #         rect = Globals.Surface.get_rect(left = pos_x)
-        #         super().DrawOnly(self.bg_list[layer], (pos_x, 0), rect)
-        #         speed+=0.1
-        self.DrawOnly(self.bg, (0, 0), self.bg.get_rect())
+        for i in range(5):
+            speed = 0.1
+            for layer in range(len(self.bg_list)):
+                pos_x = i * self.bg_width + Globals.camera.x * speed
+                if layer == 1:
+                    pos_x += self.pos_cloud[0]
+                elif layer == 3:
+                    pos_x += self.pos_cloud[1]
+                rect = Globals.Surface.get_rect(left = pos_x)
+                super().DrawOnly(self.bg_list[layer], (pos_x, 0), rect)
+                speed+=0.1
+        # self.DrawOnly(self.bg, (0, 0), self.bg.get_rect())

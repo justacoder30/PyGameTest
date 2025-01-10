@@ -64,5 +64,5 @@ class EntityManager:
         for sprite in self.all_sprites:
             sprite.Draw()
         # Globals.moving_quadtree.draw()
-        Globals.static_quadtree.draw()
+        # Globals.static_quadtree.draw()
         
