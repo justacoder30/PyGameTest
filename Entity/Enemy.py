@@ -9,13 +9,13 @@ class Skeleton(Entity):
     PreviousKey = None
     CurrentKey = None
 
-    def __init__(self, pos, groups, player):
+    def __init__(self, pos, groups, player, level):
         super().__init__(groups)
 
         self.speed = 60
         self.OFFSET = [39, 18]
-        self.hp = 30
-        self.damage = 10
+        self.hp = 20 * level
+        self.damage = 10 * level
         self.enemyZone = [150, 50]
         self.attackCoolDown = 0.5
         self.Gravity = 1000
@@ -93,13 +93,13 @@ class Slime(Entity):
     PreviousKey = None
     CurrentKey = None
 
-    def __init__(self, pos, groups, player):
+    def __init__(self, pos, groups, player, level):
         super().__init__(groups)
 
         self.speed = 40
         self.OFFSET = [8, 10]
-        self.hp = 20
-        self.damage = 10
+        self.hp = 12 * level
+        self.damage = 5 * level
         self.enemyZone =[100, 50]
         self.attackCoolDown = 0.5
         self.Gravity = 1000

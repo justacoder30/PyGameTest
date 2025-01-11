@@ -27,10 +27,10 @@ class EntityManager:
         player = Player(self.all_sprites)
 
         for pos in Map.GetListPosition("SkeletonPosition"):
-            Skeleton(pos, self.all_sprites, player)
+            Skeleton(pos, self.all_sprites, player, level)
         
         for pos in Map.GetListPosition("SlimePosition"):
-            Slime(pos, self.all_sprites, player)
+            Slime(pos, self.all_sprites, player, level)
 
         for pos in Map.GetListPosition("HeartPosition"):
             Heart(pos, self.all_sprites, player)

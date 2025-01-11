@@ -34,6 +34,7 @@ class Entity(pygame.sprite.Sprite):
         self.isTrap = False
         self.enemyZone = [0, 0]
         self.atkSize = [0, 0]
+        self.damage = 0
         self.rect = None
         self.old_rect = None
         self.IsAttacking = False
@@ -103,7 +104,7 @@ class Entity(pygame.sprite.Sprite):
         self.attackTime += Globals.DeltaTime
         self.state = State.Attack
         if self.attackTime >= self.FrameSpeed(atk_frame) and self.animationManager.Animation.CurrentFrame == self.HitFrame(atk_frame) and self.IsAttackRange(enity.rect):
-            enity.BeingHurt(self, enity.damage)
+            enity.BeingHurt(self, self.damage)
             self.attackTime = 0
 
     def BeingHurt(self, entity):
@@ -178,7 +179,12 @@ class Entity(pygame.sprite.Sprite):
 
         self.timer += Globals.DeltaTime
         touch_wall = Globals.static_quadtree.query(self.wall_rect())
-        edge_end = not [edge for edge in Globals.static_quadtree.query(self.edge_rect()) if not edge.isTrap]
+        # edge_end = not [edge for edge in Globals.static_quadtree.query(self.edge_rect()) if not edge.isTrap]
+        edges = Globals.static_quadtree.query(self.edge_rect())
+        if edges is None:
+            edges = []
+        edge_end = not [edge for edge in edges if not edge.isTrap]
+
         
 
         if not self.IsNearEntity(player):
