@@ -78,9 +78,9 @@ class Player(Entity):
         self.old_rect = self.rect.copy()
         
         self.pos.x += self.velocity.x * Globals.DeltaTime
-        self.Collision('x')
+        self.Collision2('x')
         self.pos.y += self.velocity.y * Globals.DeltaTime
-        self.Collision('y')  
+        self.Collision2('y')  
         self.OnTrap()
 
     def BeingHurt(self, entity: None, damage: None):
@@ -153,6 +153,7 @@ class Player(Entity):
                 self.animationManager.Play(self.animations["Hurt"])
             case _:
                 print("f{self.state} is not valid!")
+                
     def UpdateSound(self):
         if(self.PreviousState != State.Attack and self.state == State.Attack): SoundManager.PlaySound("attack")
         if(self.PreviousState == State.Fall and self.state != State.Fall): SoundManager.PlaySound("landing")

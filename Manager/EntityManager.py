@@ -14,6 +14,7 @@ from Entity.Enemy import *
 
 class EntityManager:
     def __init__(self, level):
+        self.drawQuadtree = False
         Globals.score = 0
         self.all_sprites = pygame.sprite.Group()
         Globals.static_quadtree = Globals.Quadtree(Globals.MapSize, 10)
@@ -57,12 +58,16 @@ class EntityManager:
                 Globals.score+=sprite.score
                 SoundManager.PlaySound("coin")
                 sprite.kill()
+                
+        if InputManager.CurrentKey[pygame.K_1] and not InputManager.PreviousKey[pygame.K_1]:
+            self.drawQuadtree = not self.drawQuadtree
             
         self.camera.Update()
 
     def Draw(self):
         for sprite in self.all_sprites:
             sprite.Draw()
-        # Globals.moving_quadtree.draw()
-        # Globals.static_quadtree.draw()
+        if self.drawQuadtree:
+            Globals.moving_quadtree.draw()
+            Globals.static_quadtree.draw()
         

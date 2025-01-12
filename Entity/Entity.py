@@ -217,6 +217,36 @@ class Entity(pygame.sprite.Sprite):
                 rect1.left < rect2.right and 
                 rect1.right > rect2.left)  
 
+    def Collision2(self, direction):
+        self.rect = self.caculate_bound(self.pos)
+        
+        static_sprites = Globals.static_quadtree.query(self.rect)
+        moving_sprites = Globals.moving_quadtree.query(self.rect)
+
+        if static_sprites or moving_sprites:
+            collision_sprites = static_sprites + moving_sprites
+
+            for collider in collision_sprites:
+                if collider.isTrap:
+                    continue
+
+                if direction == 'x':
+                    if self.velocity.x > 0: 
+                        # Điều chỉnh vị trí sang bên trái của collider
+                        self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
+                    elif self.velocity.x < 0: 
+                        # Điều chỉnh vị trí sang bên phải của collider
+                        self.pos.x = collider.rect.right - self.OFFSET[0] 
+            
+                else: 
+                    if self.velocity.y > 0:
+                        # Điều chỉnh vị trí sang bên trên của collider
+                        self.pos.y = collider.rect.top - self.texture_height
+                        self.falling = False
+                    elif self.velocity.y < 0:
+                        # Điều chỉnh vị trí sang bên dưới của collider
+                        self.pos.y = collider.rect.bottom - self.OFFSET[1]
+                    self.velocity.y = 0
     
     def Collision(self, direction):
         self.rect = self.caculate_bound(self.pos)
@@ -229,25 +259,26 @@ class Entity(pygame.sprite.Sprite):
                 if collider.isTrap:
                     continue
                 if direction == 'y':
-                    # collision on the top
+
+                    # Kiểm tra phía trên
                     if self.rect.top <= collider.rect.bottom and self.old_rect.top >= collider.old_rect.bottom:
-                        self.velocity.y = 0
                         self.rect.top = collider.rect.bottom
                         self.pos.y = collider.rect.bottom - self.OFFSET[1]
 
-                    # collision on the bottom
+                    # Kiểm tra phía dưới
                     if self.rect.bottom >= collider.rect.top and self.old_rect.bottom <= collider.old_rect.top:
-                        self.velocity.y = 0
                         self.rect.bottom = collider.rect.top 
                         self.pos.y = collider.rect.top - self.texture_height
                         self.falling = False
+                    self.velocity.y = 0
                 else:
-                    # collision on the right
+
+                    # Kiểm tra bên phải
                     if self.rect.right >= collider.rect.left and self.old_rect.right <= collider.old_rect.left:
                         self.rect.right = collider.rect.left 
                         self.pos.x = collider.rect.left - self.texture_width + self.OFFSET[0]
 
-                    # collision on the left
+                    # Kiểm tra bên trái
                     if self.rect.left <= collider.rect.right and self.old_rect.left >= collider.old_rect.right:
                         self.rect.left = collider.rect.right
                         self.pos.x = collider.rect.right -  self.OFFSET[0]
@@ -276,7 +307,7 @@ class Entity(pygame.sprite.Sprite):
     def DrawSprite(self, texture, pos):
         if Camera.rect.colliderect(self.rect):
             Globals.Surface.blit(texture, (pos.x + Globals.camera.x, pos.y + Globals.camera.y))
-            # if (self.isplatfrom): self.DrawRect("red", self.rect)
+            if (self.isplatfrom): self.DrawRect("red", self.rect)
 
     def Draw(self):
         if Camera.rect.colliderect(self.rect):
@@ -293,7 +324,7 @@ class Entity(pygame.sprite.Sprite):
         #             pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
         # self.DrawRect((255, 0, 255), self.GetAttackBound())
-        # self.DrawRect((255, 255, 0), self.caculate_bound(self.pos))
+        self.DrawRect((255, 255, 0), self.caculate_bound(self.pos))
         # self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
         # self.DrawRect((0, 0, 255), self.wall_rect())
         # self.DrawRect((255, 0, 0), self.edge_rect())

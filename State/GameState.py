@@ -39,8 +39,8 @@ class MenuSate(GameSate):
             btn.Update()
 
         if self.playBtn.isClick:
-            self.game.ChangeState(StorySate(self.game))
-            # self.game.ChangeState(RunningState(self.game, self.level))
+            # self.game.ChangeState(StorySate(self.game))
+            self.game.ChangeState(RunningState(self.game, self.level))
 
         if self.quitBtn.isClick:
             Globals.running = False
