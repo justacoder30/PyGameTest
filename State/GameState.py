@@ -39,8 +39,8 @@ class MenuSate(GameSate):
             btn.Update()
 
         if self.playBtn.isClick:
-            # self.game.ChangeState(StorySate(self.game))
-            self.game.ChangeState(RunningState(self.game, self.level))
+            self.game.ChangeState(StorySate(self.game))
+            # self.game.ChangeState(RunningState(self.game, self.level))
 
         if self.quitBtn.isClick:
             Globals.running = False
@@ -88,7 +88,7 @@ class RunningState(GameSate):
             pygame.mixer.music.stop()
             pygame.mouse.set_visible(True)
             SoundManager.PlaySound("WinGame")
-            if self.level+1 < 3:
+            if self.level+1 <= 3:
                 self.game.ChangeState(ChangeLevelState(self.game))
             self.level = 1
             self.game.ChangeState(GameWin(self.game))

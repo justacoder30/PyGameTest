@@ -22,6 +22,7 @@ class EntityManager:
         BackGround(self.all_sprites)
         Map(level, self.all_sprites)
 
+
         for rect in Map.GetRectList("MovingPlatform"):
             Movingplatform(rect, self.all_sprites)
 

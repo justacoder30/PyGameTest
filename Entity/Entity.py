@@ -203,6 +203,7 @@ class Entity(pygame.sprite.Sprite):
             self.FollowPlayer(player)
             if (touch_wall or edge_end) and self.CheckTurn(player):
                 self.velocity.x = 0
+                
     def UpdatePosition(self):
         self.old_rect = self.rect.copy()
         
@@ -220,8 +221,8 @@ class Entity(pygame.sprite.Sprite):
     def Collision2(self, direction):
         self.rect = self.caculate_bound(self.pos)
         
-        static_sprites = Globals.static_quadtree.query(self.rect)
-        moving_sprites = Globals.moving_quadtree.query(self.rect)
+        static_sprites = Globals.static_quadtree.query(self.rect) 
+        moving_sprites = Globals.moving_quadtree.query(self.rect) if moving_sprites else []
 
         if static_sprites or moving_sprites:
             collision_sprites = static_sprites + moving_sprites
@@ -307,7 +308,7 @@ class Entity(pygame.sprite.Sprite):
     def DrawSprite(self, texture, pos):
         if Camera.rect.colliderect(self.rect):
             Globals.Surface.blit(texture, (pos.x + Globals.camera.x, pos.y + Globals.camera.y))
-            if (self.isplatfrom): self.DrawRect("red", self.rect)
+            # if (self.isplatfrom): self.DrawRect("red", self.rect)
 
     def Draw(self):
         if Camera.rect.colliderect(self.rect):
@@ -324,7 +325,7 @@ class Entity(pygame.sprite.Sprite):
         #             pygame.draw.rect(Globals.Surface, (255, 0, 0), (collider.rect.x + Globals.camera.x, collider.rect.y + Globals.camera.y, collider.rect.width, collider.rect.height), 1)
 
         # self.DrawRect((255, 0, 255), self.GetAttackBound())
-        self.DrawRect((255, 255, 0), self.caculate_bound(self.pos))
+        # self.DrawRect((255, 255, 0), self.caculate_bound(self.pos))
         # self.DrawRect((0, 255, 255), self.GravityBound(self.pos))
         # self.DrawRect((0, 0, 255), self.wall_rect())
         # self.DrawRect((255, 0, 0), self.edge_rect())

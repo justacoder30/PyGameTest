@@ -78,9 +78,9 @@ class Player(Entity):
         self.old_rect = self.rect.copy()
         
         self.pos.x += self.velocity.x * Globals.DeltaTime
-        self.Collision2('x')
+        self.Collision('x')
         self.pos.y += self.velocity.y * Globals.DeltaTime
-        self.Collision2('y')  
+        self.Collision('y')  
         self.OnTrap()
 
     def BeingHurt(self, entity: None, damage: None):
